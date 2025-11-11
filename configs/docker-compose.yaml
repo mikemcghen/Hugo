@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector
+  db:
+    build: ./services/db
+    container_name: hugo-db
+    environment:
+      POSTGRES_DB: hugo
+      POSTGRES_USER: hugo_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hugo_password_change_me}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - hugo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hugo_user -d hugo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Whisper Speech-to-Text Service
+  whisper:
+    build: ./services/whisper
+    container_name: hugo-whisper
+    environment:
+      WHISPER_MODEL: ${WHISPER_MODEL:-base}
+    volumes:
+      - whisper_models:/root/.cache/whisper
+    ports:
+      - "8001:8001"
+    networks:
+      - hugo-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Piper Text-to-Speech Service
+  piper:
+    build: ./services/piper
+    container_name: hugo-piper
+    environment:
+      PIPER_VOICE: ${PIPER_VOICE:-en_US-lessac-medium}
+    volumes:
+      - piper_models:/app/models
+    ports:
+      - "8002:8002"
+    networks:
+      - hugo-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Claude API Proxy
+  claude_proxy:
+    build: ./services/claude_proxy
+    container_name: hugo-claude-proxy
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    ports:
+      - "8003:8003"
+    networks:
+      - hugo-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (optional, for caching)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: hugo-redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - hugo-network
+  #   restart: unless-stopped
+  #   volumes:
+  #     - redis_data:/data
+
+networks:
+  hugo-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+  whisper_models:
+    driver: local
+  piper_models:
+    driver: local
+  # redis_data:
+  #   driver: local

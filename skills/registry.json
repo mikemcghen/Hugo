@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-11T00:00:00Z",
+  "skills": {
+    "demo_skill": {
+      "name": "demo_skill",
+      "version": "0.1.0",
+      "status": "active",
+      "validation_status": "pending",
+      "installed_at": "2025-11-11T00:00:00Z",
+      "last_executed": null,
+      "execution_count": 0,
+      "success_rate": 0.0,
+      "tags": ["demo", "example"]
+    }
+  }
+}

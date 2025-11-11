@@ -1,0 +1,44 @@
+name: demo_skill
+version: "0.1.0"
+description: "A demonstration skill showing Hugo's skill system architecture"
+author: "Hugo System"
+created: "2025-11-11"
+
+triggers:
+  - type: manual
+    command: "demo"
+    description: "Run the demo skill"
+
+  - type: keyword
+    keywords: ["demonstration", "example", "show me"]
+    threshold: 0.8
+
+parameters:
+  - name: message
+    type: string
+    required: false
+    default: "Hello from Hugo!"
+    description: "Message to display"
+
+  - name: repeat
+    type: integer
+    required: false
+    default: 1
+    description: "Number of times to repeat the message"
+
+validation:
+  tests: true
+  sandboxed: true
+  requires_consent: false
+
+capabilities:
+  - "Display formatted messages"
+  - "Demonstrate skill parameter usage"
+  - "Show skill execution logging"
+
+dependencies: []
+
+metadata:
+  category: "demo"
+  tags: ["example", "tutorial", "demonstration"]
+  difficulty: "beginner"

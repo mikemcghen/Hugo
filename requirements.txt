@@ -1,0 +1,77 @@
+# Hugo - Python Dependencies
+# ================================
+
+# Core
+python>=3.11
+
+# Async runtime
+asyncio-mqtt==0.16.1
+
+# Database
+sqlalchemy[asyncio]==2.0.23
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# Vector database
+pgvector==0.2.3
+faiss-cpu==1.7.4  # Use faiss-gpu for GPU support
+
+# Embedding models
+sentence-transformers==2.2.2
+torch>=2.0.0
+transformers==4.35.2
+
+# API frameworks
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+httpx==0.25.1
+
+# Anthropic Claude
+anthropic==0.7.7
+
+# Voice services (for development/testing)
+openai-whisper==20231117
+# piper-tts==1.2.0  # Install separately if needed
+
+# CLI
+click==8.1.7
+rich==13.7.0
+prompt-toolkit==3.0.41
+
+# Configuration
+python-dotenv==1.0.0
+pyyaml==6.0.1
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Code quality
+black==23.12.0
+flake8==6.1.0
+mypy==1.7.1
+isort==5.13.0
+
+# Logging
+structlog==23.2.0
+
+# Docker integration (optional)
+docker==7.0.0
+
+# Development
+ipython==8.18.1
+jupyter==1.0.0
+
+# Optional: Redis for caching
+# redis==5.0.1
+# hiredis==2.2.3
+
+# Optional: Advanced monitoring
+# prometheus-client==0.19.0

@@ -1,0 +1,143 @@
+database_schema:
+  philosophy: "Layered Hybrid Contextual Memory"
+
+  layers:
+    short_term:
+      engine: "SQLite"
+      location: "data/memory/hugo_session.db"
+      tables:
+        - recent_messages
+        - session_summary
+        - pending_tasks
+        - context_embeddings
+
+    long_term:
+      engine: "PostgreSQL"
+      location: "localhost:5432/hugo"
+      extensions:
+        - pgvector
+      tables:
+        - sessions
+        - messages
+        - reflections
+        - skills
+        - events
+        - changes
+        - audit_log
+
+  embeddings:
+    mode: "Hybrid Vector Index"
+    engine: "pgvector + local FAISS cache"
+    dimension: 384
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+    indexed_entities:
+      - messages.embedding_vector
+      - reflections.summary
+      - skills.description
+      - sessions.context_vector
+
+  tables:
+    sessions:
+      columns:
+        - name: id
+          type: SERIAL PRIMARY KEY
+        - name: session_id
+          type: TEXT UNIQUE NOT NULL
+        - name: started_at
+          type: TIMESTAMPTZ NOT NULL
+        - name: ended_at
+          type: TIMESTAMPTZ
+        - name: message_count
+          type: INTEGER DEFAULT 0
+        - name: context_summary
+          type: TEXT
+        - name: context_vector
+          type: vector(384)
+        - name: mood
+          type: TEXT
+        - name: metadata
+          type: JSONB
+
+    messages:
+      columns:
+        - name: id
+          type: SERIAL PRIMARY KEY
+        - name: session_id
+          type: TEXT NOT NULL
+        - name: timestamp
+          type: TIMESTAMPTZ NOT NULL
+        - name: role
+          type: TEXT NOT NULL
+        - name: content
+          type: TEXT NOT NULL
+        - name: embedding_vector
+          type: vector(384)
+        - name: importance
+          type: REAL DEFAULT 0.5
+        - name: metadata
+          type: JSONB
+
+    reflections:
+      columns:
+        - name: id
+          type: SERIAL PRIMARY KEY
+        - name: type
+          type: TEXT NOT NULL
+        - name: timestamp
+          type: TIMESTAMPTZ NOT NULL
+        - name: session_id
+          type: TEXT
+        - name: summary
+          type: TEXT NOT NULL
+        - name: insights
+          type: JSONB
+        - name: patterns_observed
+          type: JSONB
+        - name: areas_for_improvement
+          type: JSONB
+        - name: confidence
+          type: REAL
+        - name: metadata
+          type: JSONB
+
+    skills:
+      columns:
+        - name: id
+          type: SERIAL PRIMARY KEY
+        - name: name
+          type: TEXT UNIQUE NOT NULL
+        - name: version
+          type: TEXT NOT NULL
+        - name: description
+          type: TEXT
+        - name: status
+          type: TEXT DEFAULT 'active'
+        - name: validation_status
+          type: TEXT DEFAULT 'pending'
+        - name: installed_at
+          type: TIMESTAMPTZ NOT NULL
+        - name: last_executed
+          type: TIMESTAMPTZ
+        - name: execution_count
+          type: INTEGER DEFAULT 0
+        - name: success_rate
+          type: REAL DEFAULT 0.0
+        - name: metadata
+          type: JSONB
+
+    events:
+      columns:
+        - name: id
+          type: SERIAL PRIMARY KEY
+        - name: timestamp
+          type: TIMESTAMPTZ NOT NULL
+        - name: category
+          type: TEXT NOT NULL
+        - name: event_type
+          type: TEXT NOT NULL
+        - name: level
+          type: TEXT NOT NULL
+        - name: data
+          type: JSONB
+        - name: session_id
+          type: TEXT
