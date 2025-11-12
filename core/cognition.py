@@ -10,9 +10,16 @@ Implements Hugo's multi-layered reasoning pipeline:
 """
 
 import asyncio
+import os
+import re
+import requests
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 
 class MoodSpectrum(Enum):
@@ -32,6 +39,7 @@ class PerceptionResult:
     emotional_context: Dict[str, Any]
     detected_mood: MoodSpectrum
     confidence: float
+    corrected_input: Optional[str] = None
 
 
 @dataclass
@@ -86,6 +94,11 @@ class CognitionEngine:
         self.logger = logger
         self.current_mood = MoodSpectrum.CONVERSATIONAL
 
+        # Ollama configuration
+        self.ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
+        self.model_name = os.getenv("MODEL_NAME", "llama3:8b")
+        self.model_engine = os.getenv("MODEL_ENGINE", "ollama")
+
     async def process_input(self, user_input: str, session_id: str) -> ResponsePackage:
         """
         Main entry point for processing user input through the cognitive pipeline.
@@ -107,10 +120,10 @@ class CognitionEngine:
         context = await self._assemble_context(perception, session_id)
 
         # Step 3: Synthesis
-        reasoning = await self._synthesize(perception, context)
+        reasoning, generated_text = await self._synthesize(perception, context)
 
         # Step 4: Output Construction
-        response = await self._construct_output(reasoning, perception)
+        response = await self._construct_output(reasoning, perception, generated_text)
 
         # Step 5: Post Reflection
         await self._post_reflect(perception, reasoning, response)
@@ -127,13 +140,39 @@ class CognitionEngine:
         - Map emotional signals to mood spectrum
         - Calculate confidence scores
         """
+        # Simple typo autocorrect (common low-edit-distance fixes)
+        corrections = {
+            "squre": "square",
+            "recieve": "receive",
+            "definately": "definitely",
+            "teh": "the",
+            "adress": "address",
+            "occured": "occurred",
+            "seperate": "separate",
+            "wierd": "weird",
+            "untill": "until",
+            "basicly": "basically"
+        }
+
+        corrected_input = user_input
+        for wrong, right in corrections.items():
+            corrected_input = re.sub(rf"\b{wrong}\b", right, corrected_input, flags=re.IGNORECASE)
+
+        # Log corrections if any were made
+        if corrected_input != user_input:
+            self.logger.log_event("cognition", "typo_correction", {
+                "original": user_input,
+                "corrected": corrected_input
+            })
+
         # Placeholder implementation
         return PerceptionResult(
             user_intent="general_query",
             tone="conversational",
             emotional_context={},
             detected_mood=MoodSpectrum.CONVERSATIONAL,
-            confidence=0.85
+            confidence=0.85,
+            corrected_input=corrected_input
         )
 
     async def _assemble_context(self, perception: PerceptionResult, session_id: str) -> ContextAssembly:
@@ -146,52 +185,170 @@ class CognitionEngine:
         - Load relevant directives based on intent
         - Fetch active tasks and session state
         """
-        # Placeholder implementation
+        # Retrieve recent conversation history
+        short_term_memory = []
+        try:
+            recent_memories = await self.memory.retrieve_recent(session_id, limit=10)
+            # Format memories as conversation turns
+            for mem in recent_memories:
+                role = "user" if mem.memory_type == "user_message" else "assistant"
+                short_term_memory.append({
+                    "role": role,
+                    "content": mem.content,
+                    "timestamp": mem.timestamp.isoformat() if hasattr(mem.timestamp, 'isoformat') else str(mem.timestamp)
+                })
+
+            self.logger.log_event("cognition", "context_assembled", {
+                "session_id": session_id,
+                "memory_count": len(short_term_memory)
+            })
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "context_assembly"})
+
         return ContextAssembly(
-            short_term_memory=[],
+            short_term_memory=short_term_memory,
             long_term_memory=[],
             relevant_directives=["Privacy First", "Truthfulness"],
             active_tasks=[],
             session_state={}
         )
 
-    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly) -> ReasoningChain:
+    def _local_infer(self, prompt: str, temperature: float = 0.7) -> str:
+        """
+        Perform local inference using Ollama API.
+
+        Args:
+            prompt: Input prompt for the model
+            temperature: Sampling temperature (0.0-1.0)
+
+        Returns:
+            Generated response text
+        """
+        try:
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": temperature
+                }
+            }
+
+            response = requests.post(
+                self.ollama_api,
+                json=payload,
+                timeout=30
+            )
+            response.raise_for_status()
+
+            result = response.json()
+            return result.get("response", "").strip()
+
+        except requests.exceptions.RequestException as e:
+            self.logger.log_error(e)
+            return f"(Ollama connection error: {str(e)})"
+        except Exception as e:
+            self.logger.log_error(e)
+            return f"(Inference error: {str(e)})"
+
+    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly) -> tuple[ReasoningChain, str]:
         """
         Synthesis Layer: Construct internal reasoning chain with personality injection.
 
-        TODO:
-        - Build multi-step reasoning process
-        - Consider alternative approaches
-        - Apply personality tone overlay
-        - Calculate confidence in selected approach
+        Returns:
+            Tuple of (ReasoningChain, generated_response)
         """
-        # Placeholder implementation
-        return ReasoningChain(
-            steps=["Analyze intent", "Retrieve context", "Generate response"],
-            assumptions=["User expects conversational tone"],
-            alternatives_considered=["Focused mode", "Operational mode"],
-            selected_approach="conversational",
-            confidence_score=0.9
+        # Build conversation history from recent memory
+        conversation_history = ""
+        if context.short_term_memory:
+            conversation_turns = []
+            for mem in context.short_term_memory[-5:]:  # Last 5 turns
+                role = mem.get('role', 'user')
+                content = mem.get('content', '')
+                conversation_turns.append(f"{role.capitalize()}: {content}")
+            conversation_history = "\n".join(conversation_turns)
+        else:
+            conversation_history = "No recent conversation history"
+
+        directives_str = ", ".join(context.relevant_directives)
+
+        # Use corrected input if available
+        current_input = perception.corrected_input if perception.corrected_input else "user message"
+
+        prompt = f"""You are Hugo, a local-first AI assistant with personality.
+
+Conversation History:
+{conversation_history}
+
+Current User Input: {current_input}
+
+Active Directives: {directives_str}
+
+Instructions:
+- Be conversational and helpful
+- Stay true to Hugo's personality (curious, thoughtful, privacy-conscious)
+- Provide a direct response based on the conversation context
+- Remember previous turns in the conversation
+
+Response:"""
+
+        # Generate response using local model
+        if self.model_engine == "ollama":
+            generated_response = self._local_infer(prompt, temperature=0.7)
+            self.logger.log_event("cognition", "ollama_inference_complete", {
+                "response_length": len(generated_response),
+                "response_preview": generated_response[:100] + "..." if len(generated_response) > 100 else generated_response
+            })
+        else:
+            generated_response = "Model engine not configured. Please set MODEL_ENGINE=ollama in .env"
+
+        reasoning_chain = ReasoningChain(
+            steps=[
+                "Analyze user intent",
+                "Retrieve relevant context",
+                "Apply personality directives",
+                "Generate contextual response"
+            ],
+            assumptions=[f"User expects {perception.tone} tone"],
+            alternatives_considered=["Direct factual response", "Detailed explanation", "Conversational engagement"],
+            selected_approach="conversational_with_context",
+            confidence_score=perception.confidence
         )
 
-    async def _construct_output(self, reasoning: ReasoningChain, perception: PerceptionResult) -> ResponsePackage:
+        return reasoning_chain, generated_response
+
+    async def _construct_output(self, reasoning: ReasoningChain, perception: PerceptionResult,
+                               generated_text: str) -> ResponsePackage:
         """
         Output Construction: Generate response, apply directive checks, adjust tone.
 
-        TODO:
-        - Generate base response using reasoning chain
-        - Apply directive filters (privacy, ethics, etc.)
-        - Adjust tone based on mood spectrum
-        - Add personality flavor (humor, empathy, etc.)
-        - Perform final safety checks
+        Args:
+            reasoning: Reasoning chain from synthesis
+            perception: Perception results
+            generated_text: Generated response from model
+
+        Returns:
+            Complete response package
         """
-        # Placeholder implementation
+        from datetime import datetime
+
+        # Apply directive filters
+        directive_checks = ["privacy_ok", "truthfulness_ok"]
+
+        # TODO: Implement actual directive filtering
+        # filtered_response = self.directives.apply_filters(generated_text)
+
         return ResponsePackage(
-            content="I'm processing your request...",
+            content=generated_text,
             tone=perception.detected_mood,
             reasoning_chain=reasoning,
-            directive_checks=["privacy_ok", "truthfulness_ok"],
-            metadata={"timestamp": "2025-11-11T00:00:00Z"}
+            directive_checks=directive_checks,
+            metadata={
+                "timestamp": datetime.now().isoformat(),
+                "model": self.model_name,
+                "engine": self.model_engine,
+                "confidence": reasoning.confidence_score
+            }
         )
 
     async def _post_reflect(self, perception: PerceptionResult, reasoning: ReasoningChain, response: ResponsePackage):

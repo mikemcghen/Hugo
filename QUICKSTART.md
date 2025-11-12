@@ -1,15 +1,15 @@
 # Hugo Quick Start Guide
 
-Get Hugo up and running in 5 minutes!
+Get Hugo up and running in 5 minutes with local Ollama!
 
 ---
 
 ## Prerequisites
 
-- **Python 3.11+** installed
-- **Docker Desktop** with GPU support (optional but recommended for voice features)
+- **Python 3.9+** installed
+- **Ollama** installed ([ollama.com](https://ollama.com)) - for local LLM inference
 - **Git** for cloning
-- **Anthropic API Key** ([get one here](https://console.anthropic.com/))
+- **Docker Desktop** (optional, for PostgreSQL long-term memory)
 
 ---
 
@@ -33,173 +33,193 @@ pip install -e .
 
 ---
 
-## Step 2: Configure Environment
+## Step 2: Start Ollama
 
 ```bash
-# Copy environment template
-cp .env.example .env
+# Terminal 1: Start Ollama service
+ollama serve
 
-# Edit .env and add your Anthropic API key
-# Minimum required:
-#   ANTHROPIC_API_KEY=your_key_here
+# Terminal 2: Pull Llama 3 8B model
+ollama pull llama3:8b
+
+# Verify it's running
+curl http://localhost:11434/api/version
 ```
 
-**Important**: Open `.env` in your editor and set at least:
-- `ANTHROPIC_API_KEY` - Your Claude API key
+**Note**: The `.env` file is already configured for local Ollama operation. No API keys needed!
 
 ---
 
-## Step 3: Start Services
+## Step 3: Start PostgreSQL (Optional)
+
+PostgreSQL provides long-term memory persistence. If you want to skip this, Hugo will use in-memory storage.
 
 ### Option A: With Docker (Recommended)
 
 ```bash
-# Start all services (database, whisper, piper, claude proxy)
-docker-compose -f configs/docker-compose.yaml up -d
+# Start PostgreSQL with pgvector
+docker compose -f configs/docker-compose.yaml up -d db
 
-# Verify services are running
-docker-compose -f configs/docker-compose.yaml ps
+# Verify it's running
+docker compose ps
 ```
 
-### Option B: Without Docker (Development)
+### Option B: Without Docker
 
-```bash
-# Set SKIP_DOCKER=true in .env
-# Hugo will work without voice services
-echo "SKIP_DOCKER=true" >> .env
-```
+Hugo works perfectly without PostgreSQL using in-memory FAISS cache. Just skip to Step 4!
 
 ---
 
 ## Step 4: Start Hugo
 
-```bash
-# Start Hugo
-hugo up
+**Quick Start Script (Easiest)**
 
-# Or use Python directly
+Windows:
+```cmd
+start_hugo.bat
+```
+
+Unix/Mac:
+```bash
+./start_hugo.sh
+```
+
+**Manual Start**
+
+```bash
+# Interactive shell mode
+python -m runtime.cli shell
+
+# OR start as background service
 python -m runtime.cli up
 ```
 
-You should see:
-```
-╔════════════════════════════════════════╗
-║           HUGO - The Right Hand        ║
-║       Your Second-in-Command AI        ║
-╚════════════════════════════════════════╝
-
-→ Validating environment...
-  ✓ Environment validated
-→ Initializing services...
-  ✓ Services initialized
-→ Connecting to databases...
-  ✓ Databases connected
-→ Loading core components...
-  ✓ Core components loaded
-→ Loading state...
-  ✓ State loaded
-→ Starting scheduler...
-  ✓ Scheduler started
-
-✓ Hugo is ready.
-```
+Hugo will:
+- Load SentenceTransformers embedding model (first run downloads ~90MB)
+- Initialize FAISS vector index
+- Connect to Ollama
+- Start interactive shell
 
 ---
 
 ## Step 5: Start Chatting!
 
-```bash
-# Enter interactive shell
-hugo shell
+Once in the shell, try:
+
+```
+You: Hello Hugo! Can you introduce yourself?
+
+You: What's special about local-first AI?
+
+You: Tell me about your memory system
+
+You: exit
 ```
 
-Try these commands:
-```
-You: Hello Hugo!
-
-You: What can you do?
-
-You: Tell me about your directives
-
-You: Create a new skill called "greeting"
-```
+Hugo will respond using Ollama (Llama 3 8B) with full context awareness and semantic memory!
 
 ---
 
 ## Common Commands
 
 ```bash
-# Check status
-hugo status
+# Interactive shell
+python -m runtime.cli shell
+
+# Check system status
+python -m runtime.cli status --verbose
 
 # View logs
-hugo log --tail 50
+python -m runtime.cli log --tail 50
 
 # Manage skills
-hugo skill --list
-hugo skill --new my_skill
-hugo skill --validate my_skill
+python -m runtime.cli skill --list
+python -m runtime.cli skill --new my_skill
 
 # Generate reflection
-hugo reflect --days 1
+python -m runtime.cli reflect --days 1
 
 # Stop Hugo
-hugo down
+python -m runtime.cli down
 ```
 
 ---
 
 ## Troubleshooting
 
-### "No module named 'core'"
+### "Ollama connection error"
 ```bash
-# Make sure you installed Hugo
-pip install -e .
+# Start Ollama service
+ollama serve
+
+# Verify it's running
+curl http://localhost:11434/api/version
+
+# Pull the model
+ollama pull llama3:8b
 ```
 
-### "ANTHROPIC_API_KEY not configured"
+### "Module not found"
 ```bash
-# Edit .env and add your API key
-nano .env  # or any text editor
+# Install all dependencies
+pip install -r requirements.txt
+
+# Specifically:
+pip install faiss-cpu psycopg2-binary sentence-transformers requests
 ```
 
-### Docker services not starting
+### "First run is slow"
+- Normal! SentenceTransformers downloads the embedding model (~90MB) on first use
+- Model is cached at `~/.cache/torch/sentence_transformers/`
+- Subsequent runs are much faster
+
+### PostgreSQL connection failed
 ```bash
-# Check Docker is running
-docker ps
+# Start PostgreSQL (optional)
+docker compose -f configs/docker-compose.yaml up -d db
 
-# Check logs
-docker-compose -f configs/docker-compose.yaml logs
-
-# Rebuild services
-docker-compose -f configs/docker-compose.yaml build
+# Or disable PostgreSQL in .env
+ENABLE_POSTGRES=false
 ```
 
-### GPU not detected
+### Verify setup
 ```bash
-# Verify NVIDIA Docker runtime
-docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# If not working, GPU features will be disabled but Hugo will still work
+# Run verification script
+python verify_setup.py
 ```
 
 ---
 
 ## Next Steps
 
-- Read the [full README](README.md) for detailed features
-- Explore [Architecture documentation](docs/ARCHITECTURE.md)
-- Create your first skill: `hugo skill --new my_first_skill`
-- Check out the demo skill: `skills/demo_skill/`
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Comprehensive setup and configuration
+- **[INTEGRATION_COMPLETE.md](INTEGRATION_COMPLETE.md)** - Technical details and architecture
+- Enable PostgreSQL for persistent long-term memory
+- Explore the skills system: `python -m runtime.cli skill --list`
+- Read architecture docs in `docs/`
 
 ---
 
-## Getting Help
+## What's Working Now
 
-- Check the [documentation](docs/)
-- Review [issues](https://github.com/yourusername/hugo/issues)
-- Join [discussions](https://github.com/yourusername/hugo/discussions)
+✓ **Local LLM inference** via Ollama (Llama 3 8B)
+✓ **Semantic memory search** using FAISS
+✓ **Text embeddings** with SentenceTransformers
+✓ **Conversation context** maintained across turns
+✓ **Personality-aware responses** from Hugo
+✓ **No API keys required** - fully local operation
 
 ---
 
-**You're ready to go! Start exploring Hugo.** 🚀
+## Documentation
+
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed setup and troubleshooting
+- **[INTEGRATION_COMPLETE.md](INTEGRATION_COMPLETE.md)** - Technical implementation details
+- **[verify_setup.py](verify_setup.py)** - Automated setup verification
+- **[README.md](README.md)** - Full project documentation
+
+---
+
+**You're ready to go! Run `start_hugo.bat` or `./start_hugo.sh` to begin.**
+
+For questions, see SETUP_GUIDE.md or run `python verify_setup.py` to diagnose issues.

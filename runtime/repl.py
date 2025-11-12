@@ -146,11 +146,32 @@ Just type naturally to chat with Hugo!
                 data={"content": message}
             )
 
-            # TODO: Process through cognition engine
-            # response = await self.runtime.cognition.process_input(message, self.session_id)
+            # Store user message in memory
+            if self.runtime.memory:
+                from core.memory import MemoryEntry
+                from datetime import datetime
 
-            # Placeholder response
-            response_text = "I hear you! (This is a placeholder response. The cognition engine will be implemented in the deployment phase.)"
+                user_memory = MemoryEntry(
+                    id=None,
+                    session_id=self.session_id,
+                    timestamp=datetime.now(),
+                    memory_type="user_message",
+                    content=message,
+                    embedding=None,  # Will be auto-generated
+                    metadata={"role": "user"},
+                    importance_score=0.7
+                )
+                await self.runtime.memory.store(user_memory)
+
+            # Process through cognition engine
+            if self.runtime.cognition:
+                response_package = await self.runtime.cognition.process_input(
+                    message,
+                    self.session_id
+                )
+                response_text = response_package.content
+            else:
+                response_text = "(Cognition engine not initialized. Please check boot sequence.)"
 
             # Display response
             print(response_text)
@@ -162,17 +183,60 @@ Just type naturally to chat with Hugo!
                 data={"content": response_text}
             )
 
+            # Store assistant response in memory
+            if self.runtime.memory:
+                assistant_memory = MemoryEntry(
+                    id=None,
+                    session_id=self.session_id,
+                    timestamp=datetime.now(),
+                    memory_type="assistant_message",
+                    content=response_text,
+                    embedding=None,  # Will be auto-generated
+                    metadata={"role": "assistant"},
+                    importance_score=0.7
+                )
+                await self.runtime.memory.store(assistant_memory)
+
         except Exception as e:
             self.logger.log_error(e)
             print(f"Sorry, I encountered an error: {str(e)}")
 
     async def _handle_exit(self):
-        """Handle graceful exit"""
+        """Handle graceful exit with reflection"""
         print("\nGenerating session reflection...")
 
-        # TODO: Generate session reflection
-        # if self.runtime.reflection:
-        #     await self.runtime.reflection.generate_session_reflection(self.session_id)
+        # Generate session reflection if available
+        if self.runtime.reflection:
+            try:
+                reflection = await self.runtime.reflection.generate_session_reflection(
+                    self.session_id
+                )
+
+                # Display reflection summary
+                print("\n" + "=" * 60)
+                print("SESSION REFLECTION")
+                print("=" * 60)
+                print(f"\n{reflection.summary}\n")
+
+                if reflection.insights:
+                    print("Key Insights:")
+                    for insight in reflection.insights:
+                        print(f"  • {insight}")
+                    print()
+
+                if reflection.patterns_observed:
+                    print("Patterns:")
+                    for pattern in reflection.patterns_observed:
+                        print(f"  • {pattern}")
+                    print()
+
+                print("=" * 60)
+
+            except Exception as e:
+                self.logger.log_error(e, {"phase": "session_reflection"})
+                print(f"(Reflection generation encountered an issue: {str(e)})")
+        else:
+            print("(Reflection engine not initialized)")
 
         self.logger.log_event("repl", "session_ended", {
             "session_id": self.session_id,

@@ -13,10 +13,19 @@ Memory Types:
 """
 
 import asyncio
+import os
+import numpy as np
+import faiss
 from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime
 import json
+from pathlib import Path
+from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 
 @dataclass
@@ -58,10 +67,69 @@ class MemoryManager:
 
         # In-memory cache for hot access
         self.cache = []
-        self.cache_size = 100
+        self.cache_size = int(os.getenv("MEMORY_CACHE_SIZE", "100"))
 
-        # TODO: Initialize FAISS index for local vector search
+        # Embedding configuration
+        self.embedding_model_name = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+        self.embedding_dimension = int(os.getenv("EMBEDDING_DIMENSION", "384"))
+        self.enable_faiss = os.getenv("ENABLE_FAISS", "true").lower() == "true"
+
+        # Initialize embedding model
+        self.embedding_model = None
+        if self.enable_faiss:
+            try:
+                self.embedding_model = SentenceTransformer(self.embedding_model_name)
+                self.logger.log_event("memory", "embedding_model_loaded",
+                                    {"model": self.embedding_model_name})
+            except Exception as e:
+                self.logger.log_error(e)
+                self.enable_faiss = False
+
+        # Initialize FAISS index for local vector search
         self.faiss_index = None
+        self.faiss_index_path = Path(os.getenv("FAISS_INDEX_PATH", "data/memory/faiss_index.bin"))
+        self.memory_id_map = []  # Maps FAISS index positions to memory IDs
+
+        if self.enable_faiss:
+            self._initialize_faiss_index()
+
+    def _initialize_faiss_index(self):
+        """Initialize or load FAISS index"""
+        try:
+            # Try to load existing index
+            if self.faiss_index_path.exists():
+                self.faiss_index = faiss.read_index(str(self.faiss_index_path))
+                self.logger.log_event("memory", "faiss_index_loaded",
+                                    {"path": str(self.faiss_index_path)})
+            else:
+                # Create new index (using Flat for exact search)
+                index_type = os.getenv("FAISS_INDEX_TYPE", "Flat")
+                if index_type == "Flat":
+                    self.faiss_index = faiss.IndexFlatL2(self.embedding_dimension)
+                else:
+                    # Default to Flat if unknown type
+                    self.faiss_index = faiss.IndexFlatL2(self.embedding_dimension)
+
+                self.logger.log_event("memory", "faiss_index_created",
+                                    {"dimension": self.embedding_dimension, "type": index_type})
+
+                # Ensure directory exists
+                self.faiss_index_path.parent.mkdir(parents=True, exist_ok=True)
+
+        except Exception as e:
+            self.logger.log_error(e)
+            self.faiss_index = None
+            self.enable_faiss = False
+
+    def _save_faiss_index(self):
+        """Save FAISS index to disk"""
+        if self.faiss_index and self.enable_faiss:
+            try:
+                faiss.write_index(self.faiss_index, str(self.faiss_index_path))
+                self.logger.log_event("memory", "faiss_index_saved",
+                                    {"path": str(self.faiss_index_path)})
+            except Exception as e:
+                self.logger.log_error(e)
 
     async def store(self, entry: MemoryEntry, persist_long_term: bool = False):
         """
@@ -71,10 +139,28 @@ class MemoryManager:
             entry: MemoryEntry to store
             persist_long_term: If True, also write to PostgreSQL
         """
+        # Generate embedding if not present
+        if entry.embedding is None and self.enable_faiss:
+            entry.embedding = await self._generate_embedding(entry.content)
+
         # Add to cache
         self.cache.append(entry)
         if len(self.cache) > self.cache_size:
             self.cache.pop(0)
+
+        # Add to FAISS index if enabled
+        if self.enable_faiss and self.faiss_index and entry.embedding:
+            try:
+                embedding_vector = np.array([entry.embedding], dtype=np.float32)
+                self.faiss_index.add(embedding_vector)
+                self.memory_id_map.append(entry.id)
+
+                # Periodically save index
+                if self.faiss_index.ntotal % 100 == 0:
+                    self._save_faiss_index()
+
+            except Exception as e:
+                self.logger.log_error(e)
 
         # Store in SQLite (short-term)
         await self._store_sqlite(entry)
@@ -85,7 +171,8 @@ class MemoryManager:
 
         self.logger.log_event("memory", "stored", {
             "type": entry.memory_type,
-            "long_term": persist_long_term
+            "long_term": persist_long_term,
+            "has_embedding": entry.embedding is not None
         })
 
     async def retrieve_recent(self, session_id: str, limit: int = 20) -> List[MemoryEntry]:
@@ -106,7 +193,7 @@ class MemoryManager:
     async def search_semantic(self, query: str, limit: int = 10,
                             threshold: float = 0.7) -> List[MemoryEntry]:
         """
-        Search memories using semantic similarity.
+        Search memories using semantic similarity via FAISS.
 
         Args:
             query: Search query text
@@ -115,15 +202,52 @@ class MemoryManager:
 
         Returns:
             List of semantically similar MemoryEntry objects
-
-        TODO:
-        - Generate embedding for query
-        - Search FAISS index locally
-        - Fall back to pgvector if needed
-        - Rank results by relevance
         """
-        # Placeholder implementation
-        return []
+        if not self.enable_faiss or not self.faiss_index or not self.embedding_model:
+            self.logger.log_event("memory", "semantic_search_unavailable", {})
+            return []
+
+        try:
+            # Generate embedding for query
+            query_embedding = await self._generate_embedding(query)
+            query_vector = np.array([query_embedding], dtype=np.float32)
+
+            # Search FAISS index
+            # Note: FAISS uses L2 distance, we'll need to convert to cosine similarity
+            k = min(limit * 2, self.faiss_index.ntotal)  # Search more, filter later
+            if k == 0:
+                return []
+
+            distances, indices = self.faiss_index.search(query_vector, k)
+
+            # Convert L2 distances to similarity scores (approximate cosine similarity)
+            # For normalized vectors: cosine_similarity ≈ 1 - (L2_distance^2 / 2)
+            similarities = 1 - (distances[0] ** 2 / 2)
+
+            # Filter by threshold and map to memory entries
+            results = []
+            for idx, similarity in zip(indices[0], similarities):
+                if idx == -1:  # FAISS returns -1 for empty slots
+                    continue
+
+                if similarity >= threshold:
+                    # Retrieve memory from cache or database
+                    # For now, return placeholder entries
+                    # TODO: Implement actual memory retrieval by ID
+                    if idx < len(self.cache):
+                        results.append(self.cache[idx])
+
+                if len(results) >= limit:
+                    break
+
+            self.logger.log_event("memory", "semantic_search_completed",
+                                {"query_length": len(query), "results": len(results)})
+
+            return results
+
+        except Exception as e:
+            self.logger.log_error(e)
+            return []
 
     async def search_temporal(self, session_id: str, start_time: datetime,
                             end_time: datetime) -> List[MemoryEntry]:
@@ -195,15 +319,30 @@ class MemoryManager:
 
     async def _generate_embedding(self, text: str) -> List[float]:
         """
-        Generate vector embedding for text.
+        Generate vector embedding for text using SentenceTransformers.
 
-        TODO:
-        - Use local embedding model (sentence-transformers)
-        - Cache embeddings for common phrases
-        - Normalize vectors for cosine similarity
+        Args:
+            text: Text to encode
+
+        Returns:
+            List of floats representing the embedding vector
         """
-        # Placeholder - returns dummy embedding
-        return [0.0] * 384  # Typical embedding size
+        if not self.embedding_model:
+            # Return zero vector if embedding model not available
+            return [0.0] * self.embedding_dimension
+
+        try:
+            # Generate embedding using sentence-transformers
+            embedding = self.embedding_model.encode(text, convert_to_numpy=True)
+
+            # Normalize for cosine similarity (optional but recommended)
+            embedding = embedding / np.linalg.norm(embedding)
+
+            return embedding.tolist()
+
+        except Exception as e:
+            self.logger.log_error(e)
+            return [0.0] * self.embedding_dimension
 
     async def prune_old_memories(self, days_threshold: int = 90):
         """
@@ -223,9 +362,13 @@ class MemoryManager:
 
     def get_stats(self) -> Dict[str, Any]:
         """Get memory system statistics"""
+        faiss_size = self.faiss_index.ntotal if self.faiss_index else 0
+
         return {
             "cache_size": len(self.cache),
             "sqlite_records": 0,  # TODO: Query actual count
             "postgres_records": 0,  # TODO: Query actual count
-            "faiss_index_size": 0  # TODO: Get FAISS index size
+            "faiss_index_size": faiss_size,
+            "faiss_enabled": self.enable_faiss,
+            "embedding_model": self.embedding_model_name if self.enable_faiss else None
         }
