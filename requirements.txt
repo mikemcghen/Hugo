@@ -26,6 +26,7 @@ fastapi==0.104.1
 uvicorn[standard]==0.24.0
 pydantic==2.5.0
 httpx==0.25.1
+aiohttp==3.9.1  # Async HTTP for non-blocking Ollama inference
 
 # Anthropic Claude
 anthropic==0.7.7

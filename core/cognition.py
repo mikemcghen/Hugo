@@ -12,11 +12,19 @@ Implements Hugo's multi-layered reasoning pipeline:
 import asyncio
 import os
 import re
+import time
 import requests
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
 from dotenv import load_dotenv
+
+# Optional async support
+try:
+    import aiohttp
+    AIOHTTP_AVAILABLE = True
+except ImportError:
+    AIOHTTP_AVAILABLE = False
 
 # Load environment variables
 load_dotenv()
@@ -98,6 +106,16 @@ class CognitionEngine:
         self.ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
         self.model_name = os.getenv("MODEL_NAME", "llama3:8b")
         self.model_engine = os.getenv("MODEL_ENGINE", "ollama")
+
+        # Ollama connection settings
+        self.ollama_timeout = int(os.getenv("OLLAMA_TIMEOUT", "60"))
+        self.ollama_max_retries = int(os.getenv("OLLAMA_MAX_RETRIES", "3"))
+        self.ollama_retry_backoff = float(os.getenv("OLLAMA_RETRY_BACKOFF", "2"))
+        self.ollama_async_mode = os.getenv("OLLAMA_ASYNC_MODE", "true").lower() == "true"
+
+        # Fallback mode tracking
+        self.ollama_available = True
+        self.last_connection_attempt = None
 
     async def process_input(self, user_input: str, session_id: str) -> ResponsePackage:
         """
@@ -215,41 +233,292 @@ class CognitionEngine:
 
     def _local_infer(self, prompt: str, temperature: float = 0.7) -> str:
         """
-        Perform local inference using Ollama API.
+        Perform local inference using Ollama API with retry logic and fallback.
+
+        Features:
+        - Configurable timeout and retry attempts
+        - Exponential backoff on failures
+        - Enhanced logging for each attempt
+        - Graceful fallback mode when Ollama is unavailable
 
         Args:
             prompt: Input prompt for the model
             temperature: Sampling temperature (0.0-1.0)
 
         Returns:
-            Generated response text
+            Generated response text or fallback message
         """
-        try:
-            payload = {
-                "model": self.model_name,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": temperature
+        attempt = 0
+        last_error = None
+
+        while attempt < self.ollama_max_retries:
+            attempt += 1
+            start_time = time.time()
+
+            try:
+                payload = {
+                    "model": self.model_name,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": temperature
+                    }
                 }
-            }
 
-            response = requests.post(
-                self.ollama_api,
-                json=payload,
-                timeout=30
-            )
-            response.raise_for_status()
+                self.logger.log_event("cognition", "ollama_inference_attempt", {
+                    "attempt": attempt,
+                    "max_retries": self.ollama_max_retries,
+                    "timeout": self.ollama_timeout
+                })
 
-            result = response.json()
-            return result.get("response", "").strip()
+                response = requests.post(
+                    self.ollama_api,
+                    json=payload,
+                    timeout=self.ollama_timeout
+                )
+                response.raise_for_status()
 
-        except requests.exceptions.RequestException as e:
-            self.logger.log_error(e)
-            return f"(Ollama connection error: {str(e)})"
-        except Exception as e:
-            self.logger.log_error(e)
-            return f"(Inference error: {str(e)})"
+                result = response.json()
+                generated_text = result.get("response", "").strip()
+
+                duration = time.time() - start_time
+                self.logger.log_event("cognition", "ollama_inference", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "success",
+                    "response_length": len(generated_text)
+                })
+
+                # Mark Ollama as available
+                self.ollama_available = True
+                self.last_connection_attempt = time.time()
+
+                return generated_text
+
+            except requests.exceptions.ReadTimeout as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_inference", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "timeout",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    self.logger.log_event("cognition", "ollama_retry", {
+                        "attempt": attempt,
+                        "backoff_seconds": backoff_time
+                    })
+                    time.sleep(backoff_time)
+
+            except requests.exceptions.ConnectionError as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_inference", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "connection_error",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    self.logger.log_event("cognition", "ollama_retry", {
+                        "attempt": attempt,
+                        "backoff_seconds": backoff_time
+                    })
+                    time.sleep(backoff_time)
+
+            except requests.exceptions.RequestException as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_inference", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "request_error",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    time.sleep(backoff_time)
+
+            except Exception as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_error(e, {
+                    "phase": "ollama_inference",
+                    "attempt": attempt,
+                    "duration": round(duration, 2)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    time.sleep(backoff_time)
+
+        # All retries exhausted - enter fallback mode
+        self.ollama_available = False
+        self.last_connection_attempt = time.time()
+
+        self.logger.log_event("cognition", "ollama_fallback_mode", {
+            "total_attempts": attempt,
+            "last_error": str(last_error) if last_error else "Unknown"
+        })
+
+        return self._fallback_response(prompt)
+
+    def _fallback_response(self, prompt: str) -> str:
+        """
+        Generate a graceful fallback response when Ollama is unavailable.
+
+        Args:
+            prompt: The original prompt (for context)
+
+        Returns:
+            A reflective acknowledgment message
+        """
+        fallback_messages = [
+            "I'm having trouble connecting to my reasoning core. Let's pause for a moment.",
+            "My reasoning system seems to be taking a break. Could you try again in a moment?",
+            "I'm experiencing some difficulty accessing my core processes right now.",
+            "Connection to my inference engine is temporarily unavailable. Please give me a moment."
+        ]
+
+        # Simple rotation based on timestamp
+        index = int(time.time()) % len(fallback_messages)
+        return fallback_messages[index]
+
+    async def _local_infer_async(self, prompt: str, temperature: float = 0.7) -> str:
+        """
+        Async version of local inference using aiohttp for non-blocking operation.
+
+        Features:
+        - Non-blocking HTTP requests using aiohttp
+        - Same retry logic and fallback as synchronous version
+        - Maintains REPL responsiveness during inference
+        - Falls back to synchronous version if aiohttp not available
+
+        Args:
+            prompt: Input prompt for the model
+            temperature: Sampling temperature (0.0-1.0)
+
+        Returns:
+            Generated response text or fallback message
+        """
+        # Fallback to synchronous if aiohttp not available
+        if not AIOHTTP_AVAILABLE:
+            self.logger.log_event("cognition", "async_fallback_sync", {
+                "reason": "aiohttp_not_available"
+            })
+            # Run synchronous version in executor to avoid blocking
+            loop = asyncio.get_event_loop()
+            return await loop.run_in_executor(None, self._local_infer, prompt, temperature)
+
+        attempt = 0
+        last_error = None
+
+        while attempt < self.ollama_max_retries:
+            attempt += 1
+            start_time = time.time()
+
+            try:
+                payload = {
+                    "model": self.model_name,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": temperature
+                    }
+                }
+
+                self.logger.log_event("cognition", "ollama_inference_attempt_async", {
+                    "attempt": attempt,
+                    "max_retries": self.ollama_max_retries,
+                    "timeout": self.ollama_timeout
+                })
+
+                timeout = aiohttp.ClientTimeout(total=self.ollama_timeout)
+                async with aiohttp.ClientSession(timeout=timeout) as session:
+                    async with session.post(self.ollama_api, json=payload) as response:
+                        response.raise_for_status()
+                        result = await response.json()
+                        generated_text = result.get("response", "").strip()
+
+                        duration = time.time() - start_time
+                        self.logger.log_event("cognition", "ollama_inference_async", {
+                            "attempt": attempt,
+                            "duration": round(duration, 2),
+                            "status": "success",
+                            "response_length": len(generated_text)
+                        })
+
+                        # Mark Ollama as available
+                        self.ollama_available = True
+                        self.last_connection_attempt = time.time()
+
+                        return generated_text
+
+            except asyncio.TimeoutError as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_inference_async", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "timeout",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    self.logger.log_event("cognition", "ollama_retry_async", {
+                        "attempt": attempt,
+                        "backoff_seconds": backoff_time
+                    })
+                    await asyncio.sleep(backoff_time)
+
+            except aiohttp.ClientError as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_inference_async", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "client_error",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    self.logger.log_event("cognition", "ollama_retry_async", {
+                        "attempt": attempt,
+                        "backoff_seconds": backoff_time
+                    })
+                    await asyncio.sleep(backoff_time)
+
+            except Exception as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_error(e, {
+                    "phase": "ollama_inference_async",
+                    "attempt": attempt,
+                    "duration": round(duration, 2)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    await asyncio.sleep(backoff_time)
+
+        # All retries exhausted - enter fallback mode
+        self.ollama_available = False
+        self.last_connection_attempt = time.time()
+
+        self.logger.log_event("cognition", "ollama_fallback_mode_async", {
+            "total_attempts": attempt,
+            "last_error": str(last_error) if last_error else "Unknown"
+        })
+
+        return self._fallback_response(prompt)
 
     async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly) -> tuple[ReasoningChain, str]:
         """
@@ -294,10 +563,16 @@ Response:"""
 
         # Generate response using local model
         if self.model_engine == "ollama":
-            generated_response = self._local_infer(prompt, temperature=0.7)
+            # Use async inference if enabled and available
+            if self.ollama_async_mode:
+                generated_response = await self._local_infer_async(prompt, temperature=0.7)
+            else:
+                generated_response = self._local_infer(prompt, temperature=0.7)
+
             self.logger.log_event("cognition", "ollama_inference_complete", {
                 "response_length": len(generated_response),
-                "response_preview": generated_response[:100] + "..." if len(generated_response) > 100 else generated_response
+                "response_preview": generated_response[:100] + "..." if len(generated_response) > 100 else generated_response,
+                "async_mode": self.ollama_async_mode
             })
         else:
             generated_response = "Model engine not configured. Please set MODEL_ENGINE=ollama in .env"

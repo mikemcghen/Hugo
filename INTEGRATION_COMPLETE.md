@@ -31,12 +31,17 @@
 
 ### 3. Core Modules Enhanced ✓
 
-**`core/cognition.py`** - Ollama Integration
-- Added `_local_infer()` method for Ollama API calls
+**`core/cognition.py`** - Ollama Integration (Enhanced 2025-11-12)
+- Added `_local_infer()` method with **retry logic and exponential backoff**
+- Added `_local_infer_async()` for **non-blocking async inference** via aiohttp
+- Added `_fallback_response()` for **graceful degradation** when Ollama unavailable
+- Configurable timeout (60s), max retries (3), and backoff (2x)
+- Enhanced logging for all inference attempts (success, timeout, connection errors)
 - Modified `_synthesize()` to return tuple (ReasoningChain, generated_text)
 - Updated `_construct_output()` to use generated text
 - Added model configuration loading from environment
 - Full personality-aware prompt construction
+- **See [OLLAMA_RESILIENCE.md](OLLAMA_RESILIENCE.md) for details**
 
 **`core/memory.py`** - FAISS + Embeddings
 - Initialized SentenceTransformer model loading
