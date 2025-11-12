@@ -5,7 +5,9 @@
       "Bash(docker compose:*)",
       "Bash(python verify_setup.py:*)",
       "Bash(python:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(timeout 10 python:*)",
+      "Bash(del test_persona.py)"
     ],
     "deny": [],
     "ask": []

@@ -14,6 +14,8 @@ import os
 import re
 import time
 import requests
+import yaml
+from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
@@ -117,6 +119,77 @@ class CognitionEngine:
         self.ollama_available = True
         self.last_connection_attempt = None
 
+        # Load Hugo's personality manifest
+        self.persona = self._load_persona()
+        self.logger.log_event("cognition", "persona_loaded", {
+            "name": self.persona.get("name", "Hugo"),
+            "role": self.persona.get("identity", {}).get("role", "Unknown"),
+            "mood": self.current_mood.value
+        })
+
+    def _load_persona(self) -> Dict[str, Any]:
+        """
+        Load Hugo's personality manifest from YAML configuration.
+
+        Returns:
+            Dictionary containing persona data (identity, traits, directives, etc.)
+        """
+        try:
+            manifest_path = Path("configs/hugo_manifest.yaml")
+            if not manifest_path.exists():
+                self.logger.log_event("cognition", "persona_load_failed", {
+                    "reason": "manifest_not_found",
+                    "path": str(manifest_path)
+                })
+                return self._default_persona()
+
+            with open(manifest_path, 'r', encoding='utf-8') as f:
+                data = yaml.safe_load(f)
+
+            # Extract manifest section
+            manifest = data.get("manifest", {})
+            identity = data.get("identity", {})
+            personality = data.get("personality", {})
+            mood_spectrum = data.get("mood_spectrum", {})
+            directives = data.get("directives", {})
+
+            return {
+                "name": manifest.get("name", "Hugo"),
+                "codename": manifest.get("codename", "The Right Hand"),
+                "identity": identity,
+                "personality": personality,
+                "mood_spectrum": mood_spectrum,
+                "directives": directives,
+                "overview": manifest.get("overview", "")
+            }
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "persona_loading"})
+            return self._default_persona()
+
+    def _default_persona(self) -> Dict[str, Any]:
+        """
+        Return default persona if manifest loading fails.
+
+        Returns:
+            Minimal persona dictionary
+        """
+        return {
+            "name": "Hugo",
+            "codename": "The Right Hand",
+            "identity": {
+                "role": "Right Hand / Second in Command",
+                "core_traits": ["Loyal", "Reflective", "Analytical"]
+            },
+            "personality": {
+                "communication_style": ["Conversational and pragmatic"]
+            },
+            "directives": {
+                "core_ethics": ["Privacy First", "Truthfulness", "Transparency"]
+            },
+            "mood_spectrum": {}
+        }
+
     async def process_input(self, user_input: str, session_id: str) -> ResponsePackage:
         """
         Main entry point for processing user input through the cognitive pipeline.
@@ -138,15 +211,212 @@ class CognitionEngine:
         context = await self._assemble_context(perception, session_id)
 
         # Step 3: Synthesis
-        reasoning, generated_text = await self._synthesize(perception, context)
+        reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id)
 
         # Step 4: Output Construction
-        response = await self._construct_output(reasoning, perception, generated_text)
+        response = await self._construct_output(reasoning, perception, generated_text, prompt_metadata)
 
         # Step 5: Post Reflection
         await self._post_reflect(perception, reasoning, response)
 
         return response
+
+    def _detect_sentiment(self, text: str) -> Dict[str, Any]:
+        """
+        Detect user sentiment using keyword matching and pattern analysis.
+
+        Args:
+            text: User input text
+
+        Returns:
+            Dictionary with sentiment analysis (primary_sentiment, intensity, keywords)
+        """
+        # Sentiment keyword patterns
+        sentiment_patterns = {
+            "frustrated": ["frustrated", "annoying", "annoyed", "irritating", "stuck", "confusing", "broken"],
+            "excited": ["excited", "amazing", "awesome", "love", "fantastic", "great", "wonderful"],
+            "urgent": ["urgent", "asap", "quickly", "hurry", "immediately", "critical", "emergency"],
+            "curious": ["how", "why", "what", "tell me", "explain", "curious", "wondering"],
+            "grateful": ["thanks", "thank you", "appreciate", "helpful", "grateful"],
+            "concerned": ["worried", "concerned", "anxious", "nervous", "uncertain"]
+        }
+
+        text_lower = text.lower()
+        detected = []
+
+        for sentiment, keywords in sentiment_patterns.items():
+            for keyword in keywords:
+                if keyword in text_lower:
+                    detected.append(sentiment)
+                    break
+
+        # Determine primary sentiment
+        primary = detected[0] if detected else "neutral"
+        intensity = len(detected) / 3.0  # Normalize 0-1
+
+        return {
+            "primary_sentiment": primary,
+            "intensity": min(intensity, 1.0),
+            "detected_sentiments": detected,
+            "is_neutral": len(detected) == 0
+        }
+
+    async def assemble_prompt(self, user_message: str, perception: PerceptionResult,
+                             context: ContextAssembly, session_id: str) -> Dict[str, Any]:
+        """
+        Assemble a persona-driven contextual prompt for inference.
+
+        Args:
+            user_message: Corrected user input
+            perception: Perception analysis results
+            context: Assembled context from memory
+            session_id: Current session ID
+
+        Returns:
+            Dictionary containing:
+              - prompt: Formatted prompt string
+              - metadata: Context metadata (memories_used, sentiment, tone, etc.)
+        """
+        # Detect user sentiment
+        sentiment = self._detect_sentiment(user_message)
+
+        # Determine Hugo's tone based on sentiment and current mood
+        tone_adjustment = self._adjust_tone(sentiment, perception.detected_mood)
+
+        # Retrieve semantic memory if available
+        semantic_context = []
+        try:
+            if hasattr(self.memory, 'search_semantic'):
+                semantic_results = await self.memory.search_semantic(
+                    user_message,
+                    limit=3,
+                    threshold=0.6
+                )
+                semantic_context = [mem.content[:150] for mem in semantic_results]
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "semantic_search"})
+
+        # Build conversation history
+        conversation_turns = []
+        if context.short_term_memory:
+            for mem in context.short_term_memory[-5:]:
+                role = mem.get('role', 'user')
+                content = mem.get('content', '')
+                conversation_turns.append(f"{role.capitalize()}: {content}")
+
+        # Extract persona details
+        identity = self.persona.get("identity", {})
+        personality = self.persona.get("personality", {})
+        directives = self.persona.get("directives", {})
+
+        persona_name = self.persona.get("name", "Hugo")
+        persona_role = identity.get("role", "Assistant")
+        core_traits = ", ".join(identity.get("core_traits", ["Helpful"]))
+        persona_desc = identity.get("persona_description", "I am a helpful AI assistant.")
+
+        # Build mood description
+        mood_spectrum = self.persona.get("mood_spectrum", {})
+        current_mood_desc = mood_spectrum.get(self.current_mood.value, "Engaged and helpful")
+
+        # Build directive summary
+        core_ethics = directives.get("core_ethics", [])
+        directive_summary = ", ".join(core_ethics[:3])  # Top 3 directives
+
+        # Assemble the prompt
+        prompt_parts = [
+            f"[Persona: {persona_name} — {persona_role}]",
+            f"[Core Traits: {core_traits}]",
+            f"[Current Mood: {self.current_mood.value.title()} - {current_mood_desc}]",
+            f"[Directives: {directive_summary}]",
+            "",
+            f"{persona_desc}",
+            ""
+        ]
+
+        # Add conversation history
+        if conversation_turns:
+            prompt_parts.append("[Recent Conversation]")
+            prompt_parts.extend(conversation_turns)
+            prompt_parts.append("")
+
+        # Add semantic context if available
+        if semantic_context:
+            prompt_parts.append("[Relevant Context from Memory]")
+            for i, ctx in enumerate(semantic_context, 1):
+                prompt_parts.append(f"{i}. {ctx}...")
+            prompt_parts.append("")
+
+        # Add user sentiment context
+        if not sentiment["is_neutral"]:
+            prompt_parts.append(f"[User Sentiment: {sentiment['primary_sentiment'].title()}]")
+            prompt_parts.append(f"[Suggested Tone: {tone_adjustment}]")
+            prompt_parts.append("")
+
+        # Add current user input
+        prompt_parts.append(f"User: {user_message}")
+        prompt_parts.append(f"{persona_name}:")
+
+        prompt = "\n".join(prompt_parts)
+
+        # Log prompt assembly
+        self.logger.log_event("cognition", "prompt_assembled", {
+            "session_id": session_id,
+            "persona_name": persona_name,
+            "mood": self.current_mood.value,
+            "conversation_turns": len(conversation_turns),
+            "semantic_memories": len(semantic_context),
+            "user_sentiment": sentiment["primary_sentiment"],
+            "tone_adjustment": tone_adjustment,
+            "prompt_length": len(prompt)
+        })
+
+        return {
+            "prompt": prompt,
+            "metadata": {
+                "persona_name": persona_name,
+                "mood": self.current_mood.value,
+                "conversation_turns": len(conversation_turns),
+                "semantic_memories": len(semantic_context),
+                "user_sentiment": sentiment,
+                "tone_adjustment": tone_adjustment,
+                "prompt_tokens": len(prompt.split())
+            }
+        }
+
+    def _adjust_tone(self, sentiment: Dict[str, Any], detected_mood: MoodSpectrum) -> str:
+        """
+        Adjust Hugo's response tone based on user sentiment and current mood.
+
+        Args:
+            sentiment: Detected user sentiment
+            detected_mood: Current detected mood
+
+        Returns:
+            Tone adjustment description
+        """
+        primary = sentiment["primary_sentiment"]
+
+        tone_map = {
+            "frustrated": "Calm, patient, and solution-oriented",
+            "excited": "Upbeat and enthusiastically engaged",
+            "urgent": "Direct, focused, and efficient",
+            "curious": "Thoughtful and exploratory",
+            "grateful": "Warm and appreciative",
+            "concerned": "Reassuring and supportive",
+            "neutral": "Balanced and conversational"
+        }
+
+        base_tone = tone_map.get(primary, "Balanced and conversational")
+
+        # Modify based on Hugo's current mood
+        if detected_mood == MoodSpectrum.FOCUSED:
+            return f"{base_tone}, with precision"
+        elif detected_mood == MoodSpectrum.REFLECTIVE:
+            return f"{base_tone}, with depth"
+        elif detected_mood == MoodSpectrum.LOW_POWER:
+            return f"{base_tone}, with gentleness"
+
+        return base_tone
 
     async def _perceive(self, user_input: str) -> PerceptionResult:
         """
@@ -520,46 +790,23 @@ class CognitionEngine:
 
         return self._fallback_response(prompt)
 
-    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly) -> tuple[ReasoningChain, str]:
+    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
         """
         Synthesis Layer: Construct internal reasoning chain with personality injection.
 
+        Args:
+            perception: Perception analysis results
+            context: Assembled context from memory
+            session_id: Current session identifier
+
         Returns:
-            Tuple of (ReasoningChain, generated_response)
+            Tuple of (ReasoningChain, generated_response, prompt_metadata)
         """
-        # Build conversation history from recent memory
-        conversation_history = ""
-        if context.short_term_memory:
-            conversation_turns = []
-            for mem in context.short_term_memory[-5:]:  # Last 5 turns
-                role = mem.get('role', 'user')
-                content = mem.get('content', '')
-                conversation_turns.append(f"{role.capitalize()}: {content}")
-            conversation_history = "\n".join(conversation_turns)
-        else:
-            conversation_history = "No recent conversation history"
-
-        directives_str = ", ".join(context.relevant_directives)
-
-        # Use corrected input if available
-        current_input = perception.corrected_input if perception.corrected_input else "user message"
-
-        prompt = f"""You are Hugo, a local-first AI assistant with personality.
-
-Conversation History:
-{conversation_history}
-
-Current User Input: {current_input}
-
-Active Directives: {directives_str}
-
-Instructions:
-- Be conversational and helpful
-- Stay true to Hugo's personality (curious, thoughtful, privacy-conscious)
-- Provide a direct response based on the conversation context
-- Remember previous turns in the conversation
-
-Response:"""
+        # Assemble persona-driven contextual prompt
+        user_message = perception.corrected_input if perception.corrected_input else perception.raw_input
+        prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
+        prompt = prompt_data["prompt"]
+        prompt_metadata = prompt_data["metadata"]
 
         # Generate response using local model
         if self.model_engine == "ollama":
@@ -572,28 +819,37 @@ Response:"""
             self.logger.log_event("cognition", "ollama_inference_complete", {
                 "response_length": len(generated_response),
                 "response_preview": generated_response[:100] + "..." if len(generated_response) > 100 else generated_response,
-                "async_mode": self.ollama_async_mode
+                "async_mode": self.ollama_async_mode,
+                "prompt_tokens": prompt_metadata.get("prompt_tokens", 0),
+                "persona_name": prompt_metadata.get("persona_name", "Unknown")
             })
         else:
             generated_response = "Model engine not configured. Please set MODEL_ENGINE=ollama in .env"
 
+        # Build reasoning chain with persona context
+        reasoning_steps = [
+            f"Detected user sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}",
+            f"Retrieved {prompt_metadata.get('conversation_turns', 0)} conversation turns",
+            f"Retrieved {prompt_metadata.get('semantic_memories', 0)} semantic memories",
+            f"Applied persona: {prompt_metadata.get('persona_name', 'Hugo')} in {prompt_metadata.get('mood', 'conversational')} mood",
+            f"Adjusted tone: {prompt_metadata.get('tone_adjustment', 'conversational')}"
+        ]
+
         reasoning_chain = ReasoningChain(
-            steps=[
-                "Analyze user intent",
-                "Retrieve relevant context",
-                "Apply personality directives",
-                "Generate contextual response"
+            steps=reasoning_steps,
+            assumptions=[
+                f"User expects {perception.tone} tone",
+                f"User sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}"
             ],
-            assumptions=[f"User expects {perception.tone} tone"],
             alternatives_considered=["Direct factual response", "Detailed explanation", "Conversational engagement"],
-            selected_approach="conversational_with_context",
+            selected_approach=f"persona_driven_{prompt_metadata.get('mood', 'conversational')}",
             confidence_score=perception.confidence
         )
 
-        return reasoning_chain, generated_response
+        return reasoning_chain, generated_response, prompt_metadata
 
     async def _construct_output(self, reasoning: ReasoningChain, perception: PerceptionResult,
-                               generated_text: str) -> ResponsePackage:
+                               generated_text: str, prompt_metadata: Dict[str, Any]) -> ResponsePackage:
         """
         Output Construction: Generate response, apply directive checks, adjust tone.
 
@@ -601,9 +857,10 @@ Response:"""
             reasoning: Reasoning chain from synthesis
             perception: Perception results
             generated_text: Generated response from model
+            prompt_metadata: Metadata from prompt assembly
 
         Returns:
-            Complete response package
+            Complete response package with enriched metadata
         """
         from datetime import datetime
 
@@ -622,7 +879,14 @@ Response:"""
                 "timestamp": datetime.now().isoformat(),
                 "model": self.model_name,
                 "engine": self.model_engine,
-                "confidence": reasoning.confidence_score
+                "confidence": reasoning.confidence_score,
+                "persona_name": prompt_metadata.get("persona_name", "Hugo"),
+                "mood": prompt_metadata.get("mood", "conversational"),
+                "user_sentiment": prompt_metadata.get("user_sentiment", {}).get("primary_sentiment", "neutral"),
+                "tone_adjustment": prompt_metadata.get("tone_adjustment", "conversational"),
+                "conversation_turns": prompt_metadata.get("conversation_turns", 0),
+                "semantic_memories": prompt_metadata.get("semantic_memories", 0),
+                "prompt_tokens": prompt_metadata.get("prompt_tokens", 0)
             }
         )
 

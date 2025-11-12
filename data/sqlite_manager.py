@@ -103,10 +103,50 @@ class SQLiteManager:
             )
         """)
 
+        # Reflections table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS reflections (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                type TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                summary TEXT NOT NULL,
+                insights TEXT,
+                patterns TEXT,
+                improvements TEXT,
+                sentiment REAL,
+                keywords TEXT,
+                confidence REAL DEFAULT 0.75,
+                embedding BLOB,
+                metadata TEXT
+            )
+        """)
+
+        # Meta-reflections table (aggregated weekly insights)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS meta_reflections (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT NOT NULL,
+                time_window_days INTEGER DEFAULT 7,
+                summary TEXT NOT NULL,
+                insights TEXT,
+                patterns TEXT,
+                improvements TEXT,
+                reflections_analyzed INTEGER,
+                confidence REAL DEFAULT 0.7,
+                embedding BLOB,
+                metadata TEXT
+            )
+        """)
+
         # Create indices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_session ON recent_messages(session_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON recent_messages(timestamp)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_session ON pending_tasks(session_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_reflections_session ON reflections(session_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_reflections_timestamp ON reflections(timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_reflections_type ON reflections(type)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_meta_reflections_timestamp ON meta_reflections(created_at)")
 
         self.conn.commit()
 
@@ -260,6 +300,215 @@ class SQLiteManager:
         cursor = self.conn.cursor()
         cursor.execute("DELETE FROM recent_messages WHERE timestamp < ?", (cutoff,))
         self.conn.commit()
+
+    async def store_reflection(self, session_id: Optional[str], reflection_type: str,
+                              summary: str, insights: List[str], patterns: List[str],
+                              improvements: List[str], sentiment: Optional[float] = None,
+                              keywords: Optional[List[str]] = None, confidence: float = 0.75,
+                              embedding: Optional[bytes] = None, metadata: Optional[Dict] = None) -> int:
+        """
+        Store a reflection in the database.
+
+        Args:
+            session_id: Session identifier (None for macro reflections)
+            reflection_type: Type of reflection (session, macro, performance, etc.)
+            summary: Reflection summary text
+            insights: List of key insights
+            patterns: List of observed patterns
+            improvements: List of improvement areas
+            sentiment: Optional sentiment score
+            keywords: Optional list of extracted keywords
+            confidence: Confidence score (0.0 to 1.0)
+            embedding: Optional embedding vector (as bytes)
+            metadata: Optional metadata dictionary
+
+        Returns:
+            ID of the stored reflection
+        """
+        import json
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._store_reflection_sync,
+            session_id, reflection_type, summary,
+            json.dumps(insights) if insights else None,
+            json.dumps(patterns) if patterns else None,
+            json.dumps(improvements) if improvements else None,
+            sentiment,
+            json.dumps(keywords) if keywords else None,
+            confidence, embedding,
+            json.dumps(metadata) if metadata else None
+        )
+
+    def _store_reflection_sync(self, session_id, reflection_type, summary,
+                               insights_json, patterns_json, improvements_json,
+                               sentiment, keywords_json, confidence, embedding, metadata_json):
+        """Synchronous reflection storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO reflections
+            (session_id, type, timestamp, summary, insights, patterns, improvements,
+             sentiment, keywords, confidence, embedding, metadata)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (session_id, reflection_type, datetime.now().isoformat(),
+              summary, insights_json, patterns_json, improvements_json,
+              sentiment, keywords_json, confidence, embedding, metadata_json))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_recent_reflections(self, reflection_type: Optional[str] = None,
+                                     limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Retrieve recent reflections.
+
+        Args:
+            reflection_type: Optional filter by reflection type
+            limit: Maximum number of reflections
+
+        Returns:
+            List of reflection dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_reflections_sync,
+                                         reflection_type, limit)
+
+    def _get_reflections_sync(self, reflection_type, limit):
+        """Synchronous reflection retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+
+        if reflection_type:
+            cursor.execute("""
+                SELECT id, session_id, type, timestamp, summary, insights, patterns,
+                       improvements, sentiment, keywords, confidence, metadata
+                FROM reflections
+                WHERE type = ?
+                ORDER BY timestamp DESC
+                LIMIT ?
+            """, (reflection_type, limit))
+        else:
+            cursor.execute("""
+                SELECT id, session_id, type, timestamp, summary, insights, patterns,
+                       improvements, sentiment, keywords, confidence, metadata
+                FROM reflections
+                ORDER BY timestamp DESC
+                LIMIT ?
+            """, (limit,))
+
+        reflections = []
+        for row in cursor.fetchall():
+            reflections.append({
+                'id': row['id'],
+                'session_id': row['session_id'],
+                'type': row['type'],
+                'timestamp': row['timestamp'],
+                'summary': row['summary'],
+                'insights': json.loads(row['insights']) if row['insights'] else [],
+                'patterns': json.loads(row['patterns']) if row['patterns'] else [],
+                'improvements': json.loads(row['improvements']) if row['improvements'] else [],
+                'sentiment': row['sentiment'],
+                'keywords': json.loads(row['keywords']) if row['keywords'] else [],
+                'confidence': row['confidence'],
+                'metadata': json.loads(row['metadata']) if row['metadata'] else {}
+            })
+
+        return reflections
+
+    async def store_meta_reflection(self, summary: str, insights: List[str],
+                                    patterns: List[str], improvements: List[str],
+                                    reflections_analyzed: int, time_window_days: int = 7,
+                                    confidence: float = 0.7, embedding: Optional[bytes] = None,
+                                    metadata: Optional[Dict] = None) -> int:
+        """
+        Store a meta-reflection (aggregated from multiple reflections).
+
+        Args:
+            summary: Meta-reflection summary
+            insights: Strategic insights
+            patterns: Long-term patterns
+            improvements: Strategic improvement areas
+            reflections_analyzed: Number of reflections analyzed
+            time_window_days: Time window in days
+            confidence: Confidence score
+            embedding: Optional embedding vector
+            metadata: Optional metadata
+
+        Returns:
+            ID of the stored meta-reflection
+        """
+        import json
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._store_meta_reflection_sync,
+            summary,
+            json.dumps(insights) if insights else None,
+            json.dumps(patterns) if patterns else None,
+            json.dumps(improvements) if improvements else None,
+            reflections_analyzed, time_window_days, confidence, embedding,
+            json.dumps(metadata) if metadata else None
+        )
+
+    def _store_meta_reflection_sync(self, summary, insights_json, patterns_json,
+                                    improvements_json, reflections_analyzed,
+                                    time_window_days, confidence, embedding, metadata_json):
+        """Synchronous meta-reflection storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO meta_reflections
+            (created_at, time_window_days, summary, insights, patterns, improvements,
+             reflections_analyzed, confidence, embedding, metadata)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (datetime.now().isoformat(), time_window_days, summary,
+              insights_json, patterns_json, improvements_json,
+              reflections_analyzed, confidence, embedding, metadata_json))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_latest_meta_reflection(self) -> Optional[Dict[str, Any]]:
+        """
+        Get the most recent meta-reflection.
+
+        Returns:
+            Meta-reflection dictionary or None
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_latest_meta_reflection_sync)
+
+    def _get_latest_meta_reflection_sync(self):
+        """Synchronous latest meta-reflection retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT id, created_at, time_window_days, summary, insights, patterns,
+                   improvements, reflections_analyzed, confidence, metadata
+            FROM meta_reflections
+            ORDER BY created_at DESC
+            LIMIT 1
+        """)
+
+        row = cursor.fetchone()
+        if not row:
+            return None
+
+        return {
+            'id': row['id'],
+            'created_at': row['created_at'],
+            'time_window_days': row['time_window_days'],
+            'summary': row['summary'],
+            'insights': json.loads(row['insights']) if row['insights'] else [],
+            'patterns': json.loads(row['patterns']) if row['patterns'] else [],
+            'improvements': json.loads(row['improvements']) if row['improvements'] else [],
+            'reflections_analyzed': row['reflections_analyzed'],
+            'confidence': row['confidence'],
+            'metadata': json.loads(row['metadata']) if row['metadata'] else {}
+        }
 
     async def close(self):
         """Close database connection"""

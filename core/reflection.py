@@ -58,7 +58,7 @@ class ReflectionEngine:
     - Narrative artifacts for transparency
     """
 
-    def __init__(self, memory_manager, logger, db_conn):
+    def __init__(self, memory_manager, logger, db_conn, sqlite_manager=None):
         """
         Initialize reflection engine.
 
@@ -66,10 +66,183 @@ class ReflectionEngine:
             memory_manager: MemoryManager for context retrieval
             logger: HugoLogger instance
             db_conn: Database connection for persistence
+            sqlite_manager: Optional SQLiteManager for reflection storage
         """
         self.memory = memory_manager
         self.logger = logger
         self.db = db_conn
+        self.sqlite_manager = sqlite_manager
+
+        # Load reflection configuration from environment
+        import os
+        self.reflection_model = os.getenv("REFLECTION_MODEL", "llama3:8b")
+        self.reflection_max_retries = int(os.getenv("REFLECTION_MAX_RETRIES", "2"))
+        self.reflection_retry_backoff = int(os.getenv("REFLECTION_RETRY_BACKOFF", "2"))
+        self.ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
+
+    def _extract_keywords(self, text: str, top_n: int = 10) -> List[str]:
+        """
+        Extract keywords from text using frequency-based analysis.
+
+        Args:
+            text: Text to analyze
+            top_n: Number of top keywords to return
+
+        Returns:
+            List of extracted keywords
+        """
+        import re
+        from collections import Counter
+
+        # Convert to lowercase and extract words
+        words = re.findall(r'\b\w+\b', text.lower())
+
+        # Common stopwords to filter out
+        stopwords = {
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+            'of', 'with', 'by', 'from', 'as', 'is', 'was', 'were', 'be', 'been',
+            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+            'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those',
+            'i', 'you', 'he', 'she', 'it', 'we', 'they', 'what', 'which', 'who',
+            'when', 'where', 'why', 'how', 'if', 'then', 'than', 'so', 'about'
+        }
+
+        # Filter words: remove stopwords and short words
+        filtered_words = [
+            w for w in words
+            if w not in stopwords and len(w) > 3
+        ]
+
+        # Count frequency and get top N
+        word_counts = Counter(filtered_words)
+        keywords = [word for word, count in word_counts.most_common(top_n)]
+
+        return keywords
+
+    def _analyze_sentiment(self, text: str) -> float:
+        """
+        Analyze sentiment of text using rule-based approach.
+
+        Args:
+            text: Text to analyze
+
+        Returns:
+            Sentiment score from -1.0 (negative) to 1.0 (positive)
+        """
+        # Simple sentiment lexicons
+        positive_words = {
+            'good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic',
+            'helpful', 'useful', 'love', 'like', 'enjoy', 'happy', 'excited',
+            'successful', 'better', 'best', 'perfect', 'nice', 'thanks', 'thank'
+        }
+
+        negative_words = {
+            'bad', 'poor', 'terrible', 'awful', 'horrible', 'frustrating',
+            'frustrated', 'error', 'failed', 'failure', 'problem', 'issue',
+            'broken', 'wrong', 'difficult', 'hard', 'confusing', 'confused',
+            'annoying', 'annoyed', 'hate', 'dislike', 'worst'
+        }
+
+        # Convert to lowercase and split
+        words = text.lower().split()
+
+        # Count positive and negative words
+        pos_count = sum(1 for word in words if word in positive_words)
+        neg_count = sum(1 for word in words if word in negative_words)
+
+        # Calculate sentiment score
+        total = pos_count + neg_count
+        if total == 0:
+            return 0.0  # Neutral
+
+        sentiment = (pos_count - neg_count) / total
+        return max(-1.0, min(1.0, sentiment))  # Clamp to [-1, 1]
+
+    async def _infer_with_retry(self, prompt: str, temperature: float = 0.3) -> str:
+        """
+        Call Ollama with retry logic and exponential backoff.
+
+        Args:
+            prompt: Prompt for inference
+            temperature: Temperature parameter for generation
+
+        Returns:
+            Generated response text
+
+        Raises:
+            Exception: If all retry attempts fail
+        """
+        import requests
+        import time
+
+        last_error = None
+
+        for attempt in range(1, self.reflection_max_retries + 1):
+            try:
+                self.logger.log_event("reflection", "ollama_attempt", {
+                    "attempt": attempt,
+                    "max_retries": self.reflection_max_retries
+                })
+
+                response = requests.post(
+                    self.ollama_api,
+                    json={
+                        "model": self.reflection_model,
+                        "prompt": prompt,
+                        "stream": False,
+                        "options": {"temperature": temperature}
+                    },
+                    timeout=45
+                )
+
+                response.raise_for_status()
+
+                generated = response.json().get("response", "").strip()
+
+                self.logger.log_event("reflection", "ollama_success", {
+                    "attempt": attempt,
+                    "response_length": len(generated)
+                })
+
+                return generated
+
+            except requests.exceptions.Timeout as e:
+                last_error = e
+                self.logger.log_event("reflection", "ollama_timeout", {
+                    "attempt": attempt,
+                    "error": str(e)
+                })
+
+            except requests.exceptions.RequestException as e:
+                last_error = e
+                self.logger.log_event("reflection", "ollama_error", {
+                    "attempt": attempt,
+                    "error": str(e)
+                })
+
+            except Exception as e:
+                last_error = e
+                self.logger.log_event("reflection", "ollama_unexpected_error", {
+                    "attempt": attempt,
+                    "error": str(e)
+                })
+
+            # Exponential backoff before retry
+            if attempt < self.reflection_max_retries:
+                delay = self.reflection_retry_backoff ** attempt
+                self.logger.log_event("reflection", "ollama_retry", {
+                    "attempt": attempt,
+                    "delay_seconds": delay
+                })
+                await asyncio.sleep(delay)
+
+        # All retries failed
+        self.logger.log_event("reflection", "ollama_all_retries_failed", {
+            "total_attempts": self.reflection_max_retries,
+            "last_error": str(last_error)
+        })
+
+        raise Exception(f"Ollama inference failed after {self.reflection_max_retries} attempts: {last_error}")
 
     async def generate_session_reflection(self, session_id: str) -> Reflection:
         """
@@ -128,14 +301,21 @@ class ReflectionEngine:
                     metadata={}
                 )
 
-            # Use Ollama to generate reflection summary
-            from core.cognition import CognitionEngine
-            import os
-            import requests
+            # Extract keywords and analyze sentiment from conversation
+            keywords = self._extract_keywords(conversation_text, top_n=10)
+            sentiment_score = self._analyze_sentiment(conversation_text)
 
-            ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
-            model_name = os.getenv("MODEL_NAME", "llama3:8b")
+            self.logger.log_event("reflection", "keywords_extracted", {
+                "keywords": keywords[:5],  # Log first 5
+                "total_keywords": len(keywords)
+            })
 
+            self.logger.log_event("reflection", "sentiment_analyzed", {
+                "sentiment_score": sentiment_score,
+                "sentiment_label": "positive" if sentiment_score > 0.3 else "negative" if sentiment_score < -0.3 else "neutral"
+            })
+
+            # Use Ollama to generate reflection summary with retry logic
             reflection_prompt = f"""You are Hugo's internal reflection system. Analyze this conversation and provide insights.
 
 Conversation:
@@ -156,37 +336,21 @@ Format as JSON:
 }}"""
 
             try:
-                response = requests.post(
-                    ollama_api,
-                    json={
-                        "model": model_name,
-                        "prompt": reflection_prompt,
-                        "stream": False,
-                        "options": {"temperature": 0.3}  # Lower for more consistent structured output
-                    },
-                    timeout=30
-                )
+                # Use retry logic for resilient inference
+                generated = await self._infer_with_retry(reflection_prompt, temperature=0.3)
 
-                if response.status_code == 200:
-                    generated = response.json().get("response", "").strip()
-
-                    # Try to parse JSON response
-                    import json
-                    try:
-                        reflection_data = json.loads(generated)
-                        summary = reflection_data.get("summary", "Session completed.")
-                        insights = reflection_data.get("insights", [])
-                        patterns = reflection_data.get("patterns", [])
-                        improvements = reflection_data.get("improvements", [])
-                    except json.JSONDecodeError:
-                        # Fallback if JSON parsing fails
-                        summary = generated[:200]
-                        insights = ["Reflection generated but not structured"]
-                        patterns = []
-                        improvements = []
-                else:
-                    summary = "Ollama unavailable for reflection"
-                    insights = []
+                # Try to parse JSON response
+                import json
+                try:
+                    reflection_data = json.loads(generated)
+                    summary = reflection_data.get("summary", "Session completed.")
+                    insights = reflection_data.get("insights", [])
+                    patterns = reflection_data.get("patterns", [])
+                    improvements = reflection_data.get("improvements", [])
+                except json.JSONDecodeError:
+                    # Fallback if JSON parsing fails
+                    summary = generated[:200]
+                    insights = ["Reflection generated but not structured"]
                     patterns = []
                     improvements = []
 
@@ -197,7 +361,7 @@ Format as JSON:
                 patterns = []
                 improvements = []
 
-            # Create reflection object
+            # Create reflection object with keywords and sentiment
             reflection = Reflection(
                 id=None,
                 type=ReflectionType.SESSION,
@@ -211,16 +375,20 @@ Format as JSON:
                 metadata={
                     "message_count": len(session_memories),
                     "conversation_turns": len(conversation_turns),
-                    "session_id": session_id
+                    "session_id": session_id,
+                    "keywords": keywords,
+                    "sentiment_score": sentiment_score
                 }
             )
 
-            # Store reflection as a memory
-            await self._store_reflection(reflection)
+            # Store reflection in both memory and SQLite
+            await self._store_reflection(reflection, keywords=keywords, sentiment=sentiment_score)
 
             self.logger.log_event("reflection", "session_completed", {
                 "session_id": session_id,
-                "insights_count": len(insights)
+                "insights_count": len(insights),
+                "keywords_count": len(keywords),
+                "sentiment": sentiment_score
             })
 
             return reflection
@@ -311,13 +479,7 @@ Format as JSON:
                 for i, mem in enumerate(recent_reflections[:10])
             ])
 
-            # Use Ollama for macro analysis
-            import os
-            import requests
-
-            ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
-            model_name = os.getenv("MODEL_NAME", "llama3:8b")
-
+            # Use Ollama for macro analysis with retry logic
             macro_prompt = f"""You are Hugo's meta-cognitive system performing a macro reflection.
 
 Analyze these recent session reflections and identify:
@@ -338,37 +500,21 @@ Generate a macro reflection as JSON:
 }}"""
 
             try:
-                response = requests.post(
-                    ollama_api,
-                    json={
-                        "model": model_name,
-                        "prompt": macro_prompt,
-                        "stream": False,
-                        "options": {"temperature": 0.4}
-                    },
-                    timeout=45
-                )
+                # Use retry logic for resilient inference
+                generated = await self._infer_with_retry(macro_prompt, temperature=0.4)
 
-                if response.status_code == 200:
-                    generated = response.json().get("response", "").strip()
-
-                    # Try to parse JSON
-                    import json
-                    try:
-                        macro_data = json.loads(generated)
-                        summary = macro_data.get("summary", "Macro reflection completed.")
-                        insights = macro_data.get("insights", [])
-                        patterns = macro_data.get("patterns", [])
-                        improvements = macro_data.get("improvements", [])
-                    except json.JSONDecodeError:
-                        # Fallback
-                        summary = generated[:300]
-                        insights = ["Macro analysis generated but not structured"]
-                        patterns = []
-                        improvements = []
-                else:
-                    summary = "Ollama unavailable for macro reflection"
-                    insights = []
+                # Try to parse JSON
+                import json
+                try:
+                    macro_data = json.loads(generated)
+                    summary = macro_data.get("summary", "Macro reflection completed.")
+                    insights = macro_data.get("insights", [])
+                    patterns = macro_data.get("patterns", [])
+                    improvements = macro_data.get("improvements", [])
+                except json.JSONDecodeError:
+                    # Fallback
+                    summary = generated[:300]
+                    insights = ["Macro analysis generated but not structured"]
                     patterns = []
                     improvements = []
 
@@ -396,8 +542,31 @@ Generate a macro reflection as JSON:
                 }
             )
 
-            # Store macro reflection
+            # Store macro reflection in memory
             await self._store_reflection(reflection)
+
+            # Store in SQLite meta_reflections table if available
+            if self.sqlite_manager:
+                try:
+                    meta_id = await self.sqlite_manager.store_meta_reflection(
+                        summary=summary,
+                        insights=insights,
+                        patterns=patterns,
+                        improvements=improvements,
+                        reflections_analyzed=len(recent_reflections),
+                        time_window_days=time_window_days,
+                        confidence=0.7,
+                        embedding=None,
+                        metadata=reflection.metadata
+                    )
+
+                    self.logger.log_event("reflection", "meta_sqlite_stored", {
+                        "meta_id": meta_id,
+                        "reflections_analyzed": len(recent_reflections)
+                    })
+
+                except Exception as e:
+                    self.logger.log_error(e, {"phase": "meta_reflection_sqlite_storage"})
 
             self.logger.log_event("reflection", "macro_completed", {
                 "insights_count": len(insights),
@@ -468,14 +637,20 @@ Generate a macro reflection as JSON:
         # TODO: Query database for reflections
         return []
 
-    async def _store_reflection(self, reflection: Reflection):
+    async def _store_reflection(self, reflection: Reflection, keywords: List[str] = None, sentiment: float = None):
         """
-        Persist reflection to memory system for future retrieval.
+        Persist reflection to memory system and SQLite for future retrieval.
 
         Stores reflection as a memory entry with:
         - Full reflection summary as content
         - Automatic embedding generation
         - Tagged as 'reflection' memory type
+        - Persisted to SQLite with keywords and sentiment
+
+        Args:
+            reflection: Reflection object to store
+            keywords: Optional list of keywords
+            sentiment: Optional sentiment score
         """
         try:
             from core.memory import MemoryEntry
@@ -516,6 +691,32 @@ Confidence: {reflection.confidence:.2%}"""
 
             # Store in memory (will generate embedding and add to FAISS)
             await self.memory.store(memory_entry, persist_long_term=True)
+
+            # Store in SQLite if available
+            if self.sqlite_manager:
+                try:
+                    reflection_id = await self.sqlite_manager.store_reflection(
+                        session_id=reflection.session_id,
+                        reflection_type=reflection.type.value,
+                        summary=reflection.summary,
+                        insights=reflection.insights,
+                        patterns=reflection.patterns_observed,
+                        improvements=reflection.areas_for_improvement,
+                        sentiment=sentiment,
+                        keywords=keywords,
+                        confidence=reflection.confidence,
+                        embedding=None,  # Could serialize embedding here
+                        metadata=reflection.metadata
+                    )
+
+                    self.logger.log_event("reflection", "sqlite_stored", {
+                        "reflection_id": reflection_id,
+                        "type": reflection.type.value,
+                        "keywords_count": len(keywords) if keywords else 0
+                    })
+
+                except Exception as e:
+                    self.logger.log_error(e, {"phase": "sqlite_reflection_storage"})
 
             self.logger.log_event("reflection", "stored", {
                 "type": reflection.type.value,

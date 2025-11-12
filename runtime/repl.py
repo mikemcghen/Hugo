@@ -183,8 +183,20 @@ Just type naturally to chat with Hugo!
                 data={"content": response_text}
             )
 
-            # Store assistant response in memory
+            # Store assistant response in memory with enriched metadata
             if self.runtime.memory:
+                # Extract persona-driven metadata from response_package
+                response_metadata = {
+                    "role": "assistant",
+                    "persona_name": response_package.metadata.get("persona_name", "Hugo"),
+                    "mood": response_package.metadata.get("mood", "conversational"),
+                    "user_sentiment": response_package.metadata.get("user_sentiment", "neutral"),
+                    "tone_adjustment": response_package.metadata.get("tone_adjustment", "conversational"),
+                    "conversation_turns": response_package.metadata.get("conversation_turns", 0),
+                    "semantic_memories": response_package.metadata.get("semantic_memories", 0),
+                    "confidence": response_package.metadata.get("confidence", 0.0)
+                }
+
                 assistant_memory = MemoryEntry(
                     id=None,
                     session_id=self.session_id,
@@ -192,7 +204,7 @@ Just type naturally to chat with Hugo!
                     memory_type="assistant_message",
                     content=response_text,
                     embedding=None,  # Will be auto-generated
-                    metadata={"role": "assistant"},
+                    metadata=response_metadata,
                     importance_score=0.7
                 )
                 await self.runtime.memory.store(assistant_memory)
