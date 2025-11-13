@@ -244,11 +244,20 @@ class RuntimeManager:
         try:
             from core.cognition import CognitionEngine
             from core.memory import MemoryManager
+            from data.sqlite_manager import SQLiteManager
 
-            # For now, initialize with minimal dependencies
-            # Memory manager with None for database connections (will use in-memory cache)
-            self.memory = MemoryManager(None, None, self.logger)
+            # Initialize SQLite manager first
+            self.sqlite_manager = SQLiteManager(db_path="data/memory/hugo_session.db")
+            await self.sqlite_manager.connect()
+            print("  ✓ SQLite manager initialized")
+
+            # Memory manager with SQLite connection (PostgreSQL still None)
+            self.memory = MemoryManager(self.sqlite_manager, None, self.logger)
             print("  ✓ Memory manager initialized")
+
+            # Load factual memories from SQLite into cache and FAISS
+            await self.memory.load_factual_memories()
+            print("  ✓ Factual memories loaded from storage")
 
             # Directive filter (basic implementation)
             class BasicDirectiveFilter:
@@ -259,12 +268,12 @@ class RuntimeManager:
             print("  ✓ Directive filter initialized")
 
             # Cognition engine with memory and directives
-            self.cognition = CognitionEngine(self.memory, self.directives, self.logger)
+            self.cognition = CognitionEngine(self.memory, self.directives, self.logger, runtime_manager=self)
             print("  ✓ Cognition engine initialized")
 
-            # Reflection engine (None for db_conn since we use memory system)
+            # Reflection engine with SQLite manager
             from core.reflection import ReflectionEngine
-            self.reflection = ReflectionEngine(self.memory, self.logger, None)
+            self.reflection = ReflectionEngine(self.memory, self.logger, self.sqlite_manager)
             print("  ✓ Reflection engine initialized")
 
             # Scheduler will be initialized later

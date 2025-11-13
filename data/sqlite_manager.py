@@ -139,6 +139,22 @@ class SQLiteManager:
             )
         """)
 
+        # Long-term memories table (for persistent factual memories)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS memories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                memory_type TEXT NOT NULL,
+                content TEXT NOT NULL,
+                embedding BLOB,
+                metadata TEXT,
+                importance_score REAL DEFAULT 0.5,
+                is_fact INTEGER DEFAULT 0,
+                entity_type TEXT
+            )
+        """)
+
         # Create indices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_session ON recent_messages(session_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON recent_messages(timestamp)")
@@ -147,6 +163,9 @@ class SQLiteManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_reflections_timestamp ON reflections(timestamp)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_reflections_type ON reflections(type)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_meta_reflections_timestamp ON meta_reflections(created_at)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_is_fact ON memories(is_fact)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_timestamp ON memories(timestamp)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_entity_type ON memories(entity_type)")
 
         self.conn.commit()
 
@@ -515,3 +534,152 @@ class SQLiteManager:
         if self.conn:
             loop = asyncio.get_event_loop()
             await loop.run_in_executor(None, self.conn.close)
+
+    async def store_memory(self, session_id: str, memory_type: str, content: str,
+                          embedding: Optional[bytes] = None, metadata: Optional[Dict] = None,
+                          importance_score: float = 0.5, is_fact: bool = False,
+                          entity_type: Optional[str] = None) -> int:
+        """
+        Store a memory entry in long-term storage.
+
+        Args:
+            session_id: Session identifier
+            memory_type: Type of memory (user_message, assistant_message, reflection, etc.)
+            content: Memory content
+            embedding: Optional embedding vector (as bytes)
+            metadata: Optional metadata dictionary
+            importance_score: Importance score (0.0 to 1.0)
+            is_fact: Whether this is a factual memory
+            entity_type: Optional entity type for facts (animal, person, etc.)
+
+        Returns:
+            ID of the stored memory
+        """
+        import json
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._store_memory_sync,
+            session_id, memory_type, content, embedding,
+            json.dumps(metadata) if metadata else None,
+            importance_score, 1 if is_fact else 0, entity_type
+        )
+
+    def _store_memory_sync(self, session_id, memory_type, content, embedding,
+                           metadata_json, importance_score, is_fact, entity_type):
+        """Synchronous memory storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO memories
+            (session_id, timestamp, memory_type, content, embedding, metadata,
+             importance_score, is_fact, entity_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (session_id, datetime.now().isoformat(), memory_type, content,
+              embedding, metadata_json, importance_score, is_fact, entity_type))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_factual_memories(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Retrieve all factual memories from storage.
+
+        Args:
+            limit: Optional maximum number of memories to return
+
+        Returns:
+            List of memory dictionaries with id, content, entity_type, embedding, timestamp
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_factual_memories_sync, limit)
+
+    def _get_factual_memories_sync(self, limit):
+        """Synchronous factual memory retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+
+        if limit:
+            cursor.execute("""
+                SELECT id, session_id, timestamp, memory_type, content, embedding,
+                       metadata, importance_score, entity_type
+                FROM memories
+                WHERE is_fact = 1
+                ORDER BY importance_score DESC, timestamp DESC
+                LIMIT ?
+            """, (limit,))
+        else:
+            cursor.execute("""
+                SELECT id, session_id, timestamp, memory_type, content, embedding,
+                       metadata, importance_score, entity_type
+                FROM memories
+                WHERE is_fact = 1
+                ORDER BY importance_score DESC, timestamp DESC
+            """)
+
+        memories = []
+        for row in cursor.fetchall():
+            memories.append({
+                'id': row['id'],
+                'session_id': row['session_id'],
+                'timestamp': row['timestamp'],
+                'memory_type': row['memory_type'],
+                'content': row['content'],
+                'embedding': row['embedding'],  # Bytes
+                'metadata': json.loads(row['metadata']) if row['metadata'] else {},
+                'importance_score': row['importance_score'],
+                'entity_type': row['entity_type']
+            })
+
+        return memories
+
+    async def get_all_memories_with_embeddings(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Retrieve all memories that have embeddings (for FAISS rebuild).
+
+        Args:
+            limit: Optional maximum number of memories to return
+
+        Returns:
+            List of memory dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_all_memories_with_embeddings_sync, limit)
+
+    def _get_all_memories_with_embeddings_sync(self, limit):
+        """Synchronous retrieval of memories with embeddings"""
+        import json
+
+        cursor = self.conn.cursor()
+
+        query = """
+            SELECT id, session_id, timestamp, memory_type, content, embedding,
+                   metadata, importance_score, is_fact, entity_type
+            FROM memories
+            WHERE embedding IS NOT NULL
+            ORDER BY timestamp DESC
+        """
+
+        if limit:
+            query += " LIMIT ?"
+            cursor.execute(query, (limit,))
+        else:
+            cursor.execute(query)
+
+        memories = []
+        for row in cursor.fetchall():
+            memories.append({
+                'id': row['id'],
+                'session_id': row['session_id'],
+                'timestamp': row['timestamp'],
+                'memory_type': row['memory_type'],
+                'content': row['content'],
+                'embedding': row['embedding'],  # Bytes
+                'metadata': json.loads(row['metadata']) if row['metadata'] else {},
+                'importance_score': row['importance_score'],
+                'is_fact': bool(row['is_fact']),
+                'entity_type': row['entity_type']
+            })
+
+        return memories

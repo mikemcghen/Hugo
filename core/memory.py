@@ -168,6 +168,7 @@ class MemoryManager:
         Store a memory entry in appropriate layer(s).
 
         Automatically detects and tags factual information.
+        Facts are ALWAYS persisted to SQLite for cross-session recall.
 
         Args:
             entry: MemoryEntry to store
@@ -180,6 +181,10 @@ class MemoryManager:
                 entry.is_fact = True
                 entry.entity_type = entity_type
                 entry.importance_score = max(entry.importance_score, 0.85)  # Boost factual memories
+
+        # Force facts to be persisted long-term
+        if entry.is_fact:
+            persist_long_term = True
 
         # Generate embedding if not present
         if entry.embedding is None and self.enable_faiss:
@@ -206,6 +211,38 @@ class MemoryManager:
 
         # Store in SQLite (short-term)
         await self._store_sqlite(entry)
+
+        # Persist facts and long-term memories to SQLite memories table
+        if persist_long_term and self.sqlite:
+            try:
+                import pickle
+                # Serialize embedding to bytes
+                embedding_bytes = pickle.dumps(entry.embedding) if entry.embedding else None
+
+                # Store in SQLite memories table
+                memory_id = await self.sqlite.store_memory(
+                    session_id=entry.session_id,
+                    memory_type=entry.memory_type,
+                    content=entry.content,
+                    embedding=embedding_bytes,
+                    metadata=entry.metadata,
+                    importance_score=entry.importance_score,
+                    is_fact=entry.is_fact,
+                    entity_type=entry.entity_type
+                )
+
+                # Update entry ID if not set
+                if entry.id is None:
+                    entry.id = memory_id
+
+                self.logger.log_event("memory", "sqlite_persisted", {
+                    "memory_id": memory_id,
+                    "is_fact": entry.is_fact,
+                    "entity_type": entry.entity_type
+                })
+
+            except Exception as e:
+                self.logger.log_error(e, {"phase": "sqlite_persistence"})
 
         # Optionally persist to PostgreSQL
         if persist_long_term:
@@ -514,3 +551,83 @@ class MemoryManager:
             "faiss_enabled": self.enable_faiss,
             "embedding_model": self.embedding_model_name if self.enable_faiss else None
         }
+
+    async def load_factual_memories(self):
+        """
+        Load all factual memories from SQLite and hydrate cache + FAISS index.
+
+        This should be called on boot to restore cross-session facts.
+        """
+        if not self.sqlite:
+            self.logger.log_event("memory", "factual_load_skipped", {
+                "reason": "no_sqlite_connection"
+            })
+            return
+
+        try:
+            # Retrieve all factual memories from SQLite
+            factual_memories = await self.sqlite.get_factual_memories()
+
+            if not factual_memories:
+                self.logger.log_event("memory", "no_factual_memories", {})
+                return
+
+            import pickle
+            loaded_count = 0
+            faiss_added = 0
+
+            for mem_dict in factual_memories:
+                # Deserialize embedding
+                embedding = None
+                if mem_dict['embedding']:
+                    try:
+                        embedding = pickle.loads(mem_dict['embedding'])
+                    except Exception as e:
+                        self.logger.log_error(e, {"phase": "embedding_deserialization", "memory_id": mem_dict['id']})
+
+                # Parse timestamp
+                from datetime import datetime
+                try:
+                    timestamp = datetime.fromisoformat(mem_dict['timestamp'])
+                except:
+                    timestamp = datetime.now()
+
+                # Create MemoryEntry
+                entry = MemoryEntry(
+                    id=mem_dict['id'],
+                    session_id=mem_dict['session_id'],
+                    timestamp=timestamp,
+                    memory_type=mem_dict['memory_type'],
+                    content=mem_dict['content'],
+                    embedding=embedding,
+                    metadata=mem_dict['metadata'],
+                    importance_score=mem_dict['importance_score'],
+                    is_fact=True,
+                    entity_type=mem_dict['entity_type']
+                )
+
+                # Add to cache
+                self.cache.append(entry)
+                loaded_count += 1
+
+                # Add to FAISS index if embedding exists
+                if self.enable_faiss and self.faiss_index and embedding:
+                    try:
+                        embedding_vector = np.array([embedding], dtype=np.float32)
+                        self.faiss_index.add(embedding_vector)
+                        self.memory_id_map.append(entry.id)
+                        faiss_added += 1
+                    except Exception as e:
+                        self.logger.log_error(e, {"phase": "faiss_add_on_load", "memory_id": mem_dict['id']})
+
+            # Save FAISS index after loading
+            if faiss_added > 0:
+                self._save_faiss_index()
+
+            self.logger.log_event("memory", "factual_memories_loaded", {
+                "count": loaded_count,
+                "faiss_added": faiss_added
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "load_factual_memories"})
