@@ -107,23 +107,46 @@ Type 'exit' to quit.
         print(welcome)
 
     async def _display_latest_meta_reflection(self):
-        """Display latest meta-reflection insight as startup context"""
+        """Display latest meta-reflection insight and recent reflections as startup context"""
         # Check if sqlite_manager exists on runtime
         if not hasattr(self.runtime, 'sqlite_manager') or not self.runtime.sqlite_manager:
             return
 
         try:
+            # Load latest meta-reflection
             meta = await self.runtime.sqlite_manager.get_latest_meta_reflection()
             if meta:
-                print("🪞 Last Reflection Insight:")
+                print("🪞 Last Meta-Reflection:")
                 # Truncate summary to 120 characters for conciseness
                 summary = meta['summary']
                 if len(summary) > 120:
                     summary = summary[:117] + "..."
-                print(f"   {summary}\n")
+                print(f"   {summary}")
+
+            # Load recent high-confidence session reflections
+            recent_reflections = await self.runtime.sqlite_manager.get_recent_reflections(
+                reflection_type="session",
+                limit=3
+            )
+
+            high_confidence_reflections = [
+                r for r in recent_reflections
+                if r.get('confidence', 0) >= 0.7
+            ]
+
+            if high_confidence_reflections:
+                print(f"\n🧠 Recent Insights ({len(high_confidence_reflections)} memories):")
+                for refl in high_confidence_reflections[:2]:  # Show top 2
+                    summary = refl['summary']
+                    if len(summary) > 100:
+                        summary = summary[:97] + "..."
+                    print(f"   • {summary}")
+
+            print()  # Extra newline for spacing
+
         except Exception as e:
             # Silently fail - don't disrupt startup
-            self.logger.log_event("repl", "meta_reflection_load_failed", {
+            self.logger.log_event("repl", "boot_context_load_failed", {
                 "error": str(e)
             })
 

@@ -450,3 +450,35 @@
 {"timestamp": "2025-11-12T18:07:36.809967", "category": "reflection", "event_type": "stored", "level": "INFO", "data": {"type": "session", "confidence": 0.75, "content_length": 354}}
 {"timestamp": "2025-11-12T18:07:36.809967", "category": "reflection", "event_type": "session_completed", "level": "INFO", "data": {"session_id": "shell_20251112_180013", "insights_count": 1, "keywords_count": 10, "sentiment": 1.0}}
 {"timestamp": "2025-11-12T18:07:36.810968", "category": "repl", "event_type": "session_ended", "level": "INFO", "data": {"session_id": "shell_20251112_180013", "message_count": 5}}
+{"timestamp": "2025-11-13T11:45:33.571431", "category": "runtime", "event_type": "boot_started", "level": "INFO", "data": {}}
+{"timestamp": "2025-11-13T11:45:38.450834", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T11:45:38.450834", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T11:45:38.462834", "category": "cognition", "event_type": "persona_loaded", "level": "INFO", "data": {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}}
+{"timestamp": "2025-11-13T11:45:38.463834", "category": "runtime", "event_type": "boot_completed", "level": "INFO", "data": {"mode": "interactive"}}
+{"timestamp": "2025-11-13T11:45:38.464837", "category": "error", "event_type": "exception", "level": "ERROR", "data": {"error_type": "AttributeError", "error_message": "'RuntimeManager' object has no attribute 'sqlite_manager'", "context": {}}}
+{"timestamp": "2025-11-13T11:50:23.370927", "category": "runtime", "event_type": "boot_started", "level": "INFO", "data": {}}
+{"timestamp": "2025-11-13T11:50:24.542582", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T11:50:24.543584", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T11:50:24.554581", "category": "cognition", "event_type": "persona_loaded", "level": "INFO", "data": {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}}
+{"timestamp": "2025-11-13T11:50:24.555586", "category": "runtime", "event_type": "boot_completed", "level": "INFO", "data": {"mode": "interactive"}}
+{"timestamp": "2025-11-13T11:50:38.915915", "category": "user", "event_type": "message", "level": "INFO", "data": {"content": "Morning Hugo!", "session_id": "shell_20251113_115024"}}
+{"timestamp": "2025-11-13T11:50:43.585043", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true}}
+{"timestamp": "2025-11-13T11:50:43.585043", "category": "cognition", "event_type": "processing_input", "level": "INFO", "data": {"session_id": "shell_20251113_115024"}}
+{"timestamp": "2025-11-13T11:50:43.586044", "category": "cognition", "event_type": "context_assembled", "level": "INFO", "data": {"session_id": "shell_20251113_115024", "memory_count": 1}}
+{"timestamp": "2025-11-13T11:50:43.597043", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 13, "results": 1}}
+{"timestamp": "2025-11-13T11:50:43.598044", "category": "cognition", "event_type": "prompt_assembled", "level": "INFO", "data": {"session_id": "shell_20251113_115024", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "semantic_memories": 1, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 609}}
+{"timestamp": "2025-11-13T11:50:43.598044", "category": "cognition", "event_type": "ollama_inference_attempt_async", "level": "INFO", "data": {"attempt": 1, "max_retries": 3, "timeout": 60}}
+{"timestamp": "2025-11-13T11:51:25.601502", "category": "cognition", "event_type": "ollama_inference_async", "level": "INFO", "data": {"attempt": 1, "duration": 42.0, "status": "success", "response_length": 292}}
+{"timestamp": "2025-11-13T11:51:25.602440", "category": "cognition", "event_type": "ollama_inference_complete", "level": "INFO", "data": {"response_length": 292, "response_preview": "Morning! It's great to start the day with a conversation. I've been reflecting on our previous discu...", "async_mode": true, "prompt_tokens": 80, "persona_name": "Hugo"}}
+{"timestamp": "2025-11-13T11:51:25.602440", "category": "reflection", "event_type": "generated", "level": "INFO", "data": {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}}
+{"timestamp": "2025-11-13T11:51:25.602947", "category": "user", "event_type": "response", "level": "INFO", "data": {"content": "Morning! It's great to start the day with a conversation. I've been reflecting on our previous discussions, and I must say, I'm excited to dive deeper into some of the topics we touched upon. What's been on your mind lately? Any new challenges or opportunities you'd like to explore together?", "streaming": false, "session_id": "shell_20251113_115024"}}
+{"timestamp": "2025-11-13T11:51:25.640464", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": true}}
+{"timestamp": "2025-11-13T11:52:40.546005", "category": "reflection", "event_type": "session_started", "level": "INFO", "data": {"session_id": "shell_20251113_115024"}}
+{"timestamp": "2025-11-13T11:52:40.547005", "category": "reflection", "event_type": "keywords_extracted", "level": "INFO", "data": {"keywords": ["morning", "hugo", "user", "great", "start"], "total_keywords": 10}}
+{"timestamp": "2025-11-13T11:52:40.547005", "category": "reflection", "event_type": "sentiment_analyzed", "level": "INFO", "data": {"sentiment_score": 1.0, "sentiment_label": "positive"}}
+{"timestamp": "2025-11-13T11:52:40.548004", "category": "reflection", "event_type": "ollama_attempt", "level": "INFO", "data": {"attempt": 1, "max_retries": 2}}
+{"timestamp": "2025-11-13T11:53:22.354622", "category": "reflection", "event_type": "ollama_success", "level": "INFO", "data": {"attempt": 1, "response_length": 1317}}
+{"timestamp": "2025-11-13T11:53:22.369187", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "reflection", "long_term": true, "has_embedding": true}}
+{"timestamp": "2025-11-13T11:53:22.369187", "category": "reflection", "event_type": "stored", "level": "INFO", "data": {"type": "session", "confidence": 0.75, "content_length": 354}}
+{"timestamp": "2025-11-13T11:53:22.369187", "category": "reflection", "event_type": "session_completed", "level": "INFO", "data": {"session_id": "shell_20251113_115024", "insights_count": 1, "keywords_count": 10, "sentiment": 1.0}}
+{"timestamp": "2025-11-13T11:53:22.370188", "category": "repl", "event_type": "session_ended", "level": "INFO", "data": {"session_id": "shell_20251113_115024", "message_count": 2}}

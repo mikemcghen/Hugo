@@ -705,3 +705,52 @@ requests.exceptions.ReadTimeout: HTTPConnectionPool(host='localhost', port=11434
 2025-11-12 18:07:36,809 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.75, "content_length": 354}
 2025-11-12 18:07:36,810 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251112_180013", "insights_count": 1, "keywords_count": 10, "sentiment": 1.0}
 2025-11-12 18:07:36,810 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251112_180013", "message_count": 5}
+2025-11-13 11:45:33,572 - hugo - INFO - [runtime] boot_started: {}
+2025-11-13 11:45:38,450 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 11:45:38,451 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 11:45:38,463 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 11:45:38,463 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-13 11:45:38,464 - hugo - ERROR - [error] exception: {"error_type": "AttributeError", "error_message": "'RuntimeManager' object has no attribute 'sqlite_manager'", "context": {}}
+2025-11-13 11:45:38,465 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 120, in run
+    asyncio.run(self._execute_command(args))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\asyncio\base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 156, in _execute_command
+    await self.cmd_shell()
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 447, in cmd_shell
+    await repl.run()
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 49, in run
+    await self._display_latest_meta_reflection()
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 111, in _display_latest_meta_reflection
+    if not self.runtime.sqlite_manager:
+AttributeError: 'RuntimeManager' object has no attribute 'sqlite_manager'
+2025-11-13 11:50:23,370 - hugo - INFO - [runtime] boot_started: {}
+2025-11-13 11:50:24,542 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 11:50:24,543 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 11:50:24,554 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 11:50:24,555 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-13 11:50:38,915 - hugo - INFO - [user] message: {"content": "Morning Hugo!", "session_id": "shell_20251113_115024"}
+2025-11-13 11:50:43,585 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true}
+2025-11-13 11:50:43,586 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251113_115024"}
+2025-11-13 11:50:43,586 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251113_115024", "memory_count": 1}
+2025-11-13 11:50:43,597 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 13, "results": 1}
+2025-11-13 11:50:43,598 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251113_115024", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "semantic_memories": 1, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 609}
+2025-11-13 11:50:43,598 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-13 11:51:25,601 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 42.0, "status": "success", "response_length": 292}
+2025-11-13 11:51:25,602 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 292, "response_preview": "Morning! It's great to start the day with a conversation. I've been reflecting on our previous discu...", "async_mode": true, "prompt_tokens": 80, "persona_name": "Hugo"}
+2025-11-13 11:51:25,602 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-13 11:51:25,602 - hugo - INFO - [user] response: {"content": "Morning! It's great to start the day with a conversation. I've been reflecting on our previous discussions, and I must say, I'm excited to dive deeper into some of the topics we touched upon. What's been on your mind lately? Any new challenges or opportunities you'd like to explore together?", "streaming": false, "session_id": "shell_20251113_115024"}
+2025-11-13 11:51:25,640 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true}
+2025-11-13 11:52:40,546 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251113_115024"}
+2025-11-13 11:52:40,547 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["morning", "hugo", "user", "great", "start"], "total_keywords": 10}
+2025-11-13 11:52:40,547 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
+2025-11-13 11:52:40,548 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-13 11:53:22,354 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 1317}
+2025-11-13 11:53:22,369 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true}
+2025-11-13 11:53:22,369 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.75, "content_length": 354}
+2025-11-13 11:53:22,370 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251113_115024", "insights_count": 1, "keywords_count": 10, "sentiment": 1.0}
+2025-11-13 11:53:22,371 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251113_115024", "message_count": 2}

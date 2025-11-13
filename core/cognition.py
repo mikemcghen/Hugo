@@ -514,16 +514,32 @@ class CognitionEngine:
         # Determine Hugo's tone based on sentiment and current mood
         tone_adjustment = self._adjust_tone(sentiment, perception.detected_mood)
 
-        # Retrieve semantic memory if available
+        # Retrieve semantic memory and reflections if available
         semantic_context = []
+        reflection_context = []
         try:
             if hasattr(self.memory, 'search_semantic'):
+                # Search for relevant memories
                 semantic_results = await self.memory.search_semantic(
                     user_message,
-                    limit=3,
+                    limit=5,
                     threshold=0.6
                 )
-                semantic_context = [mem.content[:150] for mem in semantic_results]
+
+                # Separate reflections from regular memories
+                for mem in semantic_results:
+                    if mem.memory_type == "reflection":
+                        # Extract summary from reflection content
+                        reflection_preview = mem.content[:200] if len(mem.content) <= 200 else mem.content[:197] + "..."
+                        reflection_context.append(reflection_preview)
+                    else:
+                        # Regular memory context
+                        semantic_context.append(mem.content[:150])
+
+                # Limit to top 3 of each type
+                semantic_context = semantic_context[:3]
+                reflection_context = reflection_context[:2]
+
         except Exception as e:
             self.logger.log_error(e, {"phase": "semantic_search"})
 
@@ -570,6 +586,13 @@ class CognitionEngine:
             prompt_parts.extend(conversation_turns)
             prompt_parts.append("")
 
+        # Add past reflections if available
+        if reflection_context:
+            prompt_parts.append("[Past Reflections]")
+            for i, refl in enumerate(reflection_context, 1):
+                prompt_parts.append(f"{i}. {refl}")
+            prompt_parts.append("")
+
         # Add semantic context if available
         if semantic_context:
             prompt_parts.append("[Relevant Context from Memory]")
@@ -596,6 +619,7 @@ class CognitionEngine:
             "mood": self.current_mood.value,
             "conversation_turns": len(conversation_turns),
             "semantic_memories": len(semantic_context),
+            "reflection_memories": len(reflection_context),
             "user_sentiment": sentiment["primary_sentiment"],
             "tone_adjustment": tone_adjustment,
             "prompt_length": len(prompt)
@@ -608,6 +632,7 @@ class CognitionEngine:
                 "mood": self.current_mood.value,
                 "conversation_turns": len(conversation_turns),
                 "semantic_memories": len(semantic_context),
+                "reflection_memories": len(reflection_context),
                 "user_sentiment": sentiment,
                 "tone_adjustment": tone_adjustment,
                 "prompt_tokens": len(prompt.split())
