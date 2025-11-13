@@ -406,6 +406,8 @@ class CognitionEngine:
         reasoning_steps = [
             f"Detected user sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}",
             f"Retrieved {prompt_metadata.get('conversation_turns', 0)} conversation turns",
+            f"Retrieved {prompt_metadata.get('factual_memories', 0)} factual memories",
+            f"Retrieved {prompt_metadata.get('reflection_insights', 0)} reflection insights",
             f"Retrieved {prompt_metadata.get('semantic_memories', 0)} semantic memories",
             f"Applied persona: {prompt_metadata.get('persona_name', 'Hugo')} in {prompt_metadata.get('mood', 'conversational')} mood",
             f"Adjusted tone: {prompt_metadata.get('tone_adjustment', 'conversational')}"
@@ -440,6 +442,8 @@ class CognitionEngine:
                 "user_sentiment": prompt_metadata.get("user_sentiment", {}).get("primary_sentiment", "neutral"),
                 "tone_adjustment": prompt_metadata.get("tone_adjustment", "conversational"),
                 "conversation_turns": prompt_metadata.get("conversation_turns", 0),
+                "factual_memories": prompt_metadata.get("factual_memories", 0),
+                "reflection_insights": prompt_metadata.get("reflection_insights", 0),
                 "semantic_memories": prompt_metadata.get("semantic_memories", 0),
                 "prompt_tokens": prompt_metadata.get("prompt_tokens", 0),
                 "streaming": True
@@ -514,34 +518,45 @@ class CognitionEngine:
         # Determine Hugo's tone based on sentiment and current mood
         tone_adjustment = self._adjust_tone(sentiment, perception.detected_mood)
 
-        # Retrieve semantic memory and reflections if available
+        # Retrieve factual memories, semantic memory, and reflections
+        factual_memories = []
         semantic_context = []
-        reflection_context = []
+        reflection_insights = []
+
         try:
+            # Get factual memories about the user
+            if hasattr(self.memory, 'get_factual_memories'):
+                factual_entries = await self.memory.get_factual_memories(limit=10)
+                for fact in factual_entries:
+                    factual_memories.append({
+                        "content": fact.content,
+                        "entity_type": fact.entity_type,
+                        "importance": fact.importance_score
+                    })
+
+            # Get reflection insights from reflection system
+            if hasattr(self, 'runtime_manager') and self.runtime_manager:
+                if hasattr(self.runtime_manager, 'reflection'):
+                    reflection_insights = await self.runtime_manager.reflection.get_reflection_insights(limit=5)
+
+            # Search for relevant semantic memories
             if hasattr(self.memory, 'search_semantic'):
-                # Search for relevant memories
                 semantic_results = await self.memory.search_semantic(
                     user_message,
                     limit=5,
                     threshold=0.6
                 )
 
-                # Separate reflections from regular memories
+                # Filter for non-reflection, non-factual memories
                 for mem in semantic_results:
-                    if mem.memory_type == "reflection":
-                        # Extract summary from reflection content
-                        reflection_preview = mem.content[:200] if len(mem.content) <= 200 else mem.content[:197] + "..."
-                        reflection_context.append(reflection_preview)
-                    else:
-                        # Regular memory context
+                    if mem.memory_type != "reflection" and not mem.is_fact:
                         semantic_context.append(mem.content[:150])
 
-                # Limit to top 3 of each type
+                # Limit to top 3
                 semantic_context = semantic_context[:3]
-                reflection_context = reflection_context[:2]
 
         except Exception as e:
-            self.logger.log_error(e, {"phase": "semantic_search"})
+            self.logger.log_error(e, {"phase": "memory_retrieval"})
 
         # Build conversation history
         conversation_turns = []
@@ -577,20 +592,40 @@ class CognitionEngine:
             f"[Directives: {directive_summary}]",
             "",
             f"{persona_desc}",
+            "",
+            "[Memory Policy]",
+            "CRITICAL: When responding about user information or past conversations:",
+            "- If a memory exists, use it EXACTLY as written",
+            "- If no memory exists, say 'I'm not certain' rather than guessing",
+            "- NEVER fabricate or invent facts about the user",
+            "- Only reference information from the sections below",
             ""
         ]
+
+        # Add factual memories about the user
+        if factual_memories:
+            prompt_parts.append("[Known Facts About the User]")
+            for i, fact in enumerate(factual_memories, 1):
+                entity_label = f"[{fact['entity_type']}]" if fact['entity_type'] else ""
+                prompt_parts.append(f"{i}. {entity_label} {fact['content']}")
+            prompt_parts.append("")
+
+        # Add long-term reflection insights
+        if reflection_insights:
+            prompt_parts.append("[Long-Term Reflections Summary]")
+            for i, refl in enumerate(reflection_insights, 1):
+                prompt_parts.append(f"\nReflection {i}:")
+                prompt_parts.append(f"  Summary: {refl['summary']}")
+                if refl.get('insights'):
+                    prompt_parts.append(f"  Key Insights: {', '.join(refl['insights'][:3])}")
+                if refl.get('keywords'):
+                    prompt_parts.append(f"  Keywords: {', '.join(refl['keywords'][:5])}")
+            prompt_parts.append("")
 
         # Add conversation history
         if conversation_turns:
             prompt_parts.append("[Recent Conversation]")
             prompt_parts.extend(conversation_turns)
-            prompt_parts.append("")
-
-        # Add past reflections if available
-        if reflection_context:
-            prompt_parts.append("[Past Reflections]")
-            for i, refl in enumerate(reflection_context, 1):
-                prompt_parts.append(f"{i}. {refl}")
             prompt_parts.append("")
 
         # Add semantic context if available
@@ -618,8 +653,9 @@ class CognitionEngine:
             "persona_name": persona_name,
             "mood": self.current_mood.value,
             "conversation_turns": len(conversation_turns),
+            "factual_memories": len(factual_memories),
+            "reflection_insights": len(reflection_insights),
             "semantic_memories": len(semantic_context),
-            "reflection_memories": len(reflection_context),
             "user_sentiment": sentiment["primary_sentiment"],
             "tone_adjustment": tone_adjustment,
             "prompt_length": len(prompt)
@@ -631,8 +667,9 @@ class CognitionEngine:
                 "persona_name": persona_name,
                 "mood": self.current_mood.value,
                 "conversation_turns": len(conversation_turns),
+                "factual_memories": len(factual_memories),
+                "reflection_insights": len(reflection_insights),
                 "semantic_memories": len(semantic_context),
-                "reflection_memories": len(reflection_context),
                 "user_sentiment": sentiment,
                 "tone_adjustment": tone_adjustment,
                 "prompt_tokens": len(prompt.split())
@@ -1233,6 +1270,8 @@ class CognitionEngine:
         reasoning_steps = [
             f"Detected user sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}",
             f"Retrieved {prompt_metadata.get('conversation_turns', 0)} conversation turns",
+            f"Retrieved {prompt_metadata.get('factual_memories', 0)} factual memories",
+            f"Retrieved {prompt_metadata.get('reflection_insights', 0)} reflection insights",
             f"Retrieved {prompt_metadata.get('semantic_memories', 0)} semantic memories",
             f"Applied persona: {prompt_metadata.get('persona_name', 'Hugo')} in {prompt_metadata.get('mood', 'conversational')} mood",
             f"Adjusted tone: {prompt_metadata.get('tone_adjustment', 'conversational')}"
@@ -1288,6 +1327,8 @@ class CognitionEngine:
                 "user_sentiment": prompt_metadata.get("user_sentiment", {}).get("primary_sentiment", "neutral"),
                 "tone_adjustment": prompt_metadata.get("tone_adjustment", "conversational"),
                 "conversation_turns": prompt_metadata.get("conversation_turns", 0),
+                "factual_memories": prompt_metadata.get("factual_memories", 0),
+                "reflection_insights": prompt_metadata.get("reflection_insights", 0),
                 "semantic_memories": prompt_metadata.get("semantic_memories", 0),
                 "prompt_tokens": prompt_metadata.get("prompt_tokens", 0)
             }

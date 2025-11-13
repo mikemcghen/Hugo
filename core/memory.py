@@ -34,11 +34,13 @@ class MemoryEntry:
     id: Optional[int]
     session_id: str
     timestamp: datetime
-    memory_type: str  # episodic, semantic, procedural
+    memory_type: str  # episodic, semantic, procedural, reflection
     content: str
     embedding: Optional[List[float]]
     metadata: Dict[str, Any]
     importance_score: float
+    is_fact: bool = False  # True if contains factual user information
+    entity_type: Optional[str] = None  # animal, person, location, preference, etc.
 
 
 class MemoryManager:
@@ -131,14 +133,54 @@ class MemoryManager:
             except Exception as e:
                 self.logger.log_error(e)
 
+    def _detect_facts(self, content: str) -> tuple[bool, Optional[str]]:
+        """
+        Detect if content contains factual user information.
+
+        Args:
+            content: Message content to analyze
+
+        Returns:
+            Tuple of (is_fact, entity_type)
+        """
+        content_lower = content.lower()
+
+        # Fact indicators with entity types
+        fact_patterns = {
+            "animal": ["cat", "dog", "pet", "bird", "fish", "hamster", "rabbit", "parrot"],
+            "person": ["name is", "called", "my wife", "my husband", "my friend", "my child", "my son", "my daughter"],
+            "location": ["live in", "from", "city", "country", "state", "address"],
+            "preference": ["favorite", "prefer", "like", "love", "enjoy", "interested in", "hobby"],
+            "possession": ["own", "have", "got", "bought", "car", "house", "computer"],
+            "occupation": ["work as", "job", "career", "profession", "engineer", "teacher", "doctor"],
+            "contact": ["email", "phone", "number", "address", "@"]
+        }
+
+        for entity_type, patterns in fact_patterns.items():
+            for pattern in patterns:
+                if pattern in content_lower:
+                    return True, entity_type
+
+        return False, None
+
     async def store(self, entry: MemoryEntry, persist_long_term: bool = False):
         """
         Store a memory entry in appropriate layer(s).
+
+        Automatically detects and tags factual information.
 
         Args:
             entry: MemoryEntry to store
             persist_long_term: If True, also write to PostgreSQL
         """
+        # Detect facts if this is a user message
+        if entry.memory_type == "user_message" and not entry.is_fact:
+            is_fact, entity_type = self._detect_facts(entry.content)
+            if is_fact:
+                entry.is_fact = True
+                entry.entity_type = entity_type
+                entry.importance_score = max(entry.importance_score, 0.85)  # Boost factual memories
+
         # Generate embedding if not present
         if entry.embedding is None and self.enable_faiss:
             entry.embedding = await self._generate_embedding(entry.content)
@@ -172,7 +214,9 @@ class MemoryManager:
         self.logger.log_event("memory", "stored", {
             "type": entry.memory_type,
             "long_term": persist_long_term,
-            "has_embedding": entry.embedding is not None
+            "has_embedding": entry.embedding is not None,
+            "is_fact": entry.is_fact,
+            "entity_type": entry.entity_type if entry.is_fact else None
         })
 
     async def retrieve_recent(self, session_id: str, limit: int = 20) -> List[MemoryEntry]:
@@ -191,9 +235,15 @@ class MemoryManager:
         return [e for e in self.cache if e.session_id == session_id][:limit]
 
     async def search_semantic(self, query: str, limit: int = 10,
-                            threshold: float = 0.7) -> List[MemoryEntry]:
+                            threshold: float = 0.6) -> List[MemoryEntry]:
         """
-        Search memories using semantic similarity via FAISS.
+        Search memories using hybrid semantic + factual ranking.
+
+        Ranking formula:
+        - Base: FAISS cosine similarity
+        - Boost: +0.15 if is_fact=True
+        - Boost: +0.10 if memory within last 30 days
+        - Boost: +0.05 if memory_type='reflection'
 
         Args:
             query: Search query text
@@ -201,7 +251,7 @@ class MemoryManager:
             threshold: Minimum similarity score (0-1)
 
         Returns:
-            List of semantically similar MemoryEntry objects
+            List of semantically similar MemoryEntry objects, ranked by relevance
         """
         if not self.enable_faiss or not self.faiss_index or not self.embedding_model:
             self.logger.log_event("memory", "semantic_search_unavailable", {})
@@ -212,36 +262,61 @@ class MemoryManager:
             query_embedding = await self._generate_embedding(query)
             query_vector = np.array([query_embedding], dtype=np.float32)
 
-            # Search FAISS index
-            # Note: FAISS uses L2 distance, we'll need to convert to cosine similarity
-            k = min(limit * 2, self.faiss_index.ntotal)  # Search more, filter later
+            # Search FAISS index (get more results for ranking)
+            k = min(limit * 3, self.faiss_index.ntotal)
             if k == 0:
                 return []
 
             distances, indices = self.faiss_index.search(query_vector, k)
 
-            # Convert L2 distances to similarity scores (approximate cosine similarity)
-            # For normalized vectors: cosine_similarity ≈ 1 - (L2_distance^2 / 2)
+            # Convert L2 distances to similarity scores
             similarities = 1 - (distances[0] ** 2 / 2)
 
-            # Filter by threshold and map to memory entries
-            results = []
-            for idx, similarity in zip(indices[0], similarities):
-                if idx == -1:  # FAISS returns -1 for empty slots
+            # Hybrid ranking with boosts
+            scored_results = []
+            from datetime import timedelta
+
+            for idx, base_similarity in zip(indices[0], similarities):
+                if idx == -1:
                     continue
 
-                if similarity >= threshold:
-                    # Retrieve memory from cache or database
-                    # For now, return placeholder entries
-                    # TODO: Implement actual memory retrieval by ID
-                    if idx < len(self.cache):
-                        results.append(self.cache[idx])
+                if base_similarity < threshold:
+                    continue
 
-                if len(results) >= limit:
-                    break
+                # Retrieve memory from cache
+                if idx >= len(self.cache):
+                    continue
 
-            self.logger.log_event("memory", "semantic_search_completed",
-                                {"query_length": len(query), "results": len(results)})
+                memory = self.cache[idx]
+                score = base_similarity
+
+                # Factual memory boost (+0.15)
+                if memory.is_fact:
+                    score += 0.15
+
+                # Recency boost (+0.10 for last 30 days)
+                age_days = (datetime.now() - memory.timestamp).days
+                if age_days <= 30:
+                    score += 0.10
+
+                # Reflection boost (+0.05)
+                if memory.memory_type == "reflection":
+                    score += 0.05
+
+                scored_results.append((score, memory))
+
+            # Sort by score descending
+            scored_results.sort(key=lambda x: x[0], reverse=True)
+
+            # Extract top memories
+            results = [memory for score, memory in scored_results[:limit]]
+
+            self.logger.log_event("memory", "semantic_search_completed", {
+                "query_length": len(query),
+                "results": len(results),
+                "factual_results": sum(1 for m in results if m.is_fact),
+                "reflection_results": sum(1 for m in results if m.memory_type == "reflection")
+            })
 
             return results
 
@@ -360,12 +435,79 @@ class MemoryManager:
         self.logger.log_event("memory", "pruning_started", {"threshold_days": days_threshold})
         pass
 
+    async def get_factual_memories(self, limit: int = 10) -> List[MemoryEntry]:
+        """
+        Retrieve factual memories (user-specific information).
+
+        Args:
+            limit: Maximum number of facts to return
+
+        Returns:
+            List of factual MemoryEntry objects, sorted by importance
+        """
+        facts = [m for m in self.cache if m.is_fact]
+        facts.sort(key=lambda m: m.importance_score, reverse=True)
+        return facts[:limit]
+
+    async def update_fact(self, entity_type: str, old_content: str, new_content: str,
+                         session_id: str) -> bool:
+        """
+        Update a factual memory by removing old information and adding corrected information.
+
+        Args:
+            entity_type: Type of entity being updated (animal, person, etc.)
+            old_content: Old/incorrect information (for deletion)
+            new_content: New/correct information
+            session_id: Current session ID
+
+        Returns:
+            True if update successful
+        """
+        try:
+            # Remove old conflicting memories from cache
+            self.cache = [m for m in self.cache if old_content.lower() not in m.content.lower()]
+
+            # Create new corrected fact
+            corrected_fact = MemoryEntry(
+                id=None,
+                session_id=session_id,
+                timestamp=datetime.now(),
+                memory_type="user_message",
+                content=new_content,
+                embedding=None,  # Will be generated
+                metadata={
+                    "reason": "corrected",
+                    "entity_type": entity_type,
+                    "corrected_from": old_content[:100]  # Track what was corrected
+                },
+                importance_score=0.95,  # High importance for corrections
+                is_fact=True,
+                entity_type=entity_type
+            )
+
+            # Store corrected fact
+            await self.store(corrected_fact, persist_long_term=True)
+
+            self.logger.log_event("memory", "fact_updated", {
+                "entity_type": entity_type,
+                "old_content_preview": old_content[:50],
+                "new_content_preview": new_content[:50]
+            })
+
+            return True
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "fact_update"})
+            return False
+
     def get_stats(self) -> Dict[str, Any]:
         """Get memory system statistics"""
         faiss_size = self.faiss_index.ntotal if self.faiss_index else 0
+        fact_count = sum(1 for m in self.cache if m.is_fact)
 
         return {
             "cache_size": len(self.cache),
+            "factual_memories": fact_count,
             "sqlite_records": 0,  # TODO: Query actual count
             "postgres_records": 0,  # TODO: Query actual count
             "faiss_index_size": faiss_size,

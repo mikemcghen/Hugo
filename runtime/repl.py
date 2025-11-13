@@ -81,6 +81,9 @@ class HugoREPL:
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
+                elif user_input.lower().startswith('/memory'):
+                    await self._handle_memory_command(user_input)
+                    continue
 
                 # Process through cognition engine
                 await self._process_message(user_input)
@@ -155,12 +158,14 @@ Type 'exit' to quit.
         help_text = """
 Hugo Shell Commands:
 --------------------
-  help           Show this help message
-  clear          Clear the screen
-  history        Show command history
-  /reflect recent   Show recent reflections
-  /reflect meta     Show latest meta-reflection
-  exit           Exit the shell (also: quit, bye, Ctrl+D)
+  help                  Show this help message
+  clear                 Clear the screen
+  history               Show command history
+  /reflect recent       Show recent reflections
+  /reflect meta         Show latest meta-reflection
+  /memory show facts    Show all factual memories
+  /memory search <query> Debug semantic search with ranking scores
+  exit                  Exit the shell (also: quit, bye, Ctrl+D)
 
 Just type naturally to chat with Hugo!
 """
@@ -486,3 +491,116 @@ Just type naturally to chat with Hugo!
         except Exception as e:
             self.logger.log_error(e, {"phase": "show_meta_reflection"})
             print(f"\nError retrieving meta-reflection: {str(e)}")
+
+    async def _handle_memory_command(self, command: str):
+        """Handle /memory debug commands"""
+        parts = command.split(maxsplit=2)
+
+        if len(parts) < 2:
+            print("\nUsage:")
+            print("  /memory show facts         - Display all factual memories")
+            print("  /memory search <query>     - Debug semantic search with scores")
+            return
+
+        subcommand = parts[1].lower()
+
+        if subcommand == 'show' and len(parts) >= 3 and parts[2].lower() == 'facts':
+            await self._show_factual_memories()
+        elif subcommand == 'search' and len(parts) >= 3:
+            query = parts[2]
+            await self._debug_semantic_search(query)
+        else:
+            print(f"\nUnknown memory command")
+            print("Available: show facts, search <query>")
+
+    async def _show_factual_memories(self):
+        """Display all factual memories with details"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            facts = await self.runtime.memory.get_factual_memories(limit=20)
+
+            if not facts:
+                print("\nNo factual memories found yet.")
+                return
+
+            print("\n" + "=" * 70)
+            print("FACTUAL MEMORIES")
+            print("=" * 70)
+
+            for i, fact in enumerate(facts, 1):
+                entity_label = f"[{fact.entity_type.upper()}]" if fact.entity_type else "[UNKNOWN]"
+                print(f"\n{i}. {entity_label} (Importance: {fact.importance_score:.2f})")
+                print(f"   Content: {fact.content}")
+                print(f"   Session: {fact.session_id}")
+                print(f"   Timestamp: {fact.timestamp.strftime('%Y-%m-%d %H:%M:%S') if hasattr(fact.timestamp, 'strftime') else str(fact.timestamp)}")
+                print(f"   Has embedding: {'Yes' if fact.embedding else 'No'}")
+
+            print("\n" + "=" * 70)
+            print(f"Total: {len(facts)} factual memories")
+            print("=" * 70)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "show_factual_memories"})
+            print(f"\nError retrieving factual memories: {str(e)}")
+
+    async def _debug_semantic_search(self, query: str):
+        """Debug semantic search with detailed scoring"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            print(f"\n🔍 Semantic Search Debug")
+            print(f"Query: '{query}'")
+            print("=" * 70)
+
+            # Perform semantic search
+            results = await self.runtime.memory.search_semantic(query, limit=10, threshold=0.5)
+
+            if not results:
+                print("\nNo results found (threshold: 0.5)")
+                return
+
+            print(f"\nFound {len(results)} results:\n")
+
+            for i, mem in enumerate(results, 1):
+                # Display result details
+                is_fact = mem.is_fact
+                is_reflection = mem.memory_type == "reflection"
+
+                type_label = []
+                if is_fact:
+                    type_label.append(f"FACT:{mem.entity_type.upper()}" if mem.entity_type else "FACT")
+                if is_reflection:
+                    type_label.append("REFLECTION")
+                if not type_label:
+                    type_label.append(mem.memory_type.upper())
+
+                print(f"{i}. [{', '.join(type_label)}]")
+                print(f"   Importance: {mem.importance_score:.2f}")
+                print(f"   Content: {mem.content[:100]}..." if len(mem.content) > 100 else f"   Content: {mem.content}")
+                print(f"   Session: {mem.session_id}")
+                print(f"   Timestamp: {mem.timestamp.strftime('%Y-%m-%d') if hasattr(mem.timestamp, 'strftime') else str(mem.timestamp)}")
+
+                # Calculate recency
+                from datetime import datetime
+                if hasattr(mem.timestamp, 'strftime'):
+                    age_days = (datetime.now() - mem.timestamp).days
+                    print(f"   Age: {age_days} days")
+
+                print()
+
+            print("=" * 70)
+            print(f"Ranking factors applied:")
+            print(f"  - Base: FAISS cosine similarity")
+            print(f"  - Factual boost: +0.15")
+            print(f"  - Recency boost: +0.10 (if <30 days)")
+            print(f"  - Reflection boost: +0.05")
+            print("=" * 70)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "debug_semantic_search"})
+            print(f"\nError during semantic search: {str(e)}")

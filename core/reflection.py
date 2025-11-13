@@ -790,6 +790,58 @@ Output ONLY the JSON object, nothing else."""
         # TODO: Query database for reflections
         return []
 
+    async def get_reflection_insights(self, limit: int = 5) -> List[Dict[str, Any]]:
+        """
+        Get summarized reflection insights for prompt injection.
+
+        Returns top reflections with their key information for context.
+
+        Args:
+            limit: Maximum number of reflection insights to return
+
+        Returns:
+            List of dictionaries containing:
+              - summary: Reflection summary
+              - insights: Key insights list
+              - keywords: Important keywords
+              - sentiment: Sentiment score
+              - confidence: Confidence level
+        """
+        if not self.sqlite_manager:
+            return []
+
+        try:
+            # Get recent high-confidence reflections
+            reflections = await self.sqlite_manager.get_recent_reflections(limit=limit * 2)
+
+            # Filter for high confidence (>= 0.7)
+            high_confidence = [
+                r for r in reflections
+                if r.get('confidence', 0) >= 0.7
+            ]
+
+            # Format for prompt injection
+            insights = []
+            for refl in high_confidence[:limit]:
+                insights.append({
+                    "summary": refl['summary'],
+                    "insights": refl.get('insights', [])[:3],  # Top 3 insights
+                    "keywords": refl.get('keywords', [])[:5],  # Top 5 keywords
+                    "sentiment": refl.get('sentiment'),
+                    "confidence": refl['confidence']
+                })
+
+            self.logger.log_event("reflection", "insights_retrieved", {
+                "count": len(insights),
+                "avg_confidence": sum(i['confidence'] for i in insights) / len(insights) if insights else 0
+            })
+
+            return insights
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "get_reflection_insights"})
+            return []
+
     async def _store_reflection(self, reflection: Reflection, keywords: List[str] = None, sentiment: float = None, embedding: List[float] = None):
         """
         Persist reflection to memory system and SQLite for future retrieval.
