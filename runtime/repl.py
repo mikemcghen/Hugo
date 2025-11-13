@@ -78,6 +78,9 @@ class HugoREPL:
                 elif user_input.lower() == 'history':
                     self._show_history()
                     continue
+                elif user_input.lower() == 'facts':
+                    await self._show_all_factual_memories()
+                    continue
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
@@ -161,6 +164,7 @@ Hugo Shell Commands:
   help                  Show this help message
   clear                 Clear the screen
   history               Show command history
+  facts                 Show all factual memories (from persistent storage)
   /reflect recent       Show recent reflections
   /reflect meta         Show latest meta-reflection
   /memory show facts    Show all factual memories
@@ -544,6 +548,35 @@ Just type naturally to chat with Hugo!
 
         except Exception as e:
             self.logger.log_error(e, {"phase": "show_factual_memories"})
+            print(f"\nError retrieving factual memories: {str(e)}")
+
+    async def _show_all_factual_memories(self):
+        """Display all factual memories from persistent storage"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            facts = await self.runtime.memory.get_all_factual_memories(limit=20)
+
+            if not facts:
+                print("\nNo factual memories found yet.")
+                return
+
+            print("\n" + "=" * 70)
+            print("FACTUAL MEMORIES (most recent first)")
+            print("=" * 70)
+
+            for i, fact in enumerate(facts, 1):
+                entity_label = f"[{fact.entity_type.upper()}]" if fact.entity_type else "[UNKNOWN]"
+                print(f"\n{i}. {entity_label} {fact.content}")
+
+            print("\n" + "=" * 70)
+            print(f"Total: {len(facts)} factual memories")
+            print("=" * 70)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "show_all_factual_memories"})
             print(f"\nError retrieving factual memories: {str(e)}")
 
     async def _debug_semantic_search(self, query: str):

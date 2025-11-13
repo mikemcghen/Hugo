@@ -137,17 +137,33 @@ class MemoryManager:
         """
         Detect if content contains factual user information.
 
+        Questions are NEVER stored as facts, even if they mention entities.
+        Only declarative sentences are considered factual.
+
         Args:
             content: Message content to analyze
 
         Returns:
             Tuple of (is_fact, entity_type)
         """
-        content_lower = content.lower()
+        content_lower = content.lower().strip()
 
-        # Fact indicators with entity types
+        # Guard: Never treat questions as facts
+        # Check if ends with '?'
+        if content.strip().endswith('?'):
+            return False, None
+
+        # Check if starts with question phrases (case-insensitive)
+        question_starters = ["do you", "can you", "will you", "would you", "could you",
+                            "are you", "is there", "did you", "have you", "what",
+                            "when", "where", "why", "how", "who"]
+        for starter in question_starters:
+            if content_lower.startswith(starter):
+                return False, None
+
+        # Fact indicators with entity types (only for declarative sentences)
         fact_patterns = {
-            "animal": ["cat", "dog", "pet", "bird", "fish", "hamster", "rabbit", "parrot"],
+            "animal": ["cat", "dog", "pet", "bird", "fish", "hamster", "rabbit", "parrot", "bunny", "bunnies"],
             "person": ["name is", "called", "my wife", "my husband", "my friend", "my child", "my son", "my daughter"],
             "location": ["live in", "from", "city", "country", "state", "address"],
             "preference": ["favorite", "prefer", "like", "love", "enjoy", "interested in", "hobby"],
@@ -181,6 +197,12 @@ class MemoryManager:
                 entry.is_fact = True
                 entry.entity_type = entity_type
                 entry.importance_score = max(entry.importance_score, 0.85)  # Boost factual memories
+
+                # Log fact extraction
+                self.logger.log_event("memory", "fact_extracted", {
+                    "summary": entry.content[:80],
+                    "entity_type": entity_type
+                })
 
         # Force facts to be persisted long-term
         if entry.is_fact:
@@ -474,7 +496,7 @@ class MemoryManager:
 
     async def get_factual_memories(self, limit: int = 10) -> List[MemoryEntry]:
         """
-        Retrieve factual memories (user-specific information).
+        Retrieve factual memories (user-specific information) from cache.
 
         Args:
             limit: Maximum number of facts to return
@@ -485,6 +507,71 @@ class MemoryManager:
         facts = [m for m in self.cache if m.is_fact]
         facts.sort(key=lambda m: m.importance_score, reverse=True)
         return facts[:limit]
+
+    async def get_all_factual_memories(self, limit: int = 20) -> List[MemoryEntry]:
+        """
+        Retrieve factual memories from persistent SQLite storage.
+
+        This reflects the actual persisted state, not just in-memory cache.
+        Returns most recent facts first.
+
+        Args:
+            limit: Maximum number of facts to return
+
+        Returns:
+            List of factual MemoryEntry objects from SQLite, most recent first
+        """
+        if not self.sqlite:
+            self.logger.log_event("memory", "factual_retrieval_skipped", {
+                "reason": "no_sqlite_connection"
+            })
+            return []
+
+        try:
+            import pickle
+
+            # Retrieve all factual memories from SQLite
+            factual_memories = await self.sqlite.get_factual_memories(limit=limit)
+
+            if not factual_memories:
+                return []
+
+            result = []
+            for mem_dict in factual_memories:
+                # Deserialize embedding if present
+                embedding = None
+                if mem_dict.get('embedding'):
+                    try:
+                        embedding = pickle.loads(mem_dict['embedding'])
+                    except Exception as e:
+                        self.logger.log_error(e, {"phase": "embedding_deserialization", "memory_id": mem_dict['id']})
+
+                # Parse timestamp
+                try:
+                    timestamp = datetime.fromisoformat(mem_dict['timestamp'])
+                except:
+                    timestamp = datetime.now()
+
+                # Create MemoryEntry
+                entry = MemoryEntry(
+                    id=mem_dict['id'],
+                    session_id=mem_dict['session_id'],
+                    timestamp=timestamp,
+                    memory_type=mem_dict['memory_type'],
+                    content=mem_dict['content'],
+                    embedding=embedding,
+                    metadata=mem_dict.get('metadata', {}),
+                    importance_score=mem_dict.get('importance_score', 0.5),
+                    is_fact=True,
+                    entity_type=mem_dict.get('entity_type')
+                )
+                result.append(entry)
+
+            return result
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "get_all_factual_memories"})
+            return []
 
     async def update_fact(self, entity_type: str, old_content: str, new_content: str,
                          session_id: str) -> bool:
@@ -569,7 +656,10 @@ class MemoryManager:
             factual_memories = await self.sqlite.get_factual_memories()
 
             if not factual_memories:
-                self.logger.log_event("memory", "no_factual_memories", {})
+                self.logger.log_event("memory", "factual_memories_loaded", {
+                    "count": 0,
+                    "faiss_added": 0
+                })
                 return
 
             import pickle
