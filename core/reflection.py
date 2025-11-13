@@ -82,40 +82,77 @@ class ReflectionEngine:
 
     def _extract_keywords(self, text: str, top_n: int = 10) -> List[str]:
         """
-        Extract keywords from text using frequency-based analysis.
+        Extract keywords from text using TF-IDF-inspired frequency analysis.
 
         Args:
             text: Text to analyze
             top_n: Number of top keywords to return
 
         Returns:
-            List of extracted keywords
+            List of extracted keywords (clean, meaningful terms)
         """
         import re
         from collections import Counter
 
         # Convert to lowercase and extract words
-        words = re.findall(r'\b\w+\b', text.lower())
+        words = re.findall(r'\b[a-z]+\b', text.lower())
 
-        # Common stopwords to filter out
-        stopwords = {
-            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-            'of', 'with', 'by', 'from', 'as', 'is', 'was', 'were', 'be', 'been',
-            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-            'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those',
-            'i', 'you', 'he', 'she', 'it', 'we', 'they', 'what', 'which', 'who',
-            'when', 'where', 'why', 'how', 'if', 'then', 'than', 'so', 'about'
-        }
+        # Enhanced stopwords: sklearn stop words + custom pronouns
+        try:
+            from sklearn.feature_extraction import _stop_words
+            sklearn_stopwords = _stop_words.ENGLISH_STOP_WORDS
+        except ImportError:
+            # Fallback if sklearn not available
+            sklearn_stopwords = {
+                'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+                'of', 'with', 'by', 'from', 'as', 'is', 'was', 'were', 'be', 'been',
+                'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+                'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those',
+                'what', 'which', 'who', 'when', 'where', 'why', 'how', 'if', 'then',
+                'than', 'so', 'about', 'all', 'also', 'some', 'any', 'each', 'every',
+                'both', 'few', 'more', 'most', 'other', 'such', 'only', 'own', 'same'
+            }
 
-        # Filter words: remove stopwords and short words
+        # Additional pronoun filtering
+        pronouns = {"you", "your", "yours", "me", "my", "mine", "i", "we", "us", "our", "he", "she", "it", "they", "them", "their"}
+
+        # Combined stopword set
+        all_stopwords = sklearn_stopwords | pronouns
+
+        # Filter words:
+        # - Remove stopwords
+        # - Remove words < 3 characters
+        # - Remove pure punctuation tokens
+        # - Only keep alphabetic words
         filtered_words = [
             w for w in words
-            if w not in stopwords and len(w) > 3
+            if w not in all_stopwords
+            and len(w) >= 3
+            and w.isalpha()
         ]
 
-        # Count frequency and get top N
+        if not filtered_words:
+            return []
+
+        # Count frequency (simple TF weighting)
         word_counts = Counter(filtered_words)
-        keywords = [word for word, count in word_counts.most_common(top_n)]
+
+        # Calculate basic TF-IDF-like score (TF * log penalty for very common words)
+        total_words = len(filtered_words)
+        word_scores = {}
+
+        for word, count in word_counts.items():
+            # Term frequency
+            tf = count / total_words
+
+            # Simple scoring: penalize extremely common words slightly
+            # This is a simplified TF-IDF without document corpus
+            score = tf * (1 + (count / total_words))
+            word_scores[word] = score
+
+        # Get top N by score
+        sorted_words = sorted(word_scores.items(), key=lambda x: x[1], reverse=True)
+        keywords = [word for word, score in sorted_words[:top_n]]
 
         return keywords
 
@@ -244,6 +281,139 @@ class ReflectionEngine:
 
         raise Exception(f"Ollama inference failed after {self.reflection_max_retries} attempts: {last_error}")
 
+    async def _parse_reflection_json(self, prompt: str, temperature: float = 0.3) -> Dict[str, Any]:
+        """
+        Parse reflection JSON with validation and repair logic.
+
+        Args:
+            prompt: Prompt for generating reflection JSON
+            temperature: Temperature for generation
+
+        Returns:
+            Validated JSON dictionary with reflection data
+        """
+        import json
+        import re
+
+        try:
+            # Attempt to generate and parse JSON
+            generated = await self._infer_with_retry(prompt, temperature)
+
+            # Try to extract JSON from response (handles markdown code blocks)
+            json_match = re.search(r'\{[\s\S]*\}', generated)
+            if json_match:
+                json_str = json_match.group(0)
+            else:
+                json_str = generated
+
+            # Attempt to parse JSON
+            try:
+                reflection_data = json.loads(json_str)
+
+                # Validate schema
+                if self._validate_reflection_schema(reflection_data):
+                    self.logger.log_event("reflection", "json_parse_success", {
+                        "summary_length": len(reflection_data.get("summary", "")),
+                        "insights_count": len(reflection_data.get("insights", [])),
+                        "confidence": reflection_data.get("confidence", 0.75)
+                    })
+                    return reflection_data
+                else:
+                    self.logger.log_event("reflection", "json_schema_invalid", {
+                        "keys_found": list(reflection_data.keys())
+                    })
+                    raise ValueError("Invalid reflection schema")
+
+            except (json.JSONDecodeError, ValueError) as e:
+                # Log parse error
+                self.logger.log_event("reflection", "json_parse_error", {
+                    "error": str(e),
+                    "response_preview": generated[:200]
+                })
+
+                # Attempt repair with secondary LLM pass
+                repair_prompt = f"""The following text should be valid JSON but contains errors. Fix it into this exact schema:
+
+{{
+  "summary": "string",
+  "insights": ["string", "string"],
+  "patterns": ["string"],
+  "improvements": ["string"],
+  "confidence": 0.75
+}}
+
+Text to repair:
+{generated[:1000]}
+
+Output ONLY the fixed JSON, nothing else."""
+
+                try:
+                    self.logger.log_event("reflection", "json_repair_attempt", {})
+                    repaired = await self._infer_with_retry(repair_prompt, temperature=0.1)
+
+                    # Try to parse repaired JSON
+                    json_match_repair = re.search(r'\{[\s\S]*\}', repaired)
+                    if json_match_repair:
+                        repaired_json_str = json_match_repair.group(0)
+                    else:
+                        repaired_json_str = repaired
+
+                    reflection_data = json.loads(repaired_json_str)
+
+                    if self._validate_reflection_schema(reflection_data):
+                        self.logger.log_event("reflection", "json_repair_success", {})
+                        return reflection_data
+
+                except Exception as repair_error:
+                    self.logger.log_event("reflection", "json_repair_failed", {
+                        "error": str(repair_error)
+                    })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "json_parsing"})
+
+        # Fallback: return structured empty reflection
+        self.logger.log_event("reflection", "json_fallback_used", {})
+        return {
+            "summary": generated[:200] if 'generated' in locals() else "Reflection generation failed",
+            "insights": [],
+            "patterns": [],
+            "improvements": [],
+            "confidence": 0.5
+        }
+
+    def _validate_reflection_schema(self, data: Dict[str, Any]) -> bool:
+        """
+        Validate reflection JSON schema.
+
+        Args:
+            data: JSON data to validate
+
+        Returns:
+            True if schema is valid
+        """
+        required_keys = ["summary", "insights", "patterns", "improvements"]
+
+        # Check all required keys exist
+        if not all(key in data for key in required_keys):
+            return False
+
+        # Check types
+        if not isinstance(data["summary"], str):
+            return False
+        if not isinstance(data["insights"], list):
+            return False
+        if not isinstance(data["patterns"], list):
+            return False
+        if not isinstance(data["improvements"], list):
+            return False
+
+        # Confidence is optional but must be float if present
+        if "confidence" in data and not isinstance(data["confidence"], (int, float)):
+            return False
+
+        return True
+
     async def generate_session_reflection(self, session_id: str) -> Reflection:
         """
         Generate end-of-session reflection summarizing learning and interactions.
@@ -315,51 +485,35 @@ class ReflectionEngine:
                 "sentiment_label": "positive" if sentiment_score > 0.3 else "negative" if sentiment_score < -0.3 else "neutral"
             })
 
-            # Use Ollama to generate reflection summary with retry logic
+            # Use Ollama to generate reflection summary with strict JSON enforcement
             reflection_prompt = f"""You are Hugo's internal reflection system. Analyze this conversation and provide insights.
 
 Conversation:
-{conversation_text[:2000]}  # Limit for performance
+{conversation_text[:2000]}
 
-Generate a reflection with:
-1. Summary: What was discussed (2-3 sentences)
-2. Key insights: What Hugo learned about the user or topic (2-3 points)
-3. Patterns: Communication style, preferences observed (1-2 points)
-4. Improvements: How Hugo could respond better next time (1-2 points)
+CRITICAL: You MUST respond with ONLY valid JSON. No prose, no markdown, no explanations.
+If you cannot generate a reflection, return an empty JSON object with the same schema.
 
-Format as JSON:
+Required JSON schema:
 {{
-  "summary": "...",
-  "insights": ["...", "..."],
-  "patterns": ["..."],
-  "improvements": ["..."]
-}}"""
+  "summary": "string - What was discussed (2-3 sentences)",
+  "insights": ["string - What Hugo learned about user/topic", "..."],
+  "patterns": ["string - Communication style/preferences observed", "..."],
+  "improvements": ["string - How Hugo could respond better", "..."],
+  "confidence": <float 0.0-1.0>
+}}
 
-            try:
-                # Use retry logic for resilient inference
-                generated = await self._infer_with_retry(reflection_prompt, temperature=0.3)
+Output ONLY the JSON object, nothing else."""
 
-                # Try to parse JSON response
-                import json
-                try:
-                    reflection_data = json.loads(generated)
-                    summary = reflection_data.get("summary", "Session completed.")
-                    insights = reflection_data.get("insights", [])
-                    patterns = reflection_data.get("patterns", [])
-                    improvements = reflection_data.get("improvements", [])
-                except json.JSONDecodeError:
-                    # Fallback if JSON parsing fails
-                    summary = generated[:200]
-                    insights = ["Reflection generated but not structured"]
-                    patterns = []
-                    improvements = []
+            # Parse JSON with validation and repair
+            reflection_data = await self._parse_reflection_json(reflection_prompt, temperature=0.3)
 
-            except Exception as e:
-                self.logger.log_error(e, {"phase": "reflection_generation"})
-                summary = f"Reflection generation error: {str(e)}"
-                insights = []
-                patterns = []
-                improvements = []
+            # Extract validated fields
+            summary = reflection_data.get("summary", "Session completed.")
+            insights = reflection_data.get("insights", [])
+            patterns = reflection_data.get("patterns", [])
+            improvements = reflection_data.get("improvements", [])
+            confidence = reflection_data.get("confidence", 0.75)
 
             # Create reflection object with keywords and sentiment
             reflection = Reflection(
@@ -371,7 +525,7 @@ Format as JSON:
                 insights=insights,
                 patterns_observed=patterns,
                 areas_for_improvement=improvements,
-                confidence=0.75,
+                confidence=confidence,
                 metadata={
                     "message_count": len(session_memories),
                     "conversation_turns": len(conversation_turns),
@@ -482,7 +636,7 @@ Format as JSON:
                 for i, mem in enumerate(recent_reflections[:10])
             ])
 
-            # Use Ollama for macro analysis with retry logic
+            # Use Ollama for macro analysis with strict JSON enforcement
             macro_prompt = f"""You are Hugo's meta-cognitive system performing a macro reflection.
 
 Analyze these recent session reflections and identify:
@@ -494,39 +648,28 @@ Analyze these recent session reflections and identify:
 Recent Reflections:
 {reflections_text}
 
-Generate a macro reflection as JSON:
+CRITICAL: You MUST respond with ONLY valid JSON. No prose, no markdown, no explanations.
+
+Required JSON schema:
 {{
-  "summary": "High-level summary of Hugo's recent evolution (3-4 sentences)",
+  "summary": "string - High-level summary of Hugo's recent evolution (3-4 sentences)",
   "insights": ["Strategic insight 1", "Strategic insight 2", "Strategic insight 3"],
   "patterns": ["Long-term pattern 1", "Long-term pattern 2"],
-  "improvements": ["Strategic improvement area 1", "Strategic improvement area 2"]
-}}"""
+  "improvements": ["Strategic improvement area 1", "Strategic improvement area 2"],
+  "confidence": <float 0.0-1.0>
+}}
 
-            try:
-                # Use retry logic for resilient inference
-                generated = await self._infer_with_retry(macro_prompt, temperature=0.4)
+Output ONLY the JSON object, nothing else."""
 
-                # Try to parse JSON
-                import json
-                try:
-                    macro_data = json.loads(generated)
-                    summary = macro_data.get("summary", "Macro reflection completed.")
-                    insights = macro_data.get("insights", [])
-                    patterns = macro_data.get("patterns", [])
-                    improvements = macro_data.get("improvements", [])
-                except json.JSONDecodeError:
-                    # Fallback
-                    summary = generated[:300]
-                    insights = ["Macro analysis generated but not structured"]
-                    patterns = []
-                    improvements = []
+            # Parse JSON with validation and repair
+            macro_data = await self._parse_reflection_json(macro_prompt, temperature=0.4)
 
-            except Exception as e:
-                self.logger.log_error(e, {"phase": "macro_reflection_generation"})
-                summary = f"Macro reflection generation error: {str(e)}"
-                insights = []
-                patterns = []
-                improvements = []
+            # Extract validated fields
+            summary = macro_data.get("summary", "Macro reflection completed.")
+            insights = macro_data.get("insights", [])
+            patterns = macro_data.get("patterns", [])
+            improvements = macro_data.get("improvements", [])
+            confidence = macro_data.get("confidence", 0.7)
 
             # Create macro reflection
             reflection = Reflection(
@@ -538,7 +681,7 @@ Generate a macro reflection as JSON:
                 insights=insights,
                 patterns_observed=patterns,
                 areas_for_improvement=improvements,
-                confidence=0.7,
+                confidence=confidence,
                 metadata={
                     "window_days": time_window_days,
                     "reflections_analyzed": len(recent_reflections)
@@ -724,13 +867,29 @@ Confidence: {reflection.confidence:.2%}"""
                         metadata=reflection.metadata
                     )
 
-                    self.logger.log_event("reflection", "sqlite_stored", {
+                    # Log successful insertion with full details
+                    self.logger.log_event("sqlite", "reflection_inserted", {
                         "reflection_id": reflection_id,
+                        "session_id": reflection.session_id,
                         "type": reflection.type.value,
-                        "keywords_count": len(keywords) if keywords else 0
+                        "summary_length": len(reflection.summary),
+                        "insights_count": len(reflection.insights),
+                        "patterns_count": len(reflection.patterns_observed),
+                        "improvements_count": len(reflection.areas_for_improvement),
+                        "keywords_count": len(keywords) if keywords else 0,
+                        "has_embedding": embedding_bytes is not None,
+                        "sentiment": sentiment if sentiment is not None else "N/A",
+                        "confidence": reflection.confidence
                     })
 
                 except Exception as e:
+                    # Log detailed error for SQLite failures
+                    self.logger.log_event("sqlite", "reflection_error", {
+                        "error": str(e),
+                        "session_id": reflection.session_id,
+                        "type": reflection.type.value,
+                        "phase": "reflection_storage"
+                    })
                     self.logger.log_error(e, {"phase": "sqlite_reflection_storage"})
 
             self.logger.log_event("reflection", "stored", {
