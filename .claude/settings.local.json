@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git commit -m \"$(cat <<''EOF''\nFix: Add defensive check for sqlite_manager attribute in REPL\n\nPrevents AttributeError crash on REPL startup when RuntimeManager\ndoesn''t have sqlite_manager attribute. Uses hasattr() to gracefully\nhandle missing attribute.\n\nLocation: runtime/repl.py line 112 in _display_latest_meta_reflection()\n\nError Fixed:\n  AttributeError: ''RuntimeManager'' object has no attribute ''sqlite_manager''\n\nChange:\n  - Before: if not self.runtime.sqlite_manager:\n  + After: if not hasattr(self.runtime, ''sqlite_manager'') or not self.runtime.sqlite_manager:\n\nThis allows the REPL to start successfully even when sqlite_manager\nis not initialized on RuntimeManager.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
