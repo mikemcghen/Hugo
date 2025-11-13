@@ -108,7 +108,8 @@ Type 'exit' to quit.
 
     async def _display_latest_meta_reflection(self):
         """Display latest meta-reflection insight as startup context"""
-        if not self.runtime.sqlite_manager:
+        # Check if sqlite_manager exists on runtime
+        if not hasattr(self.runtime, 'sqlite_manager') or not self.runtime.sqlite_manager:
             return
 
         try:
