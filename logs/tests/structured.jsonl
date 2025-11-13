@@ -1,0 +1,177 @@
+{"timestamp": "2025-11-13T12:45:46.731383", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T12:45:46.732383", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T12:45:46.862384", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T12:45:46.868384", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "person"}}
+{"timestamp": "2025-11-13T12:45:46.875384", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T12:45:46.881383", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T12:45:46.887385", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "possession"}}
+{"timestamp": "2025-11-13T12:45:46.893384", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "occupation"}}
+{"timestamp": "2025-11-13T12:45:46.899384", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T12:45:47.653390", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T12:45:47.654392", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T12:45:47.660390", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T12:45:47.666390", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T12:45:47.671390", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 7, "results": 2, "factual_results": 2, "reflection_results": 0}}
+{"timestamp": "2025-11-13T12:45:48.472966", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T12:45:48.472966", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T12:45:48.479965", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T12:45:48.485965", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T12:45:48.485965", "category": "memory", "event_type": "fact_updated", "level": "INFO", "data": {"entity_type": "animal", "old_content_preview": "cat named Whiskers", "new_content_preview": "I have a dog named Max (corrected from cat)"}}
+{"timestamp": "2025-11-13T13:19:51.485258", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:19:51.488258", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T13:19:52.360179", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "possession"}}
+{"timestamp": "2025-11-13T13:19:52.360179", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "possession"}}
+{"timestamp": "2025-11-13T13:22:19.476539", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:22:19.477540", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T13:22:19.610538", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "possession"}}
+{"timestamp": "2025-11-13T13:22:19.611538", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "possession"}}
+{"timestamp": "2025-11-13T13:22:19.621539", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:22:19.621539", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:22:19.631539", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:22:19.632541", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:22:19.641539", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 4, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:22:19.642540", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:22:20.469548", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:22:20.470547", "category": "memory", "event_type": "faiss_index_created", "level": "INFO", "data": {"dimension": 384, "type": "Flat"}}
+{"timestamp": "2025-11-13T13:22:20.475544", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:22:20.475544", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:22:21.512546", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:22:21.527548", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:22:21.529547", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:22:21.529547", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:22:21.538547", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:22:21.544547", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:22:21.550547", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:22:21.555548", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:22:22.696557", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:22:22.704554", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:22:22.706555", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:22:22.706555", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:22:22.713555", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:22:22.719555", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:48:15.108939", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:48:15.109940", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:50:35.447526", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:50:35.448529", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:50:35.448529", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have 2 cats Will and Tonks and 2 bunnies Oswald and Keely", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:50:37.296211", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:50:37.296211", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:50:37.312211", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:50:37.313210", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My favorite language is Python", "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:50:37.323210", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:50:37.323210", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:50:37.329211", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:50:37.330210", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I live in Portland", "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:50:37.340210", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:50:37.341212", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:50:38.061214", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:50:38.061214", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:50:38.063215", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:50:38.063215", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 3, "faiss_added": 3}}
+{"timestamp": "2025-11-13T13:50:38.071214", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 16, "results": 0, "factual_results": 0, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:51:09.069903", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:51:09.077902", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:51:09.078901", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have 2 cats Will and Tonks and 2 bunnies Oswald and Keely", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:51:09.208901", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:51:09.209901", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:51:09.217901", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:51:09.217901", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My favorite language is Python", "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:51:09.227903", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:51:09.227903", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:51:09.233902", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:51:09.233902", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I live in Portland", "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:51:09.244902", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:51:09.244902", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:51:09.956910", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:51:09.957913", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:51:09.958910", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:51:09.958910", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 3, "faiss_added": 3}}
+{"timestamp": "2025-11-13T13:51:09.964911", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 16, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:52:16.610385", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:52:16.618384", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:16.618384", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have two bunnies named Oswald and Keely", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.747386", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.748386", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.748386", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My cats are Will and Tonks", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.758385", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.759386", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T13:52:16.759386", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I live in San Francisco", "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:52:16.768386", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:52:16.769387", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T13:52:16.769387", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My favorite programming language is Python", "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:52:16.779386", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 4, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:52:16.779386", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T13:52:17.580991", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:52:17.581993", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:17.583992", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:17.583992", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:52:18.354996", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:52:18.361996", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:18.362997", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:18.363999", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:52:18.369996", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:52:18.375997", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:52:18.380997", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:52:18.386997", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T13:52:19.127181", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T13:52:19.134690", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:19.135691", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T13:52:19.136692", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T13:52:19.143276", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T13:52:19.149281", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:25.295529", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T14:37:25.302530", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:25.302530", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have 2 cats named Will and Tonks", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.430532", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.430532", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.431531", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have 2 bunnies named Oswald and Keely", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.440532", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.441532", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:25.442531", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I live in Portland Oregon", "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:25.450531", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:25.451531", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:25.451531", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My favorite language is Python", "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:25.461531", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 4, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:25.461531", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:25.468531", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 16, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:25.472533", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:25.472533", "category": "memory", "event_type": "faiss_index_rebuilt_after_delete", "level": "INFO", "data": {"indexed_count": 3}}
+{"timestamp": "2025-11-13T14:37:25.472533", "category": "memory", "event_type": "memory_deleted", "level": "INFO", "data": {"memory_id": 4}}
+{"timestamp": "2025-11-13T14:37:44.579682", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T14:37:44.586682", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:44.587683", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I have two bunnies named Oswald and Keely", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.723683", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.723683", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.724687", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My cats are Will and Tonks", "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.733685", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.734685", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}}
+{"timestamp": "2025-11-13T14:37:44.734685", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "I live in San Francisco", "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:44.743684", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:44.743684", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}}
+{"timestamp": "2025-11-13T14:37:44.744686", "category": "memory", "event_type": "fact_extracted", "level": "INFO", "data": {"summary": "My favorite programming language is Python", "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:44.753683", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 4, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:44.753683", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}}
+{"timestamp": "2025-11-13T14:37:45.556491", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T14:37:45.557493", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:45.559492", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:45.559492", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T14:37:46.310496", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T14:37:46.317496", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:46.319497", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:46.319497", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T14:37:46.325497", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:46.331497", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:46.336497", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:46.342497", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}}
+{"timestamp": "2025-11-13T14:37:47.125503", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-13T14:37:47.132502", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:47.134502", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-13T14:37:47.134502", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-13T14:37:47.141502", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}}
+{"timestamp": "2025-11-13T14:37:47.147501", "category": "memory", "event_type": "semantic_search_completed", "level": "INFO", "data": {"query_length": 10, "results": 2, "factual_results": 2, "reflection_results": 0}}
+{"timestamp": "2025-11-13T15:08:06.551991", "category": "tasks", "event_type": "task_created", "level": "INFO", "data": {"task_id": 1, "title": "Wire up Hugo TaskManager", "owner": "michael", "priority": "high"}}
+{"timestamp": "2025-11-13T15:08:06.556991", "category": "tasks", "event_type": "task_created", "level": "INFO", "data": {"task_id": 2, "title": "Investigate Ollama timeout handling", "owner": "hugo", "priority": "medium"}}
+{"timestamp": "2025-11-13T15:08:06.560992", "category": "tasks", "event_type": "task_created", "level": "INFO", "data": {"task_id": 3, "title": "Add reflection statistics dashboard", "owner": "michael", "priority": "low"}}
+{"timestamp": "2025-11-13T15:08:06.565992", "category": "tasks", "event_type": "task_status_updated", "level": "INFO", "data": {"task_id": 1, "status": "in_progress"}}
+{"timestamp": "2025-11-13T15:08:06.568991", "category": "tasks", "event_type": "task_assigned", "level": "INFO", "data": {"task_id": 2, "owner": "claude-agent"}}
+{"timestamp": "2025-11-13T15:08:06.571991", "category": "tasks", "event_type": "task_status_updated", "level": "INFO", "data": {"task_id": 3, "status": "done"}}

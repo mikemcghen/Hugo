@@ -1,0 +1,316 @@
+2025-11-13 12:45:46,732 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:46,733 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:46,862 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:46,869 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "person"}
+2025-11-13 12:45:46,875 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 12:45:46,881 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 12:45:46,887 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "possession"}
+2025-11-13 12:45:46,893 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "occupation"}
+2025-11-13 12:45:46,899 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 12:45:47,653 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:47,653 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:47,654 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:47,654 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:47,660 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:47,660 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:47,666 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:47,666 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:47,671 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 7, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 12:45:47,671 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 7, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 12:45:48,472 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:48,472 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:48,472 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 12:45:48,473 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:48,473 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:48,473 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 12:45:48,479 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,479 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,479 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,485 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,485 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,485 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 12:45:48,486 - hugo - INFO - [memory] fact_updated: {"entity_type": "animal", "old_content_preview": "cat named Whiskers", "new_content_preview": "I have a dog named Max (corrected from cat)"}
+2025-11-13 12:45:48,486 - hugo - INFO - [memory] fact_updated: {"entity_type": "animal", "old_content_preview": "cat named Whiskers", "new_content_preview": "I have a dog named Max (corrected from cat)"}
+2025-11-13 12:45:48,486 - hugo - INFO - [memory] fact_updated: {"entity_type": "animal", "old_content_preview": "cat named Whiskers", "new_content_preview": "I have a dog named Max (corrected from cat)"}
+2025-11-13 13:19:51,486 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:19:51,488 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 13:19:52,360 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "possession"}
+2025-11-13 13:19:52,361 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "possession"}
+2025-11-13 13:22:19,476 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:19,477 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 13:22:19,610 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "possession"}
+2025-11-13 13:22:19,611 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "possession"}
+2025-11-13 13:22:19,621 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:22:19,621 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:22:19,632 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:22:19,632 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:22:19,642 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:22:19,642 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:22:20,470 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:20,470 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:20,470 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 13:22:20,470 - hugo - INFO - [memory] faiss_index_created: {"dimension": 384, "type": "Flat"}
+2025-11-13 13:22:20,475 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:20,475 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:20,475 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:20,475 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:21,513 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:21,513 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:21,513 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:21,527 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,527 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,527 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:21,529 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:21,538 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,538 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,538 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,544 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:22:21,544 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:22:21,544 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:22:21,550 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,550 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,550 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,556 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,556 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:21,556 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:22,697 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:22,697 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:22,697 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:22,697 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:22:22,705 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,705 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,705 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,705 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,706 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,706 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,706 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,706 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:22:22,707 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:22,707 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:22,707 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:22,707 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:22:22,713 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:22:22,713 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:22:22,713 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:22:22,713 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:22:22,720 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:22,720 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:22,720 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:22:22,720 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:48:15,109 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:48:15,109 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:35,447 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:50:35,448 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:35,448 - hugo - INFO - [memory] fact_extracted: {"summary": "I have 2 cats Will and Tonks and 2 bunnies Oswald and Keely", "entity_type": "animal"}
+2025-11-13 13:50:37,296 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:50:37,297 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:50:37,313 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:50:37,313 - hugo - INFO - [memory] fact_extracted: {"summary": "My favorite language is Python", "entity_type": "preference"}
+2025-11-13 13:50:37,323 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:50:37,324 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:50:37,330 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:50:37,330 - hugo - INFO - [memory] fact_extracted: {"summary": "I live in Portland", "entity_type": "location"}
+2025-11-13 13:50:37,340 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:50:37,341 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:50:38,061 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:50:38,061 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:50:38,062 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:38,062 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:38,063 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:38,063 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:50:38,063 - hugo - INFO - [memory] factual_memories_loaded: {"count": 3, "faiss_added": 3}
+2025-11-13 13:50:38,063 - hugo - INFO - [memory] factual_memories_loaded: {"count": 3, "faiss_added": 3}
+2025-11-13 13:50:38,071 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 16, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 13:50:38,071 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 16, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 13:51:09,070 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:51:09,077 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:51:09,078 - hugo - INFO - [memory] fact_extracted: {"summary": "I have 2 cats Will and Tonks and 2 bunnies Oswald and Keely", "entity_type": "animal"}
+2025-11-13 13:51:09,209 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:51:09,209 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:51:09,217 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:51:09,217 - hugo - INFO - [memory] fact_extracted: {"summary": "My favorite language is Python", "entity_type": "preference"}
+2025-11-13 13:51:09,227 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:51:09,227 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:51:09,233 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:51:09,234 - hugo - INFO - [memory] fact_extracted: {"summary": "I live in Portland", "entity_type": "location"}
+2025-11-13 13:51:09,244 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:51:09,244 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:51:09,956 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:51:09,956 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:51:09,957 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:51:09,957 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:51:09,958 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:51:09,958 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:51:09,959 - hugo - INFO - [memory] factual_memories_loaded: {"count": 3, "faiss_added": 3}
+2025-11-13 13:51:09,959 - hugo - INFO - [memory] factual_memories_loaded: {"count": 3, "faiss_added": 3}
+2025-11-13 13:51:09,965 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 16, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:51:09,965 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 16, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:16,610 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:16,618 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:16,618 - hugo - INFO - [memory] fact_extracted: {"summary": "I have two bunnies named Oswald and Keely", "entity_type": "animal"}
+2025-11-13 13:52:16,748 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:52:16,748 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:52:16,748 - hugo - INFO - [memory] fact_extracted: {"summary": "My cats are Will and Tonks", "entity_type": "animal"}
+2025-11-13 13:52:16,759 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:52:16,759 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 13:52:16,759 - hugo - INFO - [memory] fact_extracted: {"summary": "I live in San Francisco", "entity_type": "location"}
+2025-11-13 13:52:16,769 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:52:16,769 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 13:52:16,770 - hugo - INFO - [memory] fact_extracted: {"summary": "My favorite programming language is Python", "entity_type": "preference"}
+2025-11-13 13:52:16,779 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:52:16,779 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 13:52:17,581 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:17,581 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:17,582 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:17,582 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:17,583 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:17,583 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:17,583 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:17,583 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:18,355 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:18,355 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:18,355 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:18,361 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,361 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,361 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:18,364 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:18,369 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,369 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,369 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,375 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:52:18,375 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:52:18,375 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 13:52:18,380 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,380 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,380 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,386 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,386 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:18,386 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:19,127 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:19,127 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:19,127 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:19,127 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 13:52:19,134 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,134 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,134 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,134 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:19,136 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 13:52:19,143 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:52:19,143 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:52:19,143 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:52:19,143 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 13:52:19,150 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:19,150 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:19,150 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 13:52:19,150 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:25,296 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:25,302 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:25,303 - hugo - INFO - [memory] fact_extracted: {"summary": "I have 2 cats named Will and Tonks", "entity_type": "animal"}
+2025-11-13 14:37:25,430 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:25,430 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:25,431 - hugo - INFO - [memory] fact_extracted: {"summary": "I have 2 bunnies named Oswald and Keely", "entity_type": "animal"}
+2025-11-13 14:37:25,441 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:25,441 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:25,442 - hugo - INFO - [memory] fact_extracted: {"summary": "I live in Portland Oregon", "entity_type": "location"}
+2025-11-13 14:37:25,451 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 14:37:25,451 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 14:37:25,452 - hugo - INFO - [memory] fact_extracted: {"summary": "My favorite language is Python", "entity_type": "preference"}
+2025-11-13 14:37:25,461 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "is_fact": true, "entity_type": "preference"}
+2025-11-13 14:37:25,461 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 14:37:25,468 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 16, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:25,472 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:25,472 - hugo - INFO - [memory] faiss_index_rebuilt_after_delete: {"indexed_count": 3}
+2025-11-13 14:37:25,473 - hugo - INFO - [memory] memory_deleted: {"memory_id": 4}
+2025-11-13 14:37:44,580 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:44,587 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:44,587 - hugo - INFO - [memory] fact_extracted: {"summary": "I have two bunnies named Oswald and Keely", "entity_type": "animal"}
+2025-11-13 14:37:44,723 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:44,724 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:44,724 - hugo - INFO - [memory] fact_extracted: {"summary": "My cats are Will and Tonks", "entity_type": "animal"}
+2025-11-13 14:37:44,733 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:44,734 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "animal"}
+2025-11-13 14:37:44,734 - hugo - INFO - [memory] fact_extracted: {"summary": "I live in San Francisco", "entity_type": "location"}
+2025-11-13 14:37:44,743 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "is_fact": true, "entity_type": "location"}
+2025-11-13 14:37:44,744 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "location"}
+2025-11-13 14:37:44,744 - hugo - INFO - [memory] fact_extracted: {"summary": "My favorite programming language is Python", "entity_type": "preference"}
+2025-11-13 14:37:44,753 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "is_fact": true, "entity_type": "preference"}
+2025-11-13 14:37:44,754 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": true, "has_embedding": true, "is_fact": true, "entity_type": "preference"}
+2025-11-13 14:37:45,557 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:45,557 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:45,558 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:45,558 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:45,559 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:45,559 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:45,560 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:45,560 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:46,310 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:46,310 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:46,310 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:46,318 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,318 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,318 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:46,319 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:46,326 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,326 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,326 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 19, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,331 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:46,331 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:46,331 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 22, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:46,337 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,337 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,337 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 15, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,342 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,342 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:46,342 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 1, "factual_results": 1, "reflection_results": 0}
+2025-11-13 14:37:47,125 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:47,125 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:47,125 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:47,125 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 14:37:47,133 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,133 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,133 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,133 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,134 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,134 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,134 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,134 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 14:37:47,135 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:47,135 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:47,135 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:47,135 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-13 14:37:47,141 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 14:37:47,141 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 14:37:47,141 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 14:37:47,141 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 14:37:47,147 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:47,147 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:47,147 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 14:37:47,147 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 10, "results": 2, "factual_results": 2, "reflection_results": 0}
+2025-11-13 15:08:06,552 - hugo - INFO - [tasks] task_created: {"task_id": 1, "title": "Wire up Hugo TaskManager", "owner": "michael", "priority": "high"}
+2025-11-13 15:08:06,557 - hugo - INFO - [tasks] task_created: {"task_id": 2, "title": "Investigate Ollama timeout handling", "owner": "hugo", "priority": "medium"}
+2025-11-13 15:08:06,560 - hugo - INFO - [tasks] task_created: {"task_id": 3, "title": "Add reflection statistics dashboard", "owner": "michael", "priority": "low"}
+2025-11-13 15:08:06,565 - hugo - INFO - [tasks] task_status_updated: {"task_id": 1, "status": "in_progress"}
+2025-11-13 15:08:06,568 - hugo - INFO - [tasks] task_assigned: {"task_id": 2, "owner": "claude-agent"}
+2025-11-13 15:08:06,571 - hugo - INFO - [tasks] task_status_updated: {"task_id": 3, "status": "done"}
