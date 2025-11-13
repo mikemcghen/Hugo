@@ -84,6 +84,9 @@ class HugoREPL:
                 elif user_input.lower().startswith('mem ') or user_input.lower() == 'mem':
                     await self._handle_mem_command(user_input)
                     continue
+                elif user_input.lower().startswith('task ') or user_input.lower() == 'task':
+                    await self._handle_task_command(user_input)
+                    continue
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
@@ -175,6 +178,14 @@ Memory commands:
   mem show <id>         Show full details for a memory
   mem delete <id>       Delete a memory and update index
   mem search <query>    Semantic search over stored memories
+
+Task commands:
+  task new              Create a new task (interactive)
+  task list             List all tasks
+  task list mine        List tasks owned by michael
+  task show <id>        Show a specific task
+  task done <id>        Mark a task as done
+  task assign <id> <owner>  Assign a task to an owner
 
 Reflection commands:
   /reflect recent       Show recent reflections
@@ -856,3 +867,212 @@ Just type naturally to chat with Hugo!
         except Exception as e:
             self.logger.log_error(e, {"phase": "mem_search", "query": query})
             print(f"\nError searching memories: {str(e)}")
+
+    async def _handle_task_command(self, command: str):
+        """Handle task console commands"""
+        parts = command.split(maxsplit=2)
+
+        if len(parts) < 2 or parts[1].lower() == 'help':
+            print("\nTask commands:")
+            print("  task new                 - Create a new task (interactive)")
+            print("  task list                - List all tasks")
+            print("  task list mine           - List tasks owned by michael")
+            print("  task show <id>           - Show a specific task")
+            print("  task done <id>           - Mark a task as done")
+            print("  task assign <id> <owner> - Assign a task to an owner")
+            return
+
+        subcommand = parts[1].lower()
+
+        if subcommand == 'new':
+            await self._task_new()
+        elif subcommand == 'list':
+            if len(parts) >= 3 and parts[2].lower() == 'mine':
+                await self._task_list(owner="michael")
+            else:
+                await self._task_list()
+        elif subcommand == 'show' and len(parts) >= 3:
+            await self._task_show(parts[2])
+        elif subcommand == 'done' and len(parts) >= 3:
+            await self._task_done(parts[2])
+        elif subcommand == 'assign' and len(parts) >= 3:
+            task_id_and_owner = parts[2].split(maxsplit=1)
+            if len(task_id_and_owner) >= 2:
+                await self._task_assign(task_id_and_owner[0], task_id_and_owner[1])
+            else:
+                print("\nUsage: task assign <id> <owner>")
+        else:
+            print(f"\nUnknown task command or missing argument")
+            print("Type 'task help' for available commands")
+
+    async def _task_new(self):
+        """Create a new task interactively"""
+        if not self.runtime.tasks:
+            print("\n(Task manager not initialized)")
+            return
+
+        try:
+            print("\n--- Create New Task ---")
+
+            # Prompt for title
+            loop = asyncio.get_event_loop()
+            title = await loop.run_in_executor(None, input, "Title: ")
+            if not title.strip():
+                print("Title cannot be empty. Task creation cancelled.")
+                return
+
+            # Prompt for description
+            description = await loop.run_in_executor(None, input, "Description: ")
+
+            # Prompt for owner
+            owner = await loop.run_in_executor(None, input, "Owner [michael]: ")
+            owner = owner.strip() if owner.strip() else "michael"
+
+            # Prompt for priority
+            priority = await loop.run_in_executor(None, input, "Priority [medium]: ")
+            priority = priority.strip() if priority.strip() else "medium"
+
+            # Create task
+            task = await self.runtime.tasks.create_task(
+                title=title.strip(),
+                description=description.strip(),
+                owner=owner,
+                priority=priority
+            )
+
+            print(f"\n✓ Created task #{task.id}: {task.title} (owner: {task.owner}, status: {task.status})")
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "task_new"})
+            print(f"\nError creating task: {str(e)}")
+
+    async def _task_list(self, owner: Optional[str] = None):
+        """List tasks"""
+        if not self.runtime.tasks:
+            print("\n(Task manager not initialized)")
+            return
+
+        try:
+            tasks = await self.runtime.tasks.list_tasks(owner=owner)
+
+            if not tasks:
+                if owner:
+                    print(f"\nNo tasks found for owner: {owner}")
+                else:
+                    print("\nNo tasks found yet.")
+                return
+
+            print("\n" + "=" * 80)
+            print(f"{'ID':<6} {'Status':<13} {'Owner':<12} {'Priority':<10} Title")
+            print("=" * 80)
+
+            for task in tasks:
+                task_id = task.id
+                status = task.status
+                task_owner = task.owner or 'N/A'
+                task_priority = task.priority or 'N/A'
+                title = task.title[:40] + '...' if len(task.title) > 40 else task.title
+
+                print(f"{task_id:<6} {status:<13} {task_owner:<12} {task_priority:<10} {title}")
+
+            print("=" * 80)
+            print(f"Total: {len(tasks)} task(s)")
+            print()
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "task_list"})
+            print(f"\nError listing tasks: {str(e)}")
+
+    async def _task_show(self, task_id_str: str):
+        """Show task details"""
+        if not self.runtime.tasks:
+            print("\n(Task manager not initialized)")
+            return
+
+        try:
+            # Parse ID
+            try:
+                task_id = int(task_id_str)
+            except ValueError:
+                print(f"\nInvalid task ID: '{task_id_str}' (must be an integer)")
+                return
+
+            # Fetch task
+            task = await self.runtime.tasks.get_task(task_id)
+
+            if not task:
+                print(f"\nNo task found with id {task_id}")
+                return
+
+            # Display task details
+            print("\n" + "=" * 70)
+            print(f"Task #{task.id}")
+            print("=" * 70)
+            print(f"  Title: {task.title}")
+            print(f"  Description: {task.description}")
+            print(f"  Status: {task.status}")
+            print(f"  Owner: {task.owner}")
+            print(f"  Priority: {task.priority}")
+
+            if task.tags:
+                print(f"  Tags: {', '.join(task.tags)}")
+
+            print(f"  Created: {task.created_at.strftime('%Y-%m-%d %H:%M:%S') if hasattr(task.created_at, 'strftime') else str(task.created_at)}")
+            print(f"  Updated: {task.updated_at.strftime('%Y-%m-%d %H:%M:%S') if hasattr(task.updated_at, 'strftime') else str(task.updated_at)}")
+            print("=" * 70)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "task_show", "task_id": task_id_str})
+            print(f"\nError showing task: {str(e)}")
+
+    async def _task_done(self, task_id_str: str):
+        """Mark task as done"""
+        if not self.runtime.tasks:
+            print("\n(Task manager not initialized)")
+            return
+
+        try:
+            # Parse ID
+            try:
+                task_id = int(task_id_str)
+            except ValueError:
+                print(f"\nInvalid task ID: '{task_id_str}' (must be an integer)")
+                return
+
+            # Update status
+            success = await self.runtime.tasks.update_task_status(task_id, "done")
+
+            if success:
+                print(f"\n✓ Task {task_id} marked as done")
+            else:
+                print(f"\nNo task found with id {task_id}")
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "task_done", "task_id": task_id_str})
+            print(f"\nError marking task as done: {str(e)}")
+
+    async def _task_assign(self, task_id_str: str, owner: str):
+        """Assign task to owner"""
+        if not self.runtime.tasks:
+            print("\n(Task manager not initialized)")
+            return
+
+        try:
+            # Parse ID
+            try:
+                task_id = int(task_id_str)
+            except ValueError:
+                print(f"\nInvalid task ID: '{task_id_str}' (must be an integer)")
+                return
+
+            # Assign task
+            success = await self.runtime.tasks.assign_task(task_id, owner)
+
+            if success:
+                print(f"\n✓ Task {task_id} assigned to {owner}")
+            else:
+                print(f"\nNo task found with id {task_id}")
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "task_assign", "task_id": task_id_str})
+            print(f"\nError assigning task: {str(e)}")

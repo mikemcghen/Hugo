@@ -73,6 +73,7 @@ class RuntimeManager:
         self.cognition = None
         self.memory = None
         self.reflection = None
+        self.tasks = None
         self.directives = None
         self.scheduler = None
 
@@ -275,6 +276,11 @@ class RuntimeManager:
             from core.reflection import ReflectionEngine
             self.reflection = ReflectionEngine(self.memory, self.logger, self.sqlite_manager)
             print("  ✓ Reflection engine initialized")
+
+            # Task manager with SQLite connection
+            from core.tasks import TaskManager
+            self.tasks = TaskManager(self.sqlite_manager, self.logger)
+            print("  ✓ Task manager initialized")
 
             # Scheduler will be initialized later
             self.scheduler = None

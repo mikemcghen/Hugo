@@ -155,6 +155,21 @@ class SQLiteManager:
             )
         """)
 
+        # Tasks table (structured task tracking system)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                description TEXT,
+                status TEXT NOT NULL,
+                owner TEXT,
+                priority TEXT,
+                tags TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+
         # Create indices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_session ON recent_messages(session_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON recent_messages(timestamp)")
@@ -166,6 +181,9 @@ class SQLiteManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_is_fact ON memories(is_fact)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_timestamp ON memories(timestamp)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_memories_entity_type ON memories(entity_type)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_owner ON tasks(owner)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status_owner ON tasks(status, owner)")
 
         self.conn.commit()
 
