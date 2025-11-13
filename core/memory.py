@@ -721,3 +721,173 @@ class MemoryManager:
 
         except Exception as e:
             self.logger.log_error(e, {"phase": "load_factual_memories"})
+
+    async def list_factual_memories(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """
+        List factual memories from SQLite storage.
+
+        Args:
+            limit: Maximum number of memories to return
+
+        Returns:
+            List of memory dictionaries
+        """
+        if not self.sqlite:
+            return []
+
+        return await self.sqlite.get_factual_memories(limit=limit)
+
+    async def get_memory(self, memory_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Fetch a single memory by ID from SQLite.
+
+        Args:
+            memory_id: Memory ID to fetch
+
+        Returns:
+            Memory dictionary or None if not found
+        """
+        if not self.sqlite:
+            return None
+
+        return await self.sqlite.get_memory_by_id(memory_id)
+
+    async def delete_memory(self, memory_id: int) -> bool:
+        """
+        Delete a memory by ID and rebuild FAISS index.
+
+        Args:
+            memory_id: Memory ID to delete
+
+        Returns:
+            True if deletion succeeded, False otherwise
+        """
+        if not self.sqlite:
+            return False
+
+        try:
+            # Delete from SQLite
+            deleted = await self.sqlite.delete_memory(memory_id)
+
+            if deleted:
+                # Rebuild FAISS index to maintain consistency
+                await self._rebuild_faiss_index_from_sqlite()
+
+                self.logger.log_event("memory", "memory_deleted", {
+                    "memory_id": memory_id
+                })
+
+            return deleted
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "delete_memory", "memory_id": memory_id})
+            return False
+
+    async def _rebuild_faiss_index_from_sqlite(self):
+        """
+        Rebuild FAISS index from all memories in SQLite.
+
+        Called after deletion to ensure index consistency.
+        """
+        if not self.enable_faiss or not self.faiss_index or not self.sqlite:
+            return
+
+        try:
+            import pickle
+
+            # Clear existing index and mapping
+            self.faiss_index.reset()
+            self.memory_id_map.clear()
+            self.cache.clear()
+
+            # Retrieve all memories with embeddings
+            all_memories = await self.sqlite.get_all_memories_with_embeddings()
+
+            indexed_count = 0
+            for mem_dict in all_memories:
+                # Deserialize embedding
+                embedding = None
+                if mem_dict.get('embedding'):
+                    try:
+                        embedding = pickle.loads(mem_dict['embedding'])
+                    except Exception as e:
+                        self.logger.log_error(e, {"phase": "embedding_deserialization", "memory_id": mem_dict['id']})
+                        continue
+
+                if embedding is None:
+                    continue
+
+                # Parse timestamp
+                try:
+                    timestamp = datetime.fromisoformat(mem_dict['timestamp'])
+                except:
+                    timestamp = datetime.now()
+
+                # Create MemoryEntry and add to cache
+                entry = MemoryEntry(
+                    id=mem_dict['id'],
+                    session_id=mem_dict['session_id'],
+                    timestamp=timestamp,
+                    memory_type=mem_dict['memory_type'],
+                    content=mem_dict['content'],
+                    embedding=embedding,
+                    metadata=mem_dict.get('metadata', {}),
+                    importance_score=mem_dict.get('importance_score', 0.5),
+                    is_fact=mem_dict.get('is_fact', False),
+                    entity_type=mem_dict.get('entity_type')
+                )
+                self.cache.append(entry)
+
+                # Add to FAISS index
+                try:
+                    embedding_vector = np.array([embedding], dtype=np.float32)
+                    self.faiss_index.add(embedding_vector)
+                    self.memory_id_map.append(entry.id)
+                    indexed_count += 1
+                except Exception as e:
+                    self.logger.log_error(e, {"phase": "faiss_add_on_rebuild", "memory_id": mem_dict['id']})
+
+            # Save FAISS index
+            if indexed_count > 0:
+                self._save_faiss_index()
+
+            self.logger.log_event("memory", "faiss_index_rebuilt_after_delete", {
+                "indexed_count": indexed_count
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "rebuild_faiss_index"})
+
+    async def search_memories(self, query: str, k: int = 5) -> List[Dict[str, Any]]:
+        """
+        Semantic search over memories (wrapper for REPL console).
+
+        Args:
+            query: Search query
+            k: Number of results to return
+
+        Returns:
+            List of memory dictionaries with scores
+        """
+        try:
+            # Use existing semantic search
+            results = await self.search_semantic(query, limit=k, threshold=0.3)
+
+            # Convert to dictionary format with scores
+            formatted_results = []
+            for mem in results:
+                formatted_results.append({
+                    'id': mem.id,
+                    'score': mem.importance_score,  # Using importance as proxy for relevance
+                    'content': mem.content,
+                    'is_fact': mem.is_fact,
+                    'entity_type': mem.entity_type,
+                    'memory_type': mem.memory_type,
+                    'created_at': mem.timestamp.isoformat() if hasattr(mem.timestamp, 'isoformat') else str(mem.timestamp)
+                })
+
+            return formatted_results
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "search_memories"})
+            return []

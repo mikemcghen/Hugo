@@ -81,6 +81,9 @@ class HugoREPL:
                 elif user_input.lower() == 'facts':
                     await self._show_all_factual_memories()
                     continue
+                elif user_input.lower().startswith('mem ') or user_input.lower() == 'mem':
+                    await self._handle_mem_command(user_input)
+                    continue
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
@@ -165,11 +168,21 @@ Hugo Shell Commands:
   clear                 Clear the screen
   history               Show command history
   facts                 Show all factual memories (from persistent storage)
+  exit                  Exit the shell (also: quit, bye, Ctrl+D)
+
+Memory commands:
+  mem facts             List recent factual memories
+  mem show <id>         Show full details for a memory
+  mem delete <id>       Delete a memory and update index
+  mem search <query>    Semantic search over stored memories
+
+Reflection commands:
   /reflect recent       Show recent reflections
   /reflect meta         Show latest meta-reflection
+
+Debug commands:
   /memory show facts    Show all factual memories
   /memory search <query> Debug semantic search with ranking scores
-  exit                  Exit the shell (also: quit, bye, Ctrl+D)
 
 Just type naturally to chat with Hugo!
 """
@@ -637,3 +650,209 @@ Just type naturally to chat with Hugo!
         except Exception as e:
             self.logger.log_error(e, {"phase": "debug_semantic_search"})
             print(f"\nError during semantic search: {str(e)}")
+
+    async def _handle_mem_command(self, command: str):
+        """Handle mem console commands"""
+        parts = command.split(maxsplit=2)
+
+        if len(parts) < 2:
+            print("\nUsage:")
+            print("  mem facts           - List recent factual memories")
+            print("  mem show <id>       - Show full details for a memory")
+            print("  mem delete <id>     - Delete a memory and update index")
+            print("  mem search <query>  - Semantic search over stored memories")
+            return
+
+        subcommand = parts[1].lower()
+
+        if subcommand == 'facts':
+            await self._mem_facts()
+        elif subcommand == 'show' and len(parts) >= 3:
+            await self._mem_show(parts[2])
+        elif subcommand == 'delete' and len(parts) >= 3:
+            await self._mem_delete(parts[2])
+        elif subcommand == 'search' and len(parts) >= 3:
+            query = parts[2].strip('"\'')  # Remove quotes if present
+            await self._mem_search(query)
+        else:
+            print(f"\nUnknown mem command or missing argument")
+            print("Available: facts, show <id>, delete <id>, search <query>")
+
+    async def _mem_facts(self):
+        """List factual memories (mem facts)"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            facts = await self.runtime.memory.list_factual_memories(limit=20)
+
+            if not facts:
+                print("\nNo factual memories found yet.")
+                self.logger.log_event("mem_console", "facts_listed", {"count": 0})
+                return
+
+            print("\n" + "=" * 70)
+            print(f"{'ID':<6} {'Type':<8} {'Entity':<12} {'Created':<20} Preview")
+            print("=" * 70)
+
+            for fact in facts:
+                fact_id = fact.get('id', 'N/A')
+                memory_type = 'fact'
+                entity_type = fact.get('entity_type', 'unknown')[:11]
+                timestamp = fact.get('timestamp', '')[:19]
+                content = fact.get('content', '')
+                preview = content[:35] + '...' if len(content) > 35 else content
+
+                print(f"{fact_id:<6} {memory_type:<8} {entity_type:<12} {timestamp:<20} {preview}")
+
+            print("=" * 70)
+            print(f"Total: {len(facts)} factual memories")
+            print()
+
+            self.logger.log_event("mem_console", "facts_listed", {"count": len(facts)})
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "mem_facts"})
+            print(f"\nError listing facts: {str(e)}")
+
+    async def _mem_show(self, memory_id_str: str):
+        """Show full memory details (mem show <id>)"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            # Parse ID
+            try:
+                memory_id = int(memory_id_str)
+            except ValueError:
+                print(f"\nInvalid memory ID: '{memory_id_str}' (must be an integer)")
+                return
+
+            # Fetch memory
+            memory = await self.runtime.memory.get_memory(memory_id)
+
+            if not memory:
+                print(f"\nNo memory found with id {memory_id}")
+                self.logger.log_event("mem_console", "show_memory", {
+                    "id": memory_id,
+                    "found": False
+                })
+                return
+
+            # Display memory details
+            print("\n" + "=" * 70)
+            print(f"Memory ID: {memory.get('id', 'N/A')}")
+            print(f"Type: {'fact' if memory.get('is_fact') else memory.get('memory_type', 'N/A')}")
+
+            if memory.get('entity_type'):
+                print(f"Entity: {memory.get('entity_type')}")
+
+            print(f"Created: {memory.get('timestamp', 'N/A')}")
+            print(f"Session: {memory.get('session_id', 'N/A')}")
+            print(f"Importance: {memory.get('importance_score', 'N/A')}")
+
+            metadata = memory.get('metadata', {})
+            if metadata:
+                # Show relevant metadata fields
+                if 'keywords' in metadata:
+                    keywords = metadata['keywords']
+                    if isinstance(keywords, list):
+                        print(f"Keywords: {', '.join(keywords[:10])}")
+
+                if 'sentiment_score' in metadata:
+                    sentiment = metadata['sentiment_score']
+                    sentiment_label = "positive" if sentiment > 0.3 else "negative" if sentiment < -0.3 else "neutral"
+                    print(f"Sentiment: {sentiment:.2f} ({sentiment_label})")
+
+            print(f"\nContent:")
+            print(f"{memory.get('content', '(no content)')}")
+            print("=" * 70)
+
+            self.logger.log_event("mem_console", "show_memory", {
+                "id": memory_id,
+                "found": True
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "mem_show", "memory_id": memory_id_str})
+            print(f"\nError showing memory: {str(e)}")
+
+    async def _mem_delete(self, memory_id_str: str):
+        """Delete a memory (mem delete <id>)"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            # Parse ID
+            try:
+                memory_id = int(memory_id_str)
+            except ValueError:
+                print(f"\nInvalid memory ID: '{memory_id_str}' (must be an integer)")
+                return
+
+            # Delete memory
+            deleted = await self.runtime.memory.delete_memory(memory_id)
+
+            if deleted:
+                print(f"\n✓ Deleted memory {memory_id} and rebuilt index")
+                self.logger.log_event("mem_console", "delete_memory", {
+                    "id": memory_id,
+                    "deleted": True
+                })
+            else:
+                print(f"\nNo memory found with id {memory_id}")
+                self.logger.log_event("mem_console", "delete_memory", {
+                    "id": memory_id,
+                    "deleted": False
+                })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "mem_delete", "memory_id": memory_id_str})
+            print(f"\nError deleting memory: {str(e)}")
+
+    async def _mem_search(self, query: str):
+        """Search memories semantically (mem search <query>)"""
+        if not self.runtime.memory:
+            print("\n(Memory manager not initialized)")
+            return
+
+        try:
+            print(f"\nSearch results for: {query}\n")
+
+            results = await self.runtime.memory.search_memories(query, k=5)
+
+            if not results:
+                print("No results found")
+                self.logger.log_event("mem_console", "search_memories", {
+                    "query": query,
+                    "results": 0
+                })
+                return
+
+            for i, mem in enumerate(results, 1):
+                mem_id = mem.get('id', 'N/A')
+                score = mem.get('score', 0.0)
+                mem_type = 'fact' if mem.get('is_fact') else mem.get('memory_type', 'unknown')
+                entity_type = mem.get('entity_type', '')
+
+                type_label = f"{mem_type}"
+                if entity_type:
+                    type_label = f"{mem_type}, entity={entity_type}"
+
+                content = mem.get('content', '')
+                preview = content[:60] + '...' if len(content) > 60 else content
+
+                print(f"{i}) [id={mem_id}, score={score:.2f}, type={type_label}]")
+                print(f"   {preview}\n")
+
+            self.logger.log_event("mem_console", "search_memories", {
+                "query": query,
+                "results": len(results)
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "mem_search", "query": query})
+            print(f"\nError searching memories: {str(e)}")

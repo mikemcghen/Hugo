@@ -634,6 +634,68 @@ class SQLiteManager:
 
         return memories
 
+    async def get_memory_by_id(self, memory_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Fetch a single memory by ID.
+
+        Args:
+            memory_id: Memory ID to fetch
+
+        Returns:
+            Dictionary with memory data, or None if not found
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_memory_by_id_sync, memory_id)
+
+    def _get_memory_by_id_sync(self, memory_id: int) -> Optional[Dict[str, Any]]:
+        """Synchronous memory-by-id retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT id, session_id, timestamp, memory_type, content, embedding,
+                   metadata, importance_score, is_fact, entity_type
+            FROM memories
+            WHERE id = ?
+        """, (memory_id,))
+
+        row = cursor.fetchone()
+        if not row:
+            return None
+
+        return {
+            'id': row['id'],
+            'session_id': row['session_id'],
+            'timestamp': row['timestamp'],
+            'memory_type': row['memory_type'],
+            'content': row['content'],
+            'embedding': row['embedding'],  # Bytes
+            'metadata': json.loads(row['metadata']) if row['metadata'] else {},
+            'importance_score': row['importance_score'],
+            'is_fact': bool(row['is_fact']),
+            'entity_type': row['entity_type']
+        }
+
+    async def delete_memory(self, memory_id: int) -> bool:
+        """
+        Delete a memory by ID.
+
+        Args:
+            memory_id: Memory ID to delete
+
+        Returns:
+            True if a row was deleted, False otherwise
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._delete_memory_sync, memory_id)
+
+    def _delete_memory_sync(self, memory_id: int) -> bool:
+        """Synchronous memory deletion"""
+        cursor = self.conn.cursor()
+        cursor.execute("DELETE FROM memories WHERE id = ?", (memory_id,))
+        self.conn.commit()
+        return cursor.rowcount > 0
+
     async def get_all_memories_with_embeddings(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """
         Retrieve all memories that have embeddings (for FAISS rebuild).
