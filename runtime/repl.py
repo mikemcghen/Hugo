@@ -45,6 +45,9 @@ class HugoREPL:
 
         self._display_welcome()
 
+        # Display latest meta-reflection if available
+        await self._display_latest_meta_reflection()
+
         try:
             while self.running:
                 # Get user input
@@ -75,6 +78,9 @@ class HugoREPL:
                 elif user_input.lower() == 'history':
                     self._show_history()
                     continue
+                elif user_input.lower().startswith('/reflect'):
+                    await self._handle_reflect_command(user_input)
+                    continue
 
                 # Process through cognition engine
                 await self._process_message(user_input)
@@ -100,15 +106,37 @@ Type 'exit' to quit.
 """
         print(welcome)
 
+    async def _display_latest_meta_reflection(self):
+        """Display latest meta-reflection insight as startup context"""
+        if not self.runtime.sqlite_manager:
+            return
+
+        try:
+            meta = await self.runtime.sqlite_manager.get_latest_meta_reflection()
+            if meta:
+                print("🪞 Last Reflection Insight:")
+                # Truncate summary to 120 characters for conciseness
+                summary = meta['summary']
+                if len(summary) > 120:
+                    summary = summary[:117] + "..."
+                print(f"   {summary}\n")
+        except Exception as e:
+            # Silently fail - don't disrupt startup
+            self.logger.log_event("repl", "meta_reflection_load_failed", {
+                "error": str(e)
+            })
+
     def _display_help(self):
         """Display help message"""
         help_text = """
 Hugo Shell Commands:
 --------------------
-  help      Show this help message
-  clear     Clear the screen
-  history   Show command history
-  exit      Exit the shell (also: quit, bye, Ctrl+D)
+  help           Show this help message
+  clear          Clear the screen
+  history        Show command history
+  /reflect recent   Show recent reflections
+  /reflect meta     Show latest meta-reflection
+  exit           Exit the shell (also: quit, bye, Ctrl+D)
 
 Just type naturally to chat with Hugo!
 """
@@ -215,7 +243,7 @@ Just type naturally to chat with Hugo!
 
     async def _handle_exit(self):
         """Handle graceful exit with reflection"""
-        print("\nGenerating session reflection...")
+        print("\n🪞 Generating session reflection...")
 
         # Generate session reflection if available
         if self.runtime.reflection:
@@ -224,25 +252,20 @@ Just type naturally to chat with Hugo!
                     self.session_id
                 )
 
-                # Display reflection summary
-                print("\n" + "=" * 60)
-                print("SESSION REFLECTION")
-                print("=" * 60)
-                print(f"\n{reflection.summary}\n")
+                # Display brief summary
+                print(f"\nSession Summary: {reflection.summary[:150]}..." if len(reflection.summary) > 150 else f"\nSession Summary: {reflection.summary}")
 
                 if reflection.insights:
-                    print("Key Insights:")
-                    for insight in reflection.insights:
+                    print(f"\nKey Insights:")
+                    for insight in reflection.insights[:3]:  # Show first 3 insights
                         print(f"  • {insight}")
-                    print()
 
-                if reflection.patterns_observed:
-                    print("Patterns:")
-                    for pattern in reflection.patterns_observed:
-                        print(f"  • {pattern}")
-                    print()
+                # Get metadata for confirmation
+                keywords_count = len(reflection.metadata.get("keywords", []))
+                sentiment = reflection.metadata.get("sentiment_score", 0.0)
 
-                print("=" * 60)
+                print(f"\n✨ Session reflection stored (length: {len(reflection.summary)} chars, "
+                      f"keywords: {keywords_count}, sentiment: {sentiment:.2f})")
 
             except Exception as e:
                 self.logger.log_error(e, {"phase": "session_reflection"})
@@ -271,3 +294,106 @@ Just type naturally to chat with Hugo!
         import os
         os.system('cls' if sys.platform == 'win32' else 'clear')
         self._display_welcome()
+
+    async def _handle_reflect_command(self, command: str):
+        """Handle /reflect commands"""
+        parts = command.lower().split()
+
+        if len(parts) < 2:
+            print("\nUsage:")
+            print("  /reflect recent   - Show recent reflections")
+            print("  /reflect meta     - Show latest meta-reflection")
+            return
+
+        subcommand = parts[1]
+
+        if subcommand == 'recent':
+            await self._show_recent_reflections()
+        elif subcommand == 'meta':
+            await self._show_meta_reflection()
+        else:
+            print(f"\nUnknown reflect command: {subcommand}")
+            print("Available: recent, meta")
+
+    async def _show_recent_reflections(self):
+        """Display recent reflections"""
+        if not self.runtime.sqlite_manager:
+            print("\n(SQLite manager not initialized)")
+            return
+
+        try:
+            reflections = await self.runtime.sqlite_manager.get_recent_reflections(limit=3)
+
+            if not reflections:
+                print("\nNo reflections found yet.")
+                return
+
+            print("\n" + "=" * 60)
+            print("RECENT REFLECTIONS")
+            print("=" * 60)
+
+            for i, ref in enumerate(reflections, 1):
+                print(f"\n{i}. [{ref['type'].upper()}] - {ref['timestamp'][:10]}")
+                print(f"   Summary: {ref['summary']}")
+
+                if ref['insights']:
+                    print(f"   Insights:")
+                    for insight in ref['insights'][:2]:  # Show first 2
+                        print(f"     • {insight}")
+
+                if ref['keywords']:
+                    print(f"   Keywords: {', '.join(ref['keywords'][:5])}")
+
+                if ref['sentiment'] is not None:
+                    sentiment_label = "positive" if ref['sentiment'] > 0.3 else "negative" if ref['sentiment'] < -0.3 else "neutral"
+                    print(f"   Sentiment: {ref['sentiment']:.2f} ({sentiment_label})")
+
+            print("\n" + "=" * 60)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "show_recent_reflections"})
+            print(f"\nError retrieving reflections: {str(e)}")
+
+    async def _show_meta_reflection(self):
+        """Display latest meta-reflection"""
+        if not self.runtime.sqlite_manager:
+            print("\n(SQLite manager not initialized)")
+            return
+
+        try:
+            meta = await self.runtime.sqlite_manager.get_latest_meta_reflection()
+
+            if not meta:
+                print("\nNo meta-reflections found yet.")
+                return
+
+            print("\n" + "=" * 60)
+            print("LATEST META-REFLECTION")
+            print("=" * 60)
+            print(f"\nCreated: {meta['created_at'][:10]}")
+            print(f"Time Window: {meta['time_window_days']} days")
+            print(f"Reflections Analyzed: {meta['reflections_analyzed']}")
+            print(f"\nSummary:")
+            print(f"  {meta['summary']}")
+
+            if meta['insights']:
+                print(f"\nStrategic Insights:")
+                for insight in meta['insights']:
+                    print(f"  • {insight}")
+
+            if meta['patterns']:
+                print(f"\nLong-term Patterns:")
+                for pattern in meta['patterns']:
+                    print(f"  • {pattern}")
+
+            if meta['improvements']:
+                print(f"\nImprovement Areas:")
+                for improvement in meta['improvements']:
+                    print(f"  • {improvement}")
+
+            print(f"\nConfidence: {meta['confidence']:.2%}")
+            print("=" * 60)
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "show_meta_reflection"})
+            print(f"\nError retrieving meta-reflection: {str(e)}")
