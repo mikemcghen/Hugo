@@ -90,7 +90,7 @@ class CognitionEngine:
     maintaining personality consistency while adapting to context.
     """
 
-    def __init__(self, memory_manager, directive_filter, logger):
+    def __init__(self, memory_manager, directive_filter, logger, runtime_manager=None):
         """
         Initialize the cognition engine.
 
@@ -98,11 +98,13 @@ class CognitionEngine:
             memory_manager: MemoryManager instance for context retrieval
             directive_filter: DirectiveFilter for ethical/behavioral checks
             logger: HugoLogger instance
+            runtime_manager: Optional RuntimeManager for worker agent delegation
         """
         self.memory = memory_manager
         self.directives = directive_filter
         self.logger = logger
         self.current_mood = MoodSpectrum.CONVERSATIONAL
+        self.runtime_manager = runtime_manager
 
         # Ollama configuration
         self.ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
@@ -115,16 +117,23 @@ class CognitionEngine:
         self.ollama_retry_backoff = float(os.getenv("OLLAMA_RETRY_BACKOFF", "2"))
         self.ollama_async_mode = os.getenv("OLLAMA_ASYNC_MODE", "true").lower() == "true"
 
+        # Agent delegation settings
+        self.agent_delegation_enabled = os.getenv("AGENT_DELEGATION_ENABLED", "true").lower() == "true"
+
         # Fallback mode tracking
         self.ollama_available = True
         self.last_connection_attempt = None
+
+        # Worker agent (lazy initialization)
+        self._worker_agent = None
 
         # Load Hugo's personality manifest
         self.persona = self._load_persona()
         self.logger.log_event("cognition", "persona_loaded", {
             "name": self.persona.get("name", "Hugo"),
             "role": self.persona.get("identity", {}).get("role", "Unknown"),
-            "mood": self.current_mood.value
+            "mood": self.current_mood.value,
+            "agent_delegation": self.agent_delegation_enabled
         })
 
     def _load_persona(self) -> Dict[str, Any]:
@@ -194,6 +203,8 @@ class CognitionEngine:
         """
         Main entry point for processing user input through the cognitive pipeline.
 
+        Includes agent delegation for heavy technical work.
+
         Args:
             user_input: Raw user message
             session_id: Current session identifier
@@ -201,9 +212,13 @@ class CognitionEngine:
         Returns:
             ResponsePackage with generated response and metadata
         """
-        # TODO: Implement full cognitive pipeline
         self.logger.log_event("cognition", "processing_input", {"session_id": session_id})
 
+        # Check if this requires agent delegation
+        if self._detect_heavy_work(user_input):
+            return await self._delegate_to_worker(user_input, session_id)
+
+        # Standard cognitive pipeline
         # Step 1: Perception
         perception = await self._perceive(user_input)
 
@@ -220,6 +235,222 @@ class CognitionEngine:
         await self._post_reflect(perception, reasoning, response)
 
         return response
+
+    def _detect_heavy_work(self, user_input: str) -> bool:
+        """
+        Detect if user input requires heavy technical work (agent delegation).
+
+        Returns True if the input contains keywords suggesting:
+        - Implementation tasks
+        - Refactoring requests
+        - Feature development
+        - Complex technical analysis
+
+        Args:
+            user_input: User message
+
+        Returns:
+            bool: True if heavy work detected
+        """
+        if not self.agent_delegation_enabled:
+            return False
+
+        heavy_work_keywords = [
+            "implement", "refactor", "add feature", "create feature",
+            "build", "develop", "design system", "architect",
+            "write code", "generate code", "create function",
+            "add class", "modify", "update code", "fix bug",
+            "optimize", "improve performance", "add test"
+        ]
+
+        user_input_lower = user_input.lower()
+
+        for keyword in heavy_work_keywords:
+            if keyword in user_input_lower:
+                self.logger.log_event("cognition", "heavy_work_detected", {
+                    "keyword": keyword,
+                    "input_preview": user_input[:100]
+                })
+                return True
+
+        return False
+
+    @property
+    def worker_agent(self):
+        """Lazy initialization of worker agent"""
+        if self._worker_agent is None and self.runtime_manager:
+            try:
+                from agents.worker_agent import WorkerAgent
+                self._worker_agent = WorkerAgent(self.runtime_manager)
+            except ImportError as e:
+                self.logger.log_error(e, {"phase": "worker_agent_initialization"})
+        return self._worker_agent
+
+    async def _delegate_to_worker(self, user_input: str, session_id: str) -> ResponsePackage:
+        """
+        Delegate heavy technical work to the worker agent.
+
+        Args:
+            user_input: User message
+            session_id: Current session ID
+
+        Returns:
+            ResponsePackage with worker agent's response
+        """
+        self.logger.log_event("cognition", "delegating_to_worker", {
+            "session_id": session_id,
+            "input_length": len(user_input)
+        })
+
+        try:
+            # Get worker agent
+            if self.worker_agent is None:
+                # Fallback: Worker agent not available, process normally
+                self.logger.log_event("cognition", "worker_delegation_failed", {
+                    "reason": "worker_agent_not_available"
+                })
+                return await self.process_input(user_input, session_id)
+
+            # Delegate to worker agent
+            result = await self.worker_agent.run_task(user_input, context={
+                "session_id": session_id,
+                "delegated_from": "cognition_engine"
+            })
+
+            # Build response package
+            from datetime import datetime
+
+            reasoning_chain = ReasoningChain(
+                steps=[
+                    "Detected heavy technical work",
+                    "Delegated to worker agent",
+                    "Worker agent completed task"
+                ],
+                assumptions=["Task requires focused technical attention"],
+                alternatives_considered=["Direct response", "Worker delegation"],
+                selected_approach="worker_delegation",
+                confidence_score=0.85
+            )
+
+            response_package = ResponsePackage(
+                content=result,
+                tone=MoodSpectrum.OPERATIONAL,
+                reasoning_chain=reasoning_chain,
+                directive_checks=["worker_delegation_ok"],
+                metadata={
+                    "timestamp": datetime.now().isoformat(),
+                    "model": self.model_name,
+                    "engine": "worker_agent",
+                    "delegated": True,
+                    "session_id": session_id
+                }
+            )
+
+            self.logger.log_event("cognition", "worker_delegation_complete", {
+                "session_id": session_id,
+                "result_length": len(result)
+            })
+
+            return response_package
+
+        except Exception as e:
+            self.logger.log_error(e, {
+                "phase": "worker_delegation",
+                "session_id": session_id
+            })
+
+            # Fallback to normal processing
+            return await self.process_input(user_input, session_id)
+
+    async def process_input_streaming(self, user_input: str, session_id: str):
+        """
+        Stream-enabled input processing for real-time response generation.
+
+        This method follows the same cognitive pipeline as process_input,
+        but yields response chunks as they're generated rather than waiting
+        for the full response.
+
+        Args:
+            user_input: Raw user message
+            session_id: Current session identifier
+
+        Yields:
+            str: Response chunks as they're generated
+            ResponsePackage: Final response package with metadata (last yield)
+        """
+        self.logger.log_event("cognition", "processing_input_streaming", {"session_id": session_id})
+
+        # Step 1: Perception
+        perception = await self._perceive(user_input)
+
+        # Step 2: Context Assembly
+        context = await self._assemble_context(perception, session_id)
+
+        # Step 3: Assemble prompt
+        user_message = perception.corrected_input if perception.corrected_input else user_input
+        prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
+        prompt = prompt_data["prompt"]
+        prompt_metadata = prompt_data["metadata"]
+
+        # Step 4: Stream generation
+        generated_chunks = []
+
+        for chunk in self.stream_local_infer(prompt, temperature=0.7):
+            generated_chunks.append(chunk)
+            yield chunk  # Yield each chunk to REPL
+
+        # Combine full response
+        generated_response = "".join(generated_chunks)
+
+        # Build reasoning chain
+        reasoning_steps = [
+            f"Detected user sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}",
+            f"Retrieved {prompt_metadata.get('conversation_turns', 0)} conversation turns",
+            f"Retrieved {prompt_metadata.get('semantic_memories', 0)} semantic memories",
+            f"Applied persona: {prompt_metadata.get('persona_name', 'Hugo')} in {prompt_metadata.get('mood', 'conversational')} mood",
+            f"Adjusted tone: {prompt_metadata.get('tone_adjustment', 'conversational')}"
+        ]
+
+        reasoning_chain = ReasoningChain(
+            steps=reasoning_steps,
+            assumptions=[
+                f"User expects {perception.tone} tone",
+                f"User sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}"
+            ],
+            alternatives_considered=["Direct factual response", "Detailed explanation", "Conversational engagement"],
+            selected_approach=f"persona_driven_{prompt_metadata.get('mood', 'conversational')}",
+            confidence_score=perception.confidence
+        )
+
+        # Construct final response package
+        from datetime import datetime
+
+        response = ResponsePackage(
+            content=generated_response,
+            tone=perception.detected_mood,
+            reasoning_chain=reasoning_chain,
+            directive_checks=["privacy_ok", "truthfulness_ok"],
+            metadata={
+                "timestamp": datetime.now().isoformat(),
+                "model": self.model_name,
+                "engine": self.model_engine,
+                "confidence": reasoning_chain.confidence_score,
+                "persona_name": prompt_metadata.get("persona_name", "Hugo"),
+                "mood": prompt_metadata.get("mood", "conversational"),
+                "user_sentiment": prompt_metadata.get("user_sentiment", {}).get("primary_sentiment", "neutral"),
+                "tone_adjustment": prompt_metadata.get("tone_adjustment", "conversational"),
+                "conversation_turns": prompt_metadata.get("conversation_turns", 0),
+                "semantic_memories": prompt_metadata.get("semantic_memories", 0),
+                "prompt_tokens": prompt_metadata.get("prompt_tokens", 0),
+                "streaming": True
+            }
+        )
+
+        # Post reflection
+        await self._post_reflect(perception, reasoning_chain, response)
+
+        # Yield final response package for metadata storage
+        yield response
 
     def _detect_sentiment(self, text: str) -> Dict[str, Any]:
         """
@@ -789,6 +1020,153 @@ class CognitionEngine:
         })
 
         return self._fallback_response(prompt)
+
+    def stream_local_infer(self, prompt: str, temperature: float = 0.7):
+        """
+        Perform streaming local inference using Ollama API.
+
+        This generator yields text chunks as they arrive from the model,
+        enabling real-time token-by-token display in the REPL.
+
+        Features:
+        - Yields chunks as they arrive from Ollama
+        - Maintains retry logic for connection failures
+        - Logs streaming start/completion events
+        - Falls back gracefully if streaming fails
+
+        Args:
+            prompt: Input prompt for the model
+            temperature: Sampling temperature (0.0-1.0)
+
+        Yields:
+            str: Text chunks as they arrive from Ollama
+        """
+        attempt = 0
+        last_error = None
+
+        while attempt < self.ollama_max_retries:
+            attempt += 1
+            start_time = time.time()
+
+            try:
+                payload = {
+                    "model": self.model_name,
+                    "prompt": prompt,
+                    "stream": True,  # Enable streaming
+                    "options": {
+                        "temperature": temperature
+                    }
+                }
+
+                self.logger.log_event("cognition", "ollama_streaming_attempt", {
+                    "attempt": attempt,
+                    "max_retries": self.ollama_max_retries,
+                    "timeout": self.ollama_timeout
+                })
+
+                response = requests.post(
+                    self.ollama_api,
+                    json=payload,
+                    stream=True,
+                    timeout=self.ollama_timeout
+                )
+                response.raise_for_status()
+
+                # Track total generated text
+                total_generated = []
+
+                # Stream chunks line by line
+                for line in response.iter_lines():
+                    if line:
+                        try:
+                            import json
+                            chunk_data = json.loads(line.decode('utf-8'))
+
+                            # Extract response chunk
+                            chunk_text = chunk_data.get("response", "")
+                            if chunk_text:
+                                total_generated.append(chunk_text)
+                                yield chunk_text
+
+                            # Check if done
+                            if chunk_data.get("done", False):
+                                break
+
+                        except json.JSONDecodeError:
+                            continue
+
+                duration = time.time() - start_time
+                full_response = "".join(total_generated)
+
+                self.logger.log_event("cognition", "ollama_streaming_complete", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "success",
+                    "response_length": len(full_response),
+                    "chunks": len(total_generated)
+                })
+
+                # Mark Ollama as available
+                self.ollama_available = True
+                self.last_connection_attempt = time.time()
+
+                return  # Successful completion
+
+            except requests.exceptions.ReadTimeout as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_streaming", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "timeout",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    self.logger.log_event("cognition", "ollama_retry", {
+                        "attempt": attempt,
+                        "backoff_seconds": backoff_time
+                    })
+                    time.sleep(backoff_time)
+
+            except requests.exceptions.ConnectionError as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_event("cognition", "ollama_streaming", {
+                    "attempt": attempt,
+                    "duration": round(duration, 2),
+                    "status": "connection_error",
+                    "error": str(e)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    time.sleep(backoff_time)
+
+            except Exception as e:
+                duration = time.time() - start_time
+                last_error = e
+                self.logger.log_error(e, {
+                    "phase": "ollama_streaming",
+                    "attempt": attempt,
+                    "duration": round(duration, 2)
+                })
+
+                if attempt < self.ollama_max_retries:
+                    backoff_time = self.ollama_retry_backoff ** attempt
+                    time.sleep(backoff_time)
+
+        # All retries exhausted - yield fallback
+        self.ollama_available = False
+        self.last_connection_attempt = time.time()
+
+        self.logger.log_event("cognition", "ollama_streaming_fallback", {
+            "total_attempts": attempt,
+            "last_error": str(last_error) if last_error else "Unknown"
+        })
+
+        yield self._fallback_response(prompt)
 
     async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
         """

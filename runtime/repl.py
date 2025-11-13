@@ -157,9 +157,51 @@ Just type naturally to chat with Hugo!
         prompt = "\nYou: "
         return await loop.run_in_executor(None, input, prompt)
 
+    def _should_use_streaming(self, message: str) -> bool:
+        """
+        Determine if streaming should be used for this message.
+
+        Uses streaming when:
+        - Message suggests a detailed/technical response
+        - Message contains implementation keywords
+        - STREAMING_ENABLED is true in environment
+
+        Args:
+            message: User message
+
+        Returns:
+            bool: True if streaming should be used
+        """
+        import os
+
+        # Check if streaming is enabled
+        streaming_enabled = os.getenv("STREAMING_ENABLED", "true").lower() == "true"
+        if not streaming_enabled:
+            return False
+
+        # Keywords that suggest detailed responses
+        streaming_keywords = [
+            "implement", "explain", "describe", "how", "what", "why",
+            "refactor", "design", "architecture", "detail", "write",
+            "create", "build", "develop", "plan", "guide", "tutorial"
+        ]
+
+        message_lower = message.lower()
+        for keyword in streaming_keywords:
+            if keyword in message_lower:
+                return True
+
+        # Use streaming for longer messages (>50 chars)
+        if len(message) > 50:
+            return True
+
+        return False
+
     async def _process_message(self, message: str):
         """
         Process user message through Hugo's cognition engine.
+
+        Supports both streaming and non-streaming modes based on message context.
 
         Args:
             message: User message to process
@@ -191,28 +233,50 @@ Just type naturally to chat with Hugo!
                 )
                 await self.runtime.memory.store(user_memory)
 
+            # Determine if streaming should be used
+            use_streaming = self._should_use_streaming(message)
+
+            response_text = ""
+            response_package = None
+
             # Process through cognition engine
             if self.runtime.cognition:
-                response_package = await self.runtime.cognition.process_input(
-                    message,
-                    self.session_id
-                )
-                response_text = response_package.content
+                if use_streaming:
+                    # Stream response token by token
+                    async for chunk in self.runtime.cognition.process_input_streaming(
+                        message,
+                        self.session_id
+                    ):
+                        # Check if it's the final ResponsePackage or a string chunk
+                        if isinstance(chunk, str):
+                            print(chunk, end="", flush=True)
+                            response_text += chunk
+                        else:
+                            # Final response package
+                            response_package = chunk
+
+                    print()  # Newline after streaming
+                else:
+                    # Non-streaming response
+                    response_package = await self.runtime.cognition.process_input(
+                        message,
+                        self.session_id
+                    )
+                    response_text = response_package.content
+                    print(response_text)
             else:
                 response_text = "(Cognition engine not initialized. Please check boot sequence.)"
-
-            # Display response
-            print(response_text)
+                print(response_text)
 
             # Log Hugo's response
             self.logger.log_user_interaction(
                 session_id=self.session_id,
                 interaction_type="response",
-                data={"content": response_text}
+                data={"content": response_text, "streaming": use_streaming}
             )
 
             # Store assistant response in memory with enriched metadata
-            if self.runtime.memory:
+            if self.runtime.memory and response_package:
                 # Extract persona-driven metadata from response_package
                 response_metadata = {
                     "role": "assistant",
@@ -222,7 +286,8 @@ Just type naturally to chat with Hugo!
                     "tone_adjustment": response_package.metadata.get("tone_adjustment", "conversational"),
                     "conversation_turns": response_package.metadata.get("conversation_turns", 0),
                     "semantic_memories": response_package.metadata.get("semantic_memories", 0),
-                    "confidence": response_package.metadata.get("confidence", 0.0)
+                    "confidence": response_package.metadata.get("confidence", 0.0),
+                    "streaming": use_streaming
                 }
 
                 assistant_memory = MemoryEntry(
@@ -239,7 +304,7 @@ Just type naturally to chat with Hugo!
 
         except Exception as e:
             self.logger.log_error(e)
-            print(f"Sorry, I encountered an error: {str(e)}")
+            print(f"\nSorry, I encountered an error: {str(e)}")
 
     async def _handle_exit(self):
         """Handle graceful exit with reflection"""
