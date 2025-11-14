@@ -57,7 +57,7 @@ EMBEDDING_DIMENSION=384
 ### 5. ✅ Documentation & Tools (COMPLETE)
 
 - **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Comprehensive setup instructions
-- **[INTEGRATION_COMPLETE.md](INTEGRATION_COMPLETE.md)** - Technical details
+- **[INTEGRATION_COMPLETE.md](../status/INTEGRATION_COMPLETE.md)** - Technical details
 - **[QUICKSTART.md](QUICKSTART.md)** - 5-minute quick start
 - **[verify_setup.py](verify_setup.py)** - Automated verification
 - **[test_ollama_integration.py](test_ollama_integration.py)** - Integration tests

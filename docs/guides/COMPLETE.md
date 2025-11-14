@@ -367,10 +367,10 @@ python test_boot_sequence.py
 All documentation is complete and up-to-date:
 
 - **[COMPLETE.md](COMPLETE.md)** - This comprehensive summary
-- **[FINAL_STATUS.md](FINAL_STATUS.md)** - Phase 3 completion details
+- **[FINAL_STATUS.md](../status/FINAL_STATUS.md)** - Phase 3 completion details
 - **[READY_TO_RUN.md](READY_TO_RUN.md)** - Launch instructions
 - **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Full setup and troubleshooting
-- **[INTEGRATION_COMPLETE.md](INTEGRATION_COMPLETE.md)** - Technical implementation
+- **[INTEGRATION_COMPLETE.md](../status/INTEGRATION_COMPLETE.md)** - Technical implementation
 - **[QUICKSTART.md](QUICKSTART.md)** - 5-minute quick start guide
 
 ---

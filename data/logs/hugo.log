@@ -2997,3 +2997,71 @@ Traceback (most recent call last):
   File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\web_search.py", line 235, in _search
     await self.memory.store(search_entry, persist_long_term=True)
 TypeError: object MagicMock can't be used in 'await' expression
+2025-11-14 12:50:00,180 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:50:01,388 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:50:01,389 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:50:01,391 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:50:01,392 - hugo - INFO - [memory] factual_memories_loaded: {"count": 21, "faiss_added": 21}
+2025-11-14 12:50:01,402 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:50:01,405 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:50:01,562 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:50:01,564 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:50:01,567 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:50:01,576 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:50:01,580 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:50:01,582 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:50:01,583 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:50:01,584 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:51:00,441 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:00,442 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:51:00,442 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:51:00,443 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_125001", "streaming": false, "message_length": 33}
+2025-11-14 12:51:00,443 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:00,444 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:00,444 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:51:00,444 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:51:00,624 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:51:01,150 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:51:01,151 - hugo - INFO - [web_search] search_complete: {"query": "When does Wicked Part 2 come out?", "has_abstract": false, "has_answer": false, "has_definition": false, "url_count": 0, "status": "no_results"}
+2025-11-14 12:51:01,306 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 71, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:51:01,307 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:51:01,307 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 863.007}
+2025-11-14 12:51:01,312 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:51:01,312 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:01,333 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 72, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:51:01,333 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:51:01,334 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_125001", "content_length": 43, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:51:01,334 - hugo - INFO - [user] response: {"content": "I couldn't find any information about that.", "streaming": false, "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:01,335 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:51:06,044 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:06,044 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:51:06,045 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:51:06,045 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_125001", "streaming": false, "message_length": 33}
+2025-11-14 12:51:06,045 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:06,046 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:06,046 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:51:06,046 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:51:06,225 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:51:06,751 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:51:06,752 - hugo - INFO - [web_search] search_complete: {"query": "When is Pittsburgh light up night", "has_abstract": false, "has_answer": false, "has_definition": false, "url_count": 0, "status": "no_results"}
+2025-11-14 12:51:06,772 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 73, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:51:06,773 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:51:06,773 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 727.007}
+2025-11-14 12:51:06,777 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:51:06,778 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:06,818 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 74, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:51:06,818 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:51:06,818 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_125001", "content_length": 43, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:51:06,819 - hugo - INFO - [user] response: {"content": "I couldn't find any information about that.", "streaming": false, "session_id": "shell_20251114_125001"}
+2025-11-14 12:51:06,820 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:51:09,928 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_125001"}
+2025-11-14 12:51:09,933 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "couldn", "information"], "total_keywords": 3}
+2025-11-14 12:51:09,934 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:51:09,934 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:51:35,151 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 415}
+2025-11-14 12:51:35,153 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 50, "insights_count": 1, "confidence": 0.6}
+2025-11-14 12:51:35,169 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 75, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:51:35,170 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:51:35,170 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.6, "content_length": 406}
+2025-11-14 12:51:35,171 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_125001", "insights_count": 1, "keywords_count": 3, "sentiment": 0.0}
+2025-11-14 12:51:35,171 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_125001", "message_count": 3}
