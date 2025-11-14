@@ -1996,3 +1996,371 @@ AttributeError: 'MemoryManager' object has no attribute 'embedder'
 2025-11-14 11:41:17,430 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
 2025-11-14 11:41:17,430 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1026.579}
 2025-11-14 11:41:17,434 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:50:04,699 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 11:50:05,923 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:50:05,923 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:50:05,925 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:50:05,926 - hugo - INFO - [memory] factual_memories_loaded: {"count": 4, "faiss_added": 4}
+2025-11-14 11:50:05,936 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:50:05,939 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:50:06,111 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:50:06,113 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:50:06,115 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:50:06,116 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:50:06,120 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:50:06,122 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:50:06,123 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:50:06,125 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 11:50:42,082 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_115006"}
+2025-11-14 11:50:42,083 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:50:42,083 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:50:42,083 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_115006", "streaming": false, "message_length": 33}
+2025-11-14 11:50:42,084 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}
+2025-11-14 11:50:42,084 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}
+2025-11-14 11:50:42,084 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:50:42,085 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:50:42,305 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 11:50:42,848 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 11:50:42,850 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 11:50:42,850 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 11:50:42,850 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 11:50:43,109 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 30, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:50:43,109 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:50:43,110 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1024.489}
+2025-11-14 11:50:43,114 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:50:43,114 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115006"}
+2025-11-14 11:50:43,142 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 31, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:50:43,142 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:50:43,143 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_115006", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:50:43,143 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115006"}
+2025-11-14 11:50:43,143 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:51:25,393 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_115006"}
+2025-11-14 11:51:25,393 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 11:51:25,394 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:51:25,394 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_115006", "streaming": false, "message_length": 33}
+2025-11-14 11:51:25,395 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}
+2025-11-14 11:51:25,395 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}
+2025-11-14 11:51:25,395 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:51:25,396 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:51:25,580 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 11:51:26,116 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 11:51:26,135 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 32, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:51:26,135 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:51:26,135 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 740.005}
+2025-11-14 11:51:26,139 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:51:26,140 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115006"}
+2025-11-14 11:51:26,157 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 33, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:51:26,158 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:51:26,158 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_115006", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:51:26,158 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115006"}
+2025-11-14 11:51:26,159 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:52:32,174 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_115006"}
+2025-11-14 11:52:32,180 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "results", "couldn", "extract", "clear"], "total_keywords": 8}
+2025-11-14 11:52:32,180 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 11:52:32,180 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 11:52:58,350 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 496}
+2025-11-14 11:52:58,351 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 92, "insights_count": 2, "confidence": 0.8}
+2025-11-14 11:52:58,370 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 34, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 11:52:58,371 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 11:52:58,371 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 509}
+2025-11-14 11:52:58,372 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_115006", "insights_count": 2, "keywords_count": 8, "sentiment": 0.0}
+2025-11-14 11:52:58,372 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_115006", "message_count": 3}
+2025-11-14 11:54:41,374 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:54:41,382 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:54:41,382 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:54:41,450 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:54:41,452 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:54:41,453 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:54:41,455 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:54:41,459 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:54:41,461 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:54:41,462 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:54:41,462 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:54:41,462 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:54:41,468 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 4.999}
+2025-11-14 11:54:41,473 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:41,609 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 11, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:54:41,610 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:54:41,610 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:54:41,610 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:54:41,610 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:54:41,611 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.0}
+2025-11-14 11:54:41,616 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:41,616 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:54:41,617 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:54:41,617 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.0}
+2025-11-14 11:54:41,622 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:41,624 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:54:41,624 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:54:41,625 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8766/", "query": "What is Python programming language?"}
+2025-11-14 11:54:41,628 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}
+2025-11-14 11:54:41,629 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8766/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:54:41,629 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 389}
+2025-11-14 11:54:41,641 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 389, "sources_used": 1}
+2025-11-14 11:54:41,651 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 12, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:54:41,652 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:54:41,652 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 28.0}
+2025-11-14 11:54:41,656 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:54:41,657 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:54:41,657 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:54:41,659 - hugo - INFO - [web_search] poll_started: {"query": "Python programming", "status": 202}
+2025-11-14 11:54:42,173 - hugo - INFO - [web_search] poll_retry: {"query": "Python programming", "attempt": 2, "max_attempts": 5}
+2025-11-14 11:54:42,689 - hugo - INFO - [web_search] poll_success: {"query": "Python programming", "attempts": 3}
+2025-11-14 11:54:42,700 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 13, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:54:42,700 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:54:42,701 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1043.009}
+2025-11-14 11:54:42,705 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:54:56,478 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:54:56,479 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:54:56,479 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:54:56,559 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:54:56,561 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:54:56,563 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:54:56,564 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:54:56,568 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:54:56,570 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:54:56,571 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:54:56,571 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:54:56,571 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:54:56,575 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 4.002000000000001}
+2025-11-14 11:54:56,579 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:56,709 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 14, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:54:56,709 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:54:56,710 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:54:56,710 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:54:56,710 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:54:56,711 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.0}
+2025-11-14 11:54:56,715 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:56,715 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:54:56,716 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:54:56,716 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.0}
+2025-11-14 11:54:56,720 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:54:56,722 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:54:56,722 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:54:56,723 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8766/", "query": "What is Python programming language?"}
+2025-11-14 11:54:56,726 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}
+2025-11-14 11:54:56,727 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8766/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:54:56,727 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 389}
+2025-11-14 11:54:56,739 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 389, "sources_used": 1}
+2025-11-14 11:54:56,751 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 15, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:54:56,751 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:54:56,751 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 29.000999999999998}
+2025-11-14 11:54:56,756 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:54:56,757 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:54:56,758 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:54:56,759 - hugo - INFO - [web_search] poll_started: {"query": "Python programming", "status": 202}
+2025-11-14 11:54:57,264 - hugo - INFO - [web_search] poll_retry: {"query": "Python programming", "attempt": 2, "max_attempts": 5}
+2025-11-14 11:54:57,766 - hugo - INFO - [web_search] poll_success: {"query": "Python programming", "attempts": 3}
+2025-11-14 11:54:57,777 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 16, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:54:57,777 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:54:57,778 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1021.0079999999999}
+2025-11-14 11:54:57,781 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:56:06,235 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:56:06,235 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:56:06,236 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:56:06,299 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:56:06,300 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:56:06,302 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:56:06,303 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:56:06,307 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:56:06,309 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:56:06,310 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:56:06,311 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,312 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,312 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}
+2025-11-14 11:56:06,316 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}
+2025-11-14 11:56:06,316 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:06,317 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}
+2025-11-14 11:56:06,477 - hugo - INFO - [extract] final_answer: {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}
+2025-11-14 11:56:06,488 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,488 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,488 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 177.00199999999998}
+2025-11-14 11:56:06,492 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:06,494 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,494 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,494 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8768/", "query": "What is Python programming language?"}
+2025-11-14 11:56:06,497 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}
+2025-11-14 11:56:06,497 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:06,498 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}
+2025-11-14 11:56:06,510 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}
+2025-11-14 11:56:06,520 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,520 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,520 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.001}
+2025-11-14 11:56:06,524 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:06,525 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,525 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:06,526 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8769/", "query": "When was Dune released?"}
+2025-11-14 11:56:06,529 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}
+2025-11-14 11:56:06,529 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:06,529 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}
+2025-11-14 11:56:06,546 - hugo - INFO - [extract] final_answer: {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}
+2025-11-14 11:56:06,557 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,557 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:06,557 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 32.002}
+2025-11-14 11:56:06,561 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:30,678 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:56:30,678 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:56:30,679 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:56:30,742 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:56:30,743 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:56:30,745 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:56:30,746 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:56:30,750 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:56:30,752 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:56:30,753 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:56:30,754 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,755 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,755 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}
+2025-11-14 11:56:30,759 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}
+2025-11-14 11:56:30,759 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:30,760 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}
+2025-11-14 11:56:30,900 - hugo - INFO - [extract] final_answer: {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}
+2025-11-14 11:56:30,914 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,914 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,915 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 160.002}
+2025-11-14 11:56:30,919 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:30,921 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,922 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,922 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8768/", "query": "What is Python programming language?"}
+2025-11-14 11:56:30,926 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}
+2025-11-14 11:56:30,926 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:30,927 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}
+2025-11-14 11:56:30,942 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}
+2025-11-14 11:56:30,958 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 5, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,958 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,958 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 37.198}
+2025-11-14 11:56:30,962 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:30,964 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,964 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:30,964 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8769/", "query": "When was Dune released?"}
+2025-11-14 11:56:30,967 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}
+2025-11-14 11:56:30,967 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:30,967 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}
+2025-11-14 11:56:30,982 - hugo - INFO - [extract] final_answer: {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}
+2025-11-14 11:56:30,995 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 6, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,995 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:30,996 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 31.456}
+2025-11-14 11:56:31,004 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:57,451 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:56:57,451 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:56:57,452 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:56:57,514 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:56:57,516 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:56:57,517 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:56:57,518 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:56:57,522 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:56:57,524 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:56:57,525 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:56:57,526 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,527 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,527 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}
+2025-11-14 11:56:57,531 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}
+2025-11-14 11:56:57,531 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:57,532 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}
+2025-11-14 11:56:57,662 - hugo - INFO - [extract] final_answer: {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}
+2025-11-14 11:56:57,683 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 7, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,683 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,684 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 157.00300000000001}
+2025-11-14 11:56:57,688 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:57,689 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,690 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,690 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8768/", "query": "What is Python programming language?"}
+2025-11-14 11:56:57,693 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}
+2025-11-14 11:56:57,693 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:57,693 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}
+2025-11-14 11:56:57,705 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}
+2025-11-14 11:56:57,716 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 8, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,716 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,716 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.999}
+2025-11-14 11:56:57,724 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:56:57,725 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,726 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:56:57,726 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8769/", "query": "When was Dune released?"}
+2025-11-14 11:56:57,729 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}
+2025-11-14 11:56:57,729 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:56:57,729 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}
+2025-11-14 11:56:57,742 - hugo - INFO - [extract] final_answer: {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}
+2025-11-14 11:56:57,759 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 9, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,759 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:56:57,759 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 34.0}
+2025-11-14 11:56:57,766 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:57:24,279 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:57:24,280 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:57:24,280 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:57:24,343 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:57:24,344 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:57:24,346 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:57:24,347 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:57:24,351 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:57:24,353 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:57:24,354 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:57:24,355 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,355 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,356 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}
+2025-11-14 11:57:24,360 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}
+2025-11-14 11:57:24,360 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:57:24,360 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}
+2025-11-14 11:57:24,488 - hugo - INFO - [extract] final_answer: {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}
+2025-11-14 11:57:24,498 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 10, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,499 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,499 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 144.003}
+2025-11-14 11:57:24,503 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:57:24,505 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,505 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,505 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8768/", "query": "What is Python programming language?"}
+2025-11-14 11:57:24,508 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}
+2025-11-14 11:57:24,509 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:57:24,509 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}
+2025-11-14 11:57:24,521 - hugo - INFO - [extract] final_answer: {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}
+2025-11-14 11:57:24,531 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 11, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,531 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,532 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.001}
+2025-11-14 11:57:24,535 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:57:24,536 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,537 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,537 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8769/", "query": "When was Dune released?"}
+2025-11-14 11:57:24,540 - hugo - INFO - [extract] parse_success: {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}
+2025-11-14 11:57:24,540 - hugo - INFO - [extract] chunk_count: {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}
+2025-11-14 11:57:24,541 - hugo - INFO - [extract] llm_summarized: {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}
+2025-11-14 11:57:24,553 - hugo - INFO - [extract] final_answer: {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}
+2025-11-14 11:57:24,564 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 12, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,564 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 11:57:24,565 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": true, "execution_time_ms": 28.001}
+2025-11-14 11:57:24,569 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": true}
+2025-11-14 11:57:24,570 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,570 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,571 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:99999/", "query": "Test query"}
+2025-11-14 11:57:24,571 - hugo - ERROR - [error] exception: {"error_type": "InvalidUrlClientError", "error_message": "http://localhost:99999/", "context": {"phase": "fetch_and_extract", "url": "http://localhost:99999/"}}
+2025-11-14 11:57:24,571 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 550, in _request
+    url = self._build_url(str_or_url)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 479, in _build_url
+    url = URL(str_or_url)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\yarl\_url.py", line 358, in __new__
+    return pre_encoded_url(val) if encoded else encode_url(val)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\yarl\_url.py", line 155, in encode_url
+    username, password, host, port = split_netloc(netloc)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\yarl\_parse.py", line 138, in split_netloc
+    raise ValueError("Port out of range 0-65535")
+ValueError: Port out of range 0-65535
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 256, in _fetch_and_extract
+    async with session.get(url, headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 552, in _request
+    raise InvalidUrlClientError(str_or_url) from e
+aiohttp.client_exceptions.InvalidUrlClientError: http://localhost:99999/
+2025-11-14 11:57:24,621 - hugo - INFO - [extract] parse_failed: {"url": "http://localhost:99999/", "reason": "No content extracted"}
+2025-11-14 11:57:24,622 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": false, "execution_time_ms": 51.001}
+2025-11-14 11:57:24,625 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": false}
+2025-11-14 11:57:24,627 - hugo - INFO - [skill_manager] run_skill: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,627 - hugo - INFO - [skill] started: {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}
+2025-11-14 11:57:24,627 - hugo - INFO - [extract] fetch_started: {"url": "http://localhost:8770/", "query": "Test empty"}
+2025-11-14 11:57:24,630 - hugo - INFO - [extract] parse_failed: {"url": "http://localhost:8770/", "reason": "No content extracted"}
+2025-11-14 11:57:24,630 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": false, "execution_time_ms": 3.0}
+2025-11-14 11:57:24,634 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": false}

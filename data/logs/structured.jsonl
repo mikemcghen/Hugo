@@ -1707,3 +1707,347 @@
 {"timestamp": "2025-11-14T11:41:17.429529", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
 {"timestamp": "2025-11-14T11:41:17.430531", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1026.579}}
 {"timestamp": "2025-11-14T11:41:17.434529", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:50:04.698260", "category": "runtime", "event_type": "boot_started", "level": "INFO", "data": {}}
+{"timestamp": "2025-11-14T11:50:05.922537", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:50:05.923537", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:50:05.925538", "category": "memory", "event_type": "faiss_index_saved", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:50:05.925538", "category": "memory", "event_type": "factual_memories_loaded", "level": "INFO", "data": {"count": 4, "faiss_added": 4}}
+{"timestamp": "2025-11-14T11:50:05.935537", "category": "cognition", "event_type": "persona_loaded", "level": "INFO", "data": {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}}
+{"timestamp": "2025-11-14T11:50:05.939537", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:50:06.111539", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:50:06.113539", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:50:06.115539", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:50:06.116539", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:50:06.120538", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:50:06.122538", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:50:06.123539", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:50:06.124540", "category": "runtime", "event_type": "boot_completed", "level": "INFO", "data": {"mode": "interactive"}}
+{"timestamp": "2025-11-14T11:50:42.081121", "category": "user", "event_type": "message", "level": "INFO", "data": {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:50:42.082122", "category": "memory", "event_type": "memory_classified", "level": "INFO", "data": {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}}
+{"timestamp": "2025-11-14T11:50:42.083123", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:50:42.083123", "category": "cognition", "event_type": "generate_reply_started", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "streaming": false, "message_length": 33}}
+{"timestamp": "2025-11-14T11:50:42.084123", "category": "cognition", "event_type": "internet_query_detected", "level": "INFO", "data": {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:50:42.084123", "category": "cognition", "event_type": "skill_bypass_started", "level": "INFO", "data": {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:50:42.084123", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:50:42.085122", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:50:42.305122", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "When does Wicked Part 2 come out?", "status": 202}}
+{"timestamp": "2025-11-14T11:50:42.848126", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "When does Wicked Part 2 come out?", "attempts": 2}}
+{"timestamp": "2025-11-14T11:50:42.849127", "category": "web_search", "event_type": "fallback_detected", "level": "INFO", "data": {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}}
+{"timestamp": "2025-11-14T11:50:42.850127", "category": "web_search", "event_type": "chaining_to_extract", "level": "INFO", "data": {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}}
+{"timestamp": "2025-11-14T11:50:42.850127", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}}
+{"timestamp": "2025-11-14T11:50:43.108610", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 30, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:50:43.109611", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:50:43.109611", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1024.489}}
+{"timestamp": "2025-11-14T11:50:43.114611", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:50:43.114611", "category": "cognition", "event_type": "skill_bypass_completed", "level": "INFO", "data": {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:50:43.141611", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 31, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}}
+{"timestamp": "2025-11-14T11:50:43.142612", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}}
+{"timestamp": "2025-11-14T11:50:43.142612", "category": "cognition", "event_type": "response_saved_to_memory", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}}
+{"timestamp": "2025-11-14T11:50:43.143611", "category": "user", "event_type": "response", "level": "INFO", "data": {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:50:43.143611", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:25.393035", "category": "user", "event_type": "message", "level": "INFO", "data": {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:51:25.393035", "category": "memory", "event_type": "memory_classified", "level": "INFO", "data": {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}}
+{"timestamp": "2025-11-14T11:51:25.394033", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:25.394033", "category": "cognition", "event_type": "generate_reply_started", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "streaming": false, "message_length": 33}}
+{"timestamp": "2025-11-14T11:51:25.394033", "category": "cognition", "event_type": "internet_query_detected", "level": "INFO", "data": {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:51:25.395032", "category": "cognition", "event_type": "skill_bypass_started", "level": "INFO", "data": {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:51:25.395032", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:51:25.395032", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:51:25.580033", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "When is Pittsburgh light up night", "status": 202}}
+{"timestamp": "2025-11-14T11:51:26.115036", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "When is Pittsburgh light up night", "attempts": 2}}
+{"timestamp": "2025-11-14T11:51:26.134036", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 32, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:26.135037", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:26.135037", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 740.005}}
+{"timestamp": "2025-11-14T11:51:26.139037", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:51:26.139037", "category": "cognition", "event_type": "skill_bypass_completed", "level": "INFO", "data": {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:51:26.157037", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 33, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:26.157037", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}}
+{"timestamp": "2025-11-14T11:51:26.158039", "category": "cognition", "event_type": "response_saved_to_memory", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}}
+{"timestamp": "2025-11-14T11:51:26.158039", "category": "user", "event_type": "response", "level": "INFO", "data": {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:51:26.158039", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:52:32.174045", "category": "reflection", "event_type": "session_started", "level": "INFO", "data": {"session_id": "shell_20251114_115006"}}
+{"timestamp": "2025-11-14T11:52:32.179046", "category": "reflection", "event_type": "keywords_extracted", "level": "INFO", "data": {"keywords": ["hugo", "results", "couldn", "extract", "clear"], "total_keywords": 8}}
+{"timestamp": "2025-11-14T11:52:32.180044", "category": "reflection", "event_type": "sentiment_analyzed", "level": "INFO", "data": {"sentiment_score": 0.0, "sentiment_label": "neutral"}}
+{"timestamp": "2025-11-14T11:52:32.180044", "category": "reflection", "event_type": "ollama_attempt", "level": "INFO", "data": {"attempt": 1, "max_retries": 2}}
+{"timestamp": "2025-11-14T11:52:58.350478", "category": "reflection", "event_type": "ollama_success", "level": "INFO", "data": {"attempt": 1, "response_length": 496}}
+{"timestamp": "2025-11-14T11:52:58.351482", "category": "reflection", "event_type": "json_parse_success", "level": "INFO", "data": {"summary_length": 92, "insights_count": 2, "confidence": 0.8}}
+{"timestamp": "2025-11-14T11:52:58.370111", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 34, "memory_type": "reflection", "importance": 0.9, "entity_type": null}}
+{"timestamp": "2025-11-14T11:52:58.371111", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}}
+{"timestamp": "2025-11-14T11:52:58.371111", "category": "reflection", "event_type": "stored", "level": "INFO", "data": {"type": "session", "confidence": 0.8, "content_length": 509}}
+{"timestamp": "2025-11-14T11:52:58.371111", "category": "reflection", "event_type": "session_completed", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "insights_count": 2, "keywords_count": 8, "sentiment": 0.0}}
+{"timestamp": "2025-11-14T11:52:58.372111", "category": "repl", "event_type": "session_ended", "level": "INFO", "data": {"session_id": "shell_20251114_115006", "message_count": 3}}
+{"timestamp": "2025-11-14T11:54:41.373959", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:54:41.382961", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:54:41.382961", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:54:41.450960", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:54:41.452961", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:54:41.453961", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:54:41.455960", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:54:41.458959", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:54:41.461959", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:54:41.461959", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:54:41.462961", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:54:41.462961", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:54:41.467960", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 4.999}}
+{"timestamp": "2025-11-14T11:54:41.472960", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:41.609962", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 11, "memory_type": "note", "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:41.609962", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:41.610961", "category": "skill_manager", "event_type": "result_saved_to_memory", "level": "INFO", "data": {"skill": "notes"}}
+{"timestamp": "2025-11-14T11:54:41.610961", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:54:41.610961", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:54:41.611961", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 1.0}}
+{"timestamp": "2025-11-14T11:54:41.616961", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:41.616961", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:41.617961", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:41.617961", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 0.0}}
+{"timestamp": "2025-11-14T11:54:41.622961", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:41.624961", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:54:41.624961", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:54:41.624961", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8766/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:54:41.628962", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}}
+{"timestamp": "2025-11-14T11:54:41.628962", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:54:41.629962", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 389}}
+{"timestamp": "2025-11-14T11:54:41.641961", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 389, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:54:41.651961", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 12, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:41.651961", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:41.652961", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 28.0}}
+{"timestamp": "2025-11-14T11:54:41.655961", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:54:41.657961", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:41.657961", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:41.659961", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "Python programming", "status": 202}}
+{"timestamp": "2025-11-14T11:54:42.172964", "category": "web_search", "event_type": "poll_retry", "level": "INFO", "data": {"query": "Python programming", "attempt": 2, "max_attempts": 5}}
+{"timestamp": "2025-11-14T11:54:42.688967", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "Python programming", "attempts": 3}}
+{"timestamp": "2025-11-14T11:54:42.700970", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 13, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:42.700970", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:42.700970", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1043.009}}
+{"timestamp": "2025-11-14T11:54:42.704969", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:54:56.478432", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:54:56.478432", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:54:56.479433", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:54:56.559432", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:54:56.561432", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:54:56.562433", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:54:56.564432", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:54:56.567432", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:54:56.570432", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:54:56.570432", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:54:56.571432", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:54:56.571432", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:54:56.575434", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 4.002000000000001}}
+{"timestamp": "2025-11-14T11:54:56.579433", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:56.709434", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 14, "memory_type": "note", "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:56.709434", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:56.709434", "category": "skill_manager", "event_type": "result_saved_to_memory", "level": "INFO", "data": {"skill": "notes"}}
+{"timestamp": "2025-11-14T11:54:56.710435", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:54:56.710435", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:54:56.711435", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 1.0}}
+{"timestamp": "2025-11-14T11:54:56.715435", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:56.715435", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:56.715435", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:56.716435", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 1.0}}
+{"timestamp": "2025-11-14T11:54:56.720435", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:54:56.722433", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:54:56.722433", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:54:56.723433", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8766/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:54:56.726433", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}}
+{"timestamp": "2025-11-14T11:54:56.726433", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:54:56.727433", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 389}}
+{"timestamp": "2025-11-14T11:54:56.739434", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 389, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:54:56.750434", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 15, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:56.751434", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:56.751434", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 29.000999999999998}}
+{"timestamp": "2025-11-14T11:54:56.756434", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:54:56.757433", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:56.757433", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:54:56.759434", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "Python programming", "status": 202}}
+{"timestamp": "2025-11-14T11:54:57.263437", "category": "web_search", "event_type": "poll_retry", "level": "INFO", "data": {"query": "Python programming", "attempt": 2, "max_attempts": 5}}
+{"timestamp": "2025-11-14T11:54:57.765440", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "Python programming", "attempts": 3}}
+{"timestamp": "2025-11-14T11:54:57.777442", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 16, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:57.777442", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:54:57.778441", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1021.0079999999999}}
+{"timestamp": "2025-11-14T11:54:57.781441", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:56:06.234287", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:56:06.235288", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:56:06.236286", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:56:06.298285", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:56:06.300288", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:56:06.302287", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:56:06.303287", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:56:06.307285", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:56:06.309286", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:56:06.309286", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:56:06.311286", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.311286", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.312289", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}}
+{"timestamp": "2025-11-14T11:56:06.316286", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}}
+{"timestamp": "2025-11-14T11:56:06.316286", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:06.316286", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}}
+{"timestamp": "2025-11-14T11:56:06.477286", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:06.487287", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 1, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.488288", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.488288", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 177.00199999999998}}
+{"timestamp": "2025-11-14T11:56:06.492289", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:06.493290", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.494287", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.494287", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8768/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:56:06.497287", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}}
+{"timestamp": "2025-11-14T11:56:06.497287", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:06.498290", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}}
+{"timestamp": "2025-11-14T11:56:06.509287", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:06.519287", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 2, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.520288", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.520288", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.001}}
+{"timestamp": "2025-11-14T11:56:06.523287", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:06.525287", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.525287", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:06.525287", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8769/", "query": "When was Dune released?"}}
+{"timestamp": "2025-11-14T11:56:06.528287", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}}
+{"timestamp": "2025-11-14T11:56:06.529288", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:06.529288", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}}
+{"timestamp": "2025-11-14T11:56:06.546287", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:06.556288", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 3, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.557289", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:06.557289", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 32.002}}
+{"timestamp": "2025-11-14T11:56:06.561288", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:30.677492", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:56:30.678493", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:56:30.678493", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:56:30.741494", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:56:30.743494", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:56:30.745494", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:56:30.746493", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:56:30.750493", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:56:30.752492", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:56:30.753493", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:56:30.754493", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.754493", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.755493", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}}
+{"timestamp": "2025-11-14T11:56:30.759493", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}}
+{"timestamp": "2025-11-14T11:56:30.759493", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:30.759493", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}}
+{"timestamp": "2025-11-14T11:56:30.900494", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:30.913494", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 4, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.914495", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.914495", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 160.002}}
+{"timestamp": "2025-11-14T11:56:30.919496", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:30.921495", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.921495", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.922495", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8768/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:56:30.925495", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}}
+{"timestamp": "2025-11-14T11:56:30.926494", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:30.926494", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}}
+{"timestamp": "2025-11-14T11:56:30.941494", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:30.957623", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 5, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.958142", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.958693", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 37.198}}
+{"timestamp": "2025-11-14T11:56:30.962324", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:30.963872", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.964390", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:30.964907", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8769/", "query": "When was Dune released?"}}
+{"timestamp": "2025-11-14T11:56:30.967950", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}}
+{"timestamp": "2025-11-14T11:56:30.967950", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:30.967950", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}}
+{"timestamp": "2025-11-14T11:56:30.981643", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:30.995846", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 6, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.995846", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:30.995846", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 31.456}}
+{"timestamp": "2025-11-14T11:56:31.004507", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:57.450199", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:56:57.451199", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:56:57.451199", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:56:57.514707", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:56:57.515708", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:56:57.517707", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:56:57.518709", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:56:57.522707", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:56:57.524707", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:56:57.525707", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:56:57.526708", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.526708", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.527710", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}}
+{"timestamp": "2025-11-14T11:56:57.531710", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}}
+{"timestamp": "2025-11-14T11:56:57.531710", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:57.531710", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}}
+{"timestamp": "2025-11-14T11:56:57.661709", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:57.683711", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 7, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.683711", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.683711", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 157.00300000000001}}
+{"timestamp": "2025-11-14T11:56:57.688709", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:57.689710", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.689710", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.690709", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8768/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:56:57.692709", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}}
+{"timestamp": "2025-11-14T11:56:57.693710", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:57.693710", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}}
+{"timestamp": "2025-11-14T11:56:57.705708", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:57.715709", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 8, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.716709", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.716709", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.999}}
+{"timestamp": "2025-11-14T11:56:57.724711", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:56:57.725710", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.725710", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:56:57.726711", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8769/", "query": "When was Dune released?"}}
+{"timestamp": "2025-11-14T11:56:57.728710", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}}
+{"timestamp": "2025-11-14T11:56:57.729709", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:56:57.729709", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}}
+{"timestamp": "2025-11-14T11:56:57.742709", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:56:57.759710", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 9, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.759710", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:56:57.759710", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 34.0}}
+{"timestamp": "2025-11-14T11:56:57.766709", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:57:24.279837", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:57:24.280841", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:57:24.280841", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:57:24.342838", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:57:24.344839", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:57:24.346838", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:57:24.347838", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:57:24.351838", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:57:24.353838", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:57:24.353838", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:57:24.355839", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.355839", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.356839", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8767/", "query": "Who is Denis Villeneuve?"}}
+{"timestamp": "2025-11-14T11:57:24.359838", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8767/", "content_length": 383, "title": "Denis Villeneuve - Film Director"}}
+{"timestamp": "2025-11-14T11:57:24.360838", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:57:24.360838", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8767/", "chunk_index": 0, "summary_length": 383}}
+{"timestamp": "2025-11-14T11:57:24.488839", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "Who is Denis Villeneuve?", "answer_length": 383, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:57:24.498840", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 10, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.499842", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.499842", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 144.003}}
+{"timestamp": "2025-11-14T11:57:24.503839", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:57:24.505839", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.505839", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.505839", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8768/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:57:24.508839", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8768/", "content_length": 2472, "title": "Python Programming Language - Complete Guide"}}
+{"timestamp": "2025-11-14T11:57:24.508839", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:57:24.509840", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8768/", "chunk_index": 0, "summary_length": 681}}
+{"timestamp": "2025-11-14T11:57:24.521839", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 451, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:57:24.531840", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 11, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.531840", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.531840", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 26.001}}
+{"timestamp": "2025-11-14T11:57:24.535841", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:57:24.536840", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.536840", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.537842", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8769/", "query": "When was Dune released?"}}
+{"timestamp": "2025-11-14T11:57:24.540840", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8769/", "content_length": 395, "title": "Dune Movie Information"}}
+{"timestamp": "2025-11-14T11:57:24.540840", "category": "extract", "event_type": "chunk_count", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunks": 1, "total_chunks": 1}}
+{"timestamp": "2025-11-14T11:57:24.540840", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8769/", "chunk_index": 0, "summary_length": 395}}
+{"timestamp": "2025-11-14T11:57:24.553839", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "When was Dune released?", "answer_length": 395, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:57:24.564841", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 12, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.564841", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:57:24.564841", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 28.001}}
+{"timestamp": "2025-11-14T11:57:24.569841", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:57:24.570842", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.570842", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.570842", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:99999/", "query": "Test query"}}
+{"timestamp": "2025-11-14T11:57:24.571842", "category": "error", "event_type": "exception", "level": "ERROR", "data": {"error_type": "InvalidUrlClientError", "error_message": "http://localhost:99999/", "context": {"phase": "fetch_and_extract", "url": "http://localhost:99999/"}}}
+{"timestamp": "2025-11-14T11:57:24.621843", "category": "extract", "event_type": "parse_failed", "level": "INFO", "data": {"url": "http://localhost:99999/", "reason": "No content extracted"}}
+{"timestamp": "2025-11-14T11:57:24.621843", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": false, "execution_time_ms": 51.001}}
+{"timestamp": "2025-11-14T11:57:24.625840", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": false}}
+{"timestamp": "2025-11-14T11:57:24.626843", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.627840", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:57:24.627840", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8770/", "query": "Test empty"}}
+{"timestamp": "2025-11-14T11:57:24.630840", "category": "extract", "event_type": "parse_failed", "level": "INFO", "data": {"url": "http://localhost:8770/", "reason": "No content extracted"}}
+{"timestamp": "2025-11-14T11:57:24.630840", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": false, "execution_time_ms": 3.0}}
+{"timestamp": "2025-11-14T11:57:24.633840", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": false}}

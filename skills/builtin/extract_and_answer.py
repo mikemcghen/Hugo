@@ -33,7 +33,8 @@ class ExtractAndAnswerSkill(BaseSkill):
         self.version = "1.0.0"
 
         # Configuration
-        self.chunk_size = 2000  # Characters per chunk for LLM
+        self.min_chunk_size = 1800  # Minimum characters per chunk
+        self.max_chunk_size = 2200  # Maximum characters per chunk
         self.max_urls = 3  # Maximum URLs to process
         self.timeout = 15  # Request timeout in seconds
 
@@ -98,7 +99,7 @@ class ExtractAndAnswerSkill(BaseSkill):
                     })
 
                 extract = await self._fetch_and_extract(url)
-                if extract:
+                if extract and extract.get("content"):
                     all_extracts.append({
                         "url": url,
                         "title": extract["title"],
@@ -111,6 +112,12 @@ class ExtractAndAnswerSkill(BaseSkill):
                             "content_length": len(extract["content"]),
                             "title": extract["title"]
                         })
+                else:
+                    if self.logger:
+                        self.logger.log_event("extract", "parse_failed", {
+                            "url": url,
+                            "reason": "No content extracted"
+                        })
 
             if not all_extracts:
                 return SkillResult(
@@ -119,19 +126,29 @@ class ExtractAndAnswerSkill(BaseSkill):
                     message="Failed to extract content from any URL"
                 )
 
-            # Step 2: Chunk and summarize content using local LLM
+            # Step 2: Chunk and summarize content
             summaries = []
+            total_chunks = 0
+
             for extract in all_extracts:
-                chunks = self._chunk_text(extract["content"], self.chunk_size)
+                chunks = self._chunk_text(extract["content"])
+                total_chunks += len(chunks)
+
+                if self.logger:
+                    self.logger.log_event("extract", "chunk_count", {
+                        "url": extract["url"],
+                        "chunks": len(chunks),
+                        "total_chunks": total_chunks
+                    })
 
                 for i, chunk in enumerate(chunks):
-                    summary = await self._summarize_chunk(query, chunk, extract["url"])
-                    if summary:
+                    summary = await self._summarize_chunk(query, chunk, extract["url"], i)
+                    if summary and summary.strip():
                         summaries.append({
                             "url": extract["url"],
                             "title": extract["title"],
                             "chunk_index": i,
-                            "summary": summary
+                            "summary": summary.strip()
                         })
 
                         if self.logger:
@@ -192,7 +209,7 @@ class ExtractAndAnswerSkill(BaseSkill):
                     {
                         "url": s["url"],
                         "title": s["title"],
-                        "excerpt": s["summary"][:100]
+                        "excerpt": s["summary"][:100] if len(s["summary"]) > 100 else s["summary"]
                     }
                     for s in ranked_summaries[:3]
                 ],
@@ -238,6 +255,11 @@ class ExtractAndAnswerSkill(BaseSkill):
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(url, headers=headers) as response:
                     if response.status != 200:
+                        if self.logger:
+                            self.logger.log_event("extract", "fetch_failed", {
+                                "url": url,
+                                "status": response.status
+                            })
                         return None
 
                     html = await response.text()
@@ -249,7 +271,7 @@ class ExtractAndAnswerSkill(BaseSkill):
             title = soup.title.string if soup.title else url
 
             # Remove unwanted elements
-            for element in soup(["script", "style", "nav", "header", "footer", "aside", "iframe"]):
+            for element in soup(["script", "style", "nav", "header", "footer", "aside", "iframe", "noscript"]):
                 element.decompose()
 
             # Extract main content
@@ -261,7 +283,7 @@ class ExtractAndAnswerSkill(BaseSkill):
             )
 
             if not main_content:
-                return None
+                return {"title": title.strip(), "content": ""}
 
             # Extract text
             text = main_content.get_text(separator='\n', strip=True)
@@ -273,8 +295,13 @@ class ExtractAndAnswerSkill(BaseSkill):
             # Remove excessive whitespace
             content = re.sub(r'\n{3,}', '\n\n', content)
 
+            # Remove very short lines (likely navigation/UI text)
+            paragraphs = content.split('\n\n')
+            filtered_paragraphs = [p for p in paragraphs if len(p) > 30]
+            content = '\n\n'.join(filtered_paragraphs)
+
             return {
-                "title": title.strip(),
+                "title": title.strip() if title else url,
                 "content": content
             }
 
@@ -283,18 +310,17 @@ class ExtractAndAnswerSkill(BaseSkill):
                 self.logger.log_error(e, {"phase": "fetch_and_extract", "url": url})
             return None
 
-    def _chunk_text(self, text: str, chunk_size: int) -> List[str]:
+    def _chunk_text(self, text: str) -> List[str]:
         """
-        Split text into chunks of approximately chunk_size characters.
+        Split text into chunks of 1800-2200 characters.
 
         Args:
             text: Text to chunk
-            chunk_size: Target chunk size in characters
 
         Returns:
             List of text chunks
         """
-        if len(text) <= chunk_size:
+        if len(text) <= self.max_chunk_size:
             return [text]
 
         chunks = []
@@ -302,77 +328,93 @@ class ExtractAndAnswerSkill(BaseSkill):
         current_chunk = ""
 
         for paragraph in paragraphs:
-            if len(current_chunk) + len(paragraph) + 2 <= chunk_size:
-                current_chunk += paragraph + "\n\n"
-            else:
-                if current_chunk:
+            # If adding this paragraph would exceed max_chunk_size
+            if len(current_chunk) + len(paragraph) + 2 > self.max_chunk_size:
+                # Save current chunk if it meets minimum size
+                if len(current_chunk) >= self.min_chunk_size:
                     chunks.append(current_chunk.strip())
-                current_chunk = paragraph + "\n\n"
+                    current_chunk = paragraph + "\n\n"
+                else:
+                    # Chunk too small, add paragraph anyway
+                    current_chunk += paragraph + "\n\n"
+                    if len(current_chunk) >= self.max_chunk_size:
+                        chunks.append(current_chunk.strip())
+                        current_chunk = ""
+            else:
+                current_chunk += paragraph + "\n\n"
 
-        if current_chunk:
+        # Add remaining chunk if it has content
+        if current_chunk.strip():
             chunks.append(current_chunk.strip())
+
+        # If no chunks created, return original text
+        if not chunks:
+            chunks = [text]
 
         return chunks
 
-    async def _summarize_chunk(self, query: str, chunk: str, source_url: str) -> str:
+    async def _summarize_chunk(self, query: str, chunk: str, source_url: str, chunk_index: int) -> str:
         """
-        Summarize a chunk of text using local LLM.
+        Extract relevant content from chunk that answers the query.
+
+        Uses keyword matching and sentence extraction to find relevant information.
 
         Args:
             query: Original user question
-            chunk: Text chunk to summarize
+            chunk: Text chunk to process
             source_url: Source URL for context
+            chunk_index: Index of this chunk
 
         Returns:
-            Summary text or None if failed
+            Extracted relevant text or None if failed
         """
         try:
-            # Import cognition engine (avoid circular import)
-            from core.runtime_manager import RuntimeManager
+            # Split into sentences
+            # Handle multiple sentence endings
+            text = chunk.replace('! ', '!|').replace('? ', '?|').replace('. ', '.|')
+            sentences = [s.strip() for s in text.split('|') if s.strip()]
 
-            # Get runtime manager instance (assuming it's available globally)
-            # For now, we'll need to access it through memory manager's reference
-            # or pass it explicitly. For this implementation, we'll construct
-            # a simple analysis prompt that can be sent to the LLM.
-
-            # Since we don't have direct access to cognition here, we'll use
-            # the memory manager to access embeddings and return the chunk
-            # for now. In production, this should call cognition.generate_reply()
-
-            # Simplified approach: Return relevant excerpts from the chunk
-            # that match the query semantically
-
-            # For now, extract sentences that might answer the question
-            sentences = chunk.split('.')
-            relevant_sentences = []
-
+            # Extract query keywords (remove common words)
             query_lower = query.lower()
-            query_keywords = set(re.findall(r'\b\w+\b', query_lower))
+            common_words = {'what', 'when', 'where', 'who', 'why', 'how', 'is', 'are', 'was', 'were',
+                           'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with'}
+            query_keywords = set(re.findall(r'\b\w+\b', query_lower)) - common_words
 
+            # Score each sentence by keyword matches
+            scored_sentences = []
             for sentence in sentences:
-                sentence = sentence.strip()
-                if not sentence:
+                if len(sentence) < 20:  # Skip very short sentences
                     continue
 
                 sentence_lower = sentence.lower()
                 sentence_words = set(re.findall(r'\b\w+\b', sentence_lower))
 
-                # Check for keyword overlap
-                overlap = len(query_keywords & sentence_words)
-                if overlap >= 2:  # At least 2 matching keywords
-                    relevant_sentences.append(sentence)
+                # Count keyword matches
+                matches = len(query_keywords & sentence_words)
 
-            if relevant_sentences:
-                # Return top 3 most relevant sentences
-                return '. '.join(relevant_sentences[:3]) + '.'
+                # Boost score if sentence appears to be answering the question
+                if any(word in sentence_lower for word in ['is', 'was', 'are', 'were', 'has', 'have', 'did', 'will']):
+                    matches += 0.5
+
+                if matches > 0:
+                    scored_sentences.append((matches, sentence))
+
+            # Sort by score and take top sentences
+            scored_sentences.sort(reverse=True, key=lambda x: x[0])
+            top_sentences = [s[1] for s in scored_sentences[:5]]  # Top 5 sentences
+
+            if top_sentences:
+                return ' '.join(top_sentences)
 
             # Fallback: return first few sentences of chunk
-            return '. '.join(sentences[:3]) + '.'
+            fallback_sentences = sentences[:3] if len(sentences) >= 3 else sentences
+            return ' '.join(fallback_sentences) if fallback_sentences else chunk[:500]
 
         except Exception as e:
             if self.logger:
-                self.logger.log_error(e, {"phase": "summarize_chunk", "source": source_url})
-            return None
+                self.logger.log_error(e, {"phase": "summarize_chunk", "source": source_url, "chunk_index": chunk_index})
+            # Return first part of chunk as fallback
+            return chunk[:500] if len(chunk) > 500 else chunk
 
     async def _rank_summaries(self, query: str, summaries: List[Dict]) -> List[Dict]:
         """
@@ -435,25 +477,35 @@ class ExtractAndAnswerSkill(BaseSkill):
         # Combine top summaries
         combined_text = " ".join(s["summary"] for s in top_summaries)
 
-        # Extract most relevant sentences (limit to 3)
-        sentences = [s.strip() for s in combined_text.split('.') if s.strip()]
+        # Split into sentences
+        text = combined_text.replace('! ', '!|').replace('? ', '?|').replace('. ', '.|')
+        sentences = [s.strip() for s in text.split('|') if s.strip() and len(s.strip()) > 20]
 
         # Remove duplicates while preserving order
         seen = set()
         unique_sentences = []
         for sentence in sentences:
             sentence_normalized = sentence.lower().strip()
-            if sentence_normalized not in seen and len(sentence_normalized) > 20:
+            if sentence_normalized not in seen:
                 seen.add(sentence_normalized)
                 unique_sentences.append(sentence)
 
-        # Return top 3 sentences
-        answer_sentences = unique_sentences[:3]
-
-        if answer_sentences:
-            return '. '.join(answer_sentences) + '.'
+        # Return top 2-3 sentences
+        if len(unique_sentences) >= 3:
+            answer_sentences = unique_sentences[:3]
+        elif len(unique_sentences) >= 2:
+            answer_sentences = unique_sentences[:2]
+        elif len(unique_sentences) >= 1:
+            answer_sentences = unique_sentences[:1]
         else:
-            return sentences[0] + '.' if sentences else "Information extracted but answer unclear."
+            return combined_text[:200] + "..." if len(combined_text) > 200 else combined_text
+
+        # Join sentences with proper punctuation
+        result = '. '.join(answer_sentences)
+        if not result.endswith(('.', '!', '?')):
+            result += '.'
+
+        return result
 
     def _help(self) -> SkillResult:
         """
