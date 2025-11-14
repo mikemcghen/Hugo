@@ -196,7 +196,7 @@ class CognitionEngine:
             "mood_spectrum": {}
         }
 
-    async def generate_reply(self, message: str, session_id: str, streaming: bool = False):
+    async def generate_reply(self, message: str, session_id: str, streaming: bool = False, mode: str = None):
         """
         Main public API for generating replies.
 
@@ -207,11 +207,16 @@ class CognitionEngine:
             message: User message
             session_id: Current session identifier
             streaming: If True, yield chunks; if False, return complete response
+            mode: Optional processing mode override (e.g., "extraction_synthesis")
 
         Returns:
             If streaming=False: ResponsePackage
             If streaming=True: Generator yielding chunks, then ResponsePackage
         """
+        # Early bypass for extraction synthesis mode
+        if mode == "extraction_synthesis":
+            return await self._generate_extraction_synthesis(message)
+
         self.logger.log_event("cognition", "generate_reply_started", {
             "session_id": session_id,
             "streaming": streaming,
@@ -259,6 +264,65 @@ class CognitionEngine:
             await self.post_process(response_package.content, session_id)
 
             return response_package
+
+    async def _generate_extraction_synthesis(self, message: str):
+        """
+        Special-purpose LLM call for extract_and_answer.
+        No memory writes, no reflections, no persona,
+        no fallback chatter. One-shot factual synthesis.
+
+        This mode bypasses ALL normal conversation logic:
+        - No memory saving
+        - No reflection
+        - No persona injection
+        - No conversational tone
+        - No fallback chatter
+
+        Args:
+            message: The synthesis prompt containing extracted text and question
+
+        Returns:
+            SimpleNamespace with content attribute (minimal interface compatible with ResponsePackage)
+        """
+        from types import SimpleNamespace
+
+        prompt = (
+            f"You are a factual synthesis engine. "
+            f"Given extracted webpage text, produce the shortest direct answer possible.\n\n"
+            f"{message}\n\n"
+            f"Return ONLY the answer. Do not explain your steps."
+        )
+
+        # Use LLM with zero temperature for deterministic output
+        if self.model_engine == "ollama":
+            if self.ollama_async_mode:
+                response = await self._local_infer_async(prompt, temperature=0.0)
+            else:
+                loop = asyncio.get_event_loop()
+                response = await loop.run_in_executor(
+                    None,
+                    self._local_infer,
+                    prompt,
+                    0.0
+                )
+        else:
+            response = "Model engine not configured."
+
+        # Safety: ensure clean final output
+        text = (response or "").strip()
+
+        # Minimal error fallback
+        if not text or len(text) < 3:
+            text = "No clear information available."
+
+        self.logger.log_event("cognition", "extraction_synthesis_complete", {
+            "mode": "extraction_synthesis",
+            "response_length": len(text),
+            "bypassed_normal_flow": True
+        })
+
+        # Return minimal interface matching ResponsePackage
+        return SimpleNamespace(content=text)
 
     async def _save_user_message(self, message: str, session_id: str):
         """
@@ -534,10 +598,16 @@ class CognitionEngine:
                 for i, topic in enumerate(output['related_topics'][:3], 1):
                     response_parts.append(f"\n{i}. {topic['text']}")
 
-            if not response_parts:
-                return "I found results but couldn't extract clear information. Try being more specific."
+            # If we have response parts, return them
+            if response_parts:
+                return "\n".join(response_parts)
 
-            return "\n".join(response_parts)
+            # No direct answer available - return URL list for potential extraction
+            # The calling code can decide whether to trigger extract_and_answer
+            if output.get('urls'):
+                return f"I found {len(output['urls'])} related URLs but no direct answer. The system will attempt to extract information from these sources."
+
+            return "I couldn't find any information about that."
 
         elif skill_name == "fetch_url":
             output = result.output

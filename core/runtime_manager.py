@@ -275,9 +275,9 @@ class RuntimeManager:
             self.tasks = TaskManager(self.sqlite_manager, self.logger)
             print("  ✓ Task manager initialized")
 
-            # Skill manager with SQLite and memory connections
+            # Skill manager with SQLite, memory, and cognition connections
             from skills.skill_manager import SkillManager
-            self.skills = SkillManager(self.logger, self.sqlite_manager, self.memory)
+            self.skills = SkillManager(self.logger, self.sqlite_manager, self.memory, self.cognition)
             self.skills.load_skills()
             print("  ✓ Skill manager initialized")
 

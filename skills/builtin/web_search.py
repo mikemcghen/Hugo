@@ -9,7 +9,6 @@ Actions:
 
 import aiohttp
 import asyncio
-import re
 from typing import Dict, Any, List
 from datetime import datetime
 
@@ -181,62 +180,32 @@ class WebSearchSkill(BaseSkill):
                         "url": topic.get("FirstURL", "")
                     })
 
-            # Fallback: If no useful results, try auto-detecting specialized sources
-            if not results["abstract_text"] and not results["answer"] and not results["definition"]:
-                fallback_url = self._detect_specialized_source(query)
-                if fallback_url:
-                    if self.logger:
-                        self.logger.log_event("web_search", "fallback_detected", {
-                            "query": query,
-                            "fallback_url": fallback_url
-                        })
+            # Extract URLs from related topics for downstream processing
+            results["urls"] = []
 
-                    # Chain into ExtractAndAnswerSkill
-                    try:
-                        # Import here to avoid circular dependency
-                        from skills.skill_registry import SkillRegistry
-                        registry = SkillRegistry()
-                        extract_skill = registry.get("extract_and_answer")
+            # Add abstract URL if available
+            if results["abstract_url"]:
+                results["urls"].append(results["abstract_url"])
 
-                        if extract_skill:
-                            if self.logger:
-                                self.logger.log_event("web_search", "chaining_to_extract", {
-                                    "query": query,
-                                    "fallback_url": fallback_url
-                                })
+            # Add definition URL if available
+            if results["definition_url"]:
+                results["urls"].append(results["definition_url"])
 
-                            # Run extract and answer skill
-                            extract_result = await extract_skill.run(
-                                action="extract",
-                                query=query,
-                                urls=[fallback_url]
-                            )
+            # Add related topic URLs
+            for topic in results["related_topics"]:
+                if topic.get("url"):
+                    results["urls"].append(topic["url"])
 
-                            if extract_result.success:
-                                # Return the extracted answer instead
-                                return SkillResult(
-                                    success=True,
-                                    output=extract_result.output,
-                                    message=f"Answer extracted from {fallback_url}",
-                                    metadata={
-                                        "query": query,
-                                        "fallback_extraction": True,
-                                        "source_url": fallback_url
-                                    }
-                                )
-
-                        # If extraction failed or skill not available, add fallback URL to results
-                        results["fallback_url"] = fallback_url
-
-                    except Exception as e:
-                        if self.logger:
-                            self.logger.log_error(e, {
-                                "phase": "extract_chain",
-                                "query": query,
-                                "fallback_url": fallback_url
-                            })
-                        # Add fallback URL to results as backup
-                        results["fallback_url"] = fallback_url
+            # Log result status
+            if self.logger:
+                self.logger.log_event("web_search", "search_complete", {
+                    "query": query,
+                    "has_abstract": bool(results["abstract_text"]),
+                    "has_answer": bool(results["answer"]),
+                    "has_definition": bool(results["definition"]),
+                    "url_count": len(results["urls"]),
+                    "status": "success" if results["urls"] else "no_results"
+                })
 
             # Store in memory if available
             if self.memory:
@@ -269,7 +238,12 @@ class WebSearchSkill(BaseSkill):
                 success=True,
                 output=results,
                 message=f"Search completed for '{query}'",
-                metadata={"query": query, "has_results": bool(results["abstract_text"])}
+                metadata={
+                    "query": query,
+                    "has_results": bool(results["abstract_text"] or results["answer"] or results["definition"]),
+                    "url_count": len(results["urls"]),
+                    "status": "success" if results["urls"] else "no_results"
+                }
             )
 
         except asyncio.TimeoutError:
@@ -322,46 +296,6 @@ Actions:
             output=help_text.strip(),
             message="Web search skill help"
         )
-
-    def _detect_specialized_source(self, query: str) -> str:
-        """
-        Detect if query matches a specialized source pattern.
-
-        Args:
-            query: Search query
-
-        Returns:
-            URL of specialized source or None
-        """
-        query_lower = query.lower()
-
-        # Movie/TV show patterns → IMDB
-        movie_patterns = [
-            r'\b(movie|film|cast|starring|actors|directed)\b',
-            r'\b(wicked|dune|avatar|marvel|star wars)\b',
-            r'\b(release date|coming out|premiere)\b'
-        ]
-
-        for pattern in movie_patterns:
-            if re.search(pattern, query_lower):
-                # Construct IMDB search URL
-                search_term = query.replace(" ", "+")
-                return f"https://www.imdb.com/find?q={search_term}"
-
-        # People/biography patterns → Wikipedia
-        people_patterns = [
-            r'\b(who is|who was)\b',
-            r'\b(biography|bio|life story)\b',
-            r'\b(born|died|age)\b'
-        ]
-
-        for pattern in people_patterns:
-            if re.search(pattern, query_lower):
-                # Construct Wikipedia URL
-                search_term = query.replace(" ", "_")
-                return f"https://en.wikipedia.org/wiki/{search_term}"
-
-        return None
 
     def requires_permissions(self) -> List[str]:
         """Return required permissions"""

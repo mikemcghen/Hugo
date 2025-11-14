@@ -194,11 +194,8 @@ Task commands:
   task assign <id> <owner>  Assign a task to an owner
 
 Skill commands:
-  skill list            List all loaded skills
   /skill list           List all loaded skills
-  skill run <name> <args>   Execute a skill
   /skill run <name> <args>  Execute a skill
-  skill reload          Reload all skills from disk
   /skill reload         Reload all skills from disk
 
 Reflection commands:

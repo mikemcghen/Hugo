@@ -8,9 +8,8 @@ Actions:
 """
 
 import aiohttp
-import asyncio
 import re
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -21,16 +20,16 @@ class ExtractAndAnswerSkill(BaseSkill):
     """
     Web extraction and answer synthesis skill.
 
-    Fetches web pages, extracts readable content, and uses local LLM
-    to synthesize precise answers to user questions.
+    Fetches web pages, extracts readable content, and uses local LLM to synthesize precise answers.
     """
 
-    def __init__(self, logger=None, sqlite_manager=None, memory_manager=None):
+    def __init__(self, logger=None, sqlite_manager=None, memory_manager=None, cognition=None):
         super().__init__(logger, sqlite_manager, memory_manager)
 
         self.name = "extract_and_answer"
         self.description = "Extracts content from web pages and synthesizes answers"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
+        self.cognition = cognition
 
         # Configuration
         self.min_chunk_size = 1800  # Minimum characters per chunk
@@ -98,25 +97,27 @@ class ExtractAndAnswerSkill(BaseSkill):
                         "query": query
                     })
 
-                extract = await self._fetch_and_extract(url)
-                if extract and extract.get("content"):
+                extract = await self._fetch_and_extract_with_fallback(url)
+                if extract and extract.get("content") and len(extract["content"]) > 100:
                     all_extracts.append({
                         "url": url,
                         "title": extract["title"],
-                        "content": extract["content"]
+                        "content": extract["content"],
+                        "method": extract.get("method", "direct")
                     })
 
                     if self.logger:
                         self.logger.log_event("extract", "parse_success", {
                             "url": url,
                             "content_length": len(extract["content"]),
-                            "title": extract["title"]
+                            "title": extract["title"],
+                            "method": extract.get("method", "direct")
                         })
                 else:
                     if self.logger:
                         self.logger.log_event("extract", "parse_failed", {
                             "url": url,
-                            "reason": "No content extracted"
+                            "reason": "No content extracted or too short"
                         })
 
             if not all_extracts:
@@ -152,7 +153,7 @@ class ExtractAndAnswerSkill(BaseSkill):
                         })
 
                         if self.logger:
-                            self.logger.log_event("extract", "llm_summarized", {
+                            self.logger.log_event("extract", "summary_generated", {
                                 "url": extract["url"],
                                 "chunk_index": i,
                                 "summary_length": len(summary)
@@ -236,9 +237,27 @@ class ExtractAndAnswerSkill(BaseSkill):
                 message=f"Extraction failed: {str(e)}"
             )
 
-    async def _fetch_and_extract(self, url: str) -> Dict[str, str]:
+    async def _fetch_and_extract_with_fallback(self, url: str) -> Optional[Dict[str, str]]:
         """
-        Fetch URL and extract readable content.
+        Fetch URL and extract content.
+
+        Args:
+            url: URL to fetch
+
+        Returns:
+            Dictionary with title and content, or None if failed
+        """
+        # Direct fetch only
+        result = await self._fetch_and_extract_direct(url)
+        if result and len(result.get("content", "")) > 100:
+            result["method"] = "direct"
+            return result
+
+        return None
+
+    async def _fetch_and_extract_direct(self, url: str) -> Optional[Dict[str, str]]:
+        """
+        Fetch URL directly and extract readable content.
 
         Args:
             url: URL to fetch
@@ -249,11 +268,13 @@ class ExtractAndAnswerSkill(BaseSkill):
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
             headers = {
-                "User-Agent": "Mozilla/5.0 (compatible; HugoBot/1.0)"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9"
             }
 
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(url, headers=headers) as response:
+                async with session.get(url, headers=headers, allow_redirects=True) as response:
                     if response.status != 200:
                         if self.logger:
                             self.logger.log_event("extract", "fetch_failed", {
@@ -264,11 +285,34 @@ class ExtractAndAnswerSkill(BaseSkill):
 
                     html = await response.text()
 
+            if not html or len(html) < 100:
+                return None
+
+            return self._extract_content_from_html(html, url)
+
+        except Exception as e:
+            if self.logger:
+                self.logger.log_error(e, {"phase": "fetch_and_extract_direct", "url": url})
+            return None
+
+
+    def _extract_content_from_html(self, html: str, source_url: str) -> Optional[Dict[str, str]]:
+        """
+        Extract readable content from HTML.
+
+        Args:
+            html: HTML content
+            source_url: Source URL for title fallback
+
+        Returns:
+            Dictionary with title and content
+        """
+        try:
             # Parse HTML with BeautifulSoup
             soup = BeautifulSoup(html, 'html.parser')
 
             # Extract title
-            title = soup.title.string if soup.title else url
+            title = soup.title.string if soup.title else source_url
 
             # Remove unwanted elements
             for element in soup(["script", "style", "nav", "header", "footer", "aside", "iframe", "noscript"]):
@@ -283,7 +327,7 @@ class ExtractAndAnswerSkill(BaseSkill):
             )
 
             if not main_content:
-                return {"title": title.strip(), "content": ""}
+                return {"title": title.strip() if title else source_url, "content": ""}
 
             # Extract text
             text = main_content.get_text(separator='\n', strip=True)
@@ -301,13 +345,13 @@ class ExtractAndAnswerSkill(BaseSkill):
             content = '\n\n'.join(filtered_paragraphs)
 
             return {
-                "title": title.strip() if title else url,
+                "title": title.strip() if title else source_url,
                 "content": content
             }
 
         except Exception as e:
             if self.logger:
-                self.logger.log_error(e, {"phase": "fetch_and_extract", "url": url})
+                self.logger.log_error(e, {"phase": "extract_content_from_html"})
             return None
 
     def _chunk_text(self, text: str) -> List[str]:
@@ -462,50 +506,108 @@ class ExtractAndAnswerSkill(BaseSkill):
 
     async def _compose_answer(self, query: str, top_summaries: List[Dict]) -> str:
         """
-        Compose final answer from top summaries.
+        Compose final answer from top summaries using LLM synthesis.
 
         Args:
             query: Original user question
             top_summaries: Top-ranked summaries
 
         Returns:
-            Composed answer (2-3 sentences max)
+            Synthesized answer (2-3 sentences max)
         """
         if not top_summaries:
             return "No relevant information found."
 
         # Combine top summaries
-        combined_text = " ".join(s["summary"] for s in top_summaries)
+        combined_summary = " ".join(s["summary"] for s in top_summaries)
 
-        # Split into sentences
-        text = combined_text.replace('! ', '!|').replace('? ', '?|').replace('. ', '.|')
-        sentences = [s.strip() for s in text.split('|') if s.strip() and len(s.strip()) > 20]
+        # If summary is empty or too short, return no information
+        if not combined_summary or len(combined_summary.strip()) < 50:
+            return "No clear information available."
 
-        # Remove duplicates while preserving order
-        seen = set()
-        unique_sentences = []
-        for sentence in sentences:
-            sentence_normalized = sentence.lower().strip()
-            if sentence_normalized not in seen:
-                seen.add(sentence_normalized)
-                unique_sentences.append(sentence)
+        # Synthesize final answer using cognition
+        if self.logger:
+            self.logger.log_event("extract", "synthesis_started", {
+                "query": query,
+                "combined_length": len(combined_summary)
+            })
 
-        # Return top 2-3 sentences
-        if len(unique_sentences) >= 3:
-            answer_sentences = unique_sentences[:3]
-        elif len(unique_sentences) >= 2:
-            answer_sentences = unique_sentences[:2]
-        elif len(unique_sentences) >= 1:
-            answer_sentences = unique_sentences[:1]
-        else:
-            return combined_text[:200] + "..." if len(combined_text) > 200 else combined_text
+        try:
+            # Check if cognition engine is available
+            if not self.cognition:
+                if self.logger:
+                    self.logger.log_event("extract", "no_cognition_available", {
+                        "query": query
+                    })
+                return "No clear information available."
 
-        # Join sentences with proper punctuation
-        result = '. '.join(answer_sentences)
-        if not result.endswith(('.', '!', '?')):
-            result += '.'
+            synthesis_prompt = (
+                f"Based on the extracted text below, answer the user's question:\n\n"
+                f"User question: {query}\n"
+                f"Extracted info: {combined_summary}\n\n"
+                "Respond with a direct, concise answer in 2-3 sentences. If no answer exists in the text, say 'No clear information available.'"
+            )
 
-        return result
+            # Generate reply through cognition engine using extraction_synthesis mode
+            response_package = await self.cognition.generate_reply(
+                message=synthesis_prompt,
+                session_id="extract_and_answer_synthesis",
+                streaming=False,
+                mode="extraction_synthesis"
+            )
+
+            final_answer = response_package.content if hasattr(response_package, 'content') else str(response_package)
+
+            if self.logger:
+                self.logger.log_event("extract", "synthesis_completed", {
+                    "query": query,
+                    "answer_length": len(final_answer)
+                })
+
+            # Clean the answer
+            cleaned_answer = self._clean_final_answer(final_answer)
+
+            if self.logger:
+                self.logger.log_event("extract", "final_answer_cleaned", {
+                    "original_length": len(final_answer),
+                    "cleaned_length": len(cleaned_answer)
+                })
+
+            return cleaned_answer
+
+        except Exception as e:
+            if self.logger:
+                self.logger.log_error(e, {"phase": "compose_answer_synthesis"})
+
+            return "No clear information available."
+
+
+    def _clean_final_answer(self, answer: str) -> str:
+        """
+        Clean and format the final answer.
+
+        Args:
+            answer: Raw answer from LLM
+
+        Returns:
+            Cleaned answer
+        """
+        # Remove extra whitespace
+        answer = re.sub(r'\s+', ' ', answer).strip()
+
+        # Remove markdown formatting if present
+        answer = re.sub(r'\*\*', '', answer)
+        answer = re.sub(r'__', '', answer)
+
+        # Remove leading labels like "Answer:", "Response:", etc.
+        answer = re.sub(r'^(Answer|Response|Result):\s*', '', answer, flags=re.IGNORECASE)
+
+        # Ensure proper sentence ending
+        if answer and not answer[-1] in '.!?':
+            answer += '.'
+
+        return answer
+
 
     def _help(self) -> SkillResult:
         """

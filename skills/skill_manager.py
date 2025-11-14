@@ -30,7 +30,7 @@ class SkillManager:
     Loads skills from YAML definitions and manages their execution.
     """
 
-    def __init__(self, logger, sqlite_manager=None, memory_manager=None):
+    def __init__(self, logger, sqlite_manager=None, memory_manager=None, cognition=None):
         """
         Initialize the skill manager.
 
@@ -38,10 +38,12 @@ class SkillManager:
             logger: HugoLogger instance
             sqlite_manager: SQLiteManager for persistence
             memory_manager: MemoryManager for storing skill results
+            cognition: CognitionEngine instance for skills that need LLM access
         """
         self.logger = logger
         self.sqlite = sqlite_manager
         self.memory = memory_manager
+        self.cognition = cognition
         self.registry = SkillRegistry()
 
         # Skill directory
@@ -141,12 +143,22 @@ class SkillManager:
             # Get the skill class
             skill_class = getattr(module, class_name)
 
-            # Instantiate the skill
-            skill_instance = skill_class(
-                logger=self.logger,
-                sqlite_manager=self.sqlite,
-                memory_manager=self.memory
-            )
+            # Instantiate the skill with cognition if available
+            # Try with cognition first, fall back to without if TypeError
+            try:
+                skill_instance = skill_class(
+                    logger=self.logger,
+                    sqlite_manager=self.sqlite,
+                    memory_manager=self.memory,
+                    cognition=self.cognition
+                )
+            except TypeError:
+                # Skill constructor doesn't accept cognition parameter
+                skill_instance = skill_class(
+                    logger=self.logger,
+                    sqlite_manager=self.sqlite,
+                    memory_manager=self.memory
+                )
 
             # Set metadata from YAML
             skill_instance.name = skill_name

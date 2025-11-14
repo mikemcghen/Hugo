@@ -4,14 +4,14 @@ Fetch URL Skill
 Downloads webpages and extracts readable content.
 
 Actions:
-- fetch: Download and extract content from a URL
+- fetch: Download and extract content from a URL with retry logic
 - summarize: Fetch and create a summary
 """
 
 import aiohttp
 import asyncio
 import re
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -22,7 +22,8 @@ class FetchUrlSkill(BaseSkill):
     """
     URL fetching and content extraction skill.
 
-    Downloads webpages, extracts readable text, and optionally summarizes.
+    Downloads webpages with real browser headers, retry logic for 202/403/503,
+    and extracts readable text.
     """
 
     def __init__(self, logger=None, sqlite_manager=None, memory_manager=None):
@@ -30,7 +31,12 @@ class FetchUrlSkill(BaseSkill):
 
         self.name = "fetch_url"
         self.description = "Downloads a webpage and summarizes it"
-        self.version = "1.0.0"
+        self.version = "1.1.0"
+
+        # Retry configuration
+        self.max_retries = 3
+        self.base_delay = 1.0  # seconds
+        self.retry_statuses = {202, 403, 503}
 
     async def run(self, action: str = "fetch", **kwargs) -> SkillResult:
         """
@@ -58,7 +64,7 @@ class FetchUrlSkill(BaseSkill):
 
     async def _fetch(self, url: str = None, **kwargs) -> SkillResult:
         """
-        Fetch and extract content from URL.
+        Fetch and extract content from URL with retry logic.
 
         Args:
             url: URL to fetch
@@ -73,24 +79,18 @@ class FetchUrlSkill(BaseSkill):
                 message="Missing required argument: url"
             )
 
+        # Try fetching with browser headers and retries
+        html, status = await self._fetch_with_retry(url)
+
+        if html is None:
+            return SkillResult(
+                success=False,
+                output={"status": status, "url": url},
+                message=f"Failed to fetch URL: status {status}",
+                metadata={"url": url, "status": status, "empty_body": True}
+            )
+
         try:
-            # Fetch URL
-            timeout = aiohttp.ClientTimeout(total=15)
-            headers = {
-                "User-Agent": "Mozilla/5.0 (compatible; HugoBot/1.0)"
-            }
-
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(url, headers=headers) as response:
-                    if response.status != 200:
-                        return SkillResult(
-                            success=False,
-                            output=None,
-                            message=f"Failed to fetch URL: status {response.status}"
-                        )
-
-                    html = await response.text()
-
             # Extract readable content using BeautifulSoup
             soup = BeautifulSoup(html, 'html.parser')
 
@@ -122,7 +122,8 @@ class FetchUrlSkill(BaseSkill):
                 "title": title,
                 "content": text,
                 "length": len(text),
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
+                "status": status
             }
 
             # Store in memory if available
@@ -157,30 +158,102 @@ class FetchUrlSkill(BaseSkill):
                 metadata={"url": url, "title": title, "length": len(text)}
             )
 
-        except asyncio.TimeoutError:
-            return SkillResult(
-                success=False,
-                output=None,
-                message="Request timed out"
-            )
-        except aiohttp.ClientError as e:
-            if self.logger:
-                self.logger.log_error(e, {"phase": "fetch_url", "url": url})
-
-            return SkillResult(
-                success=False,
-                output=None,
-                message=f"Network error: {str(e)}"
-            )
         except Exception as e:
             if self.logger:
-                self.logger.log_error(e, {"phase": "fetch_url", "url": url})
+                self.logger.log_error(e, {"phase": "fetch_url_parse", "url": url})
 
             return SkillResult(
                 success=False,
                 output=None,
-                message=f"Fetch failed: {str(e)}"
+                message=f"Failed to parse content: {str(e)}"
             )
+
+    async def _fetch_with_retry(self, url: str) -> tuple[Optional[str], int]:
+        """
+        Fetch URL with browser headers and exponential backoff retry.
+
+        Args:
+            url: URL to fetch
+
+        Returns:
+            Tuple of (html_content, status_code)
+        """
+        # Real browser headers
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1"
+        }
+
+        timeout = aiohttp.ClientTimeout(total=15)
+
+        for attempt in range(self.max_retries):
+            try:
+                async with aiohttp.ClientSession(timeout=timeout) as session:
+                    async with session.get(url, headers=headers, allow_redirects=True) as response:
+                        status = response.status
+                        html = await response.text()
+
+                        # Success - return immediately
+                        if status == 200 and html and len(html.strip()) > 100:
+                            if attempt > 0 and self.logger:
+                                self.logger.log_event("fetch_url", "retry_success", {
+                                    "url": url,
+                                    "attempt": attempt + 1,
+                                    "status": status
+                                })
+                            return html, status
+
+                        # Retry on specific status codes
+                        if status in self.retry_statuses:
+                            if attempt < self.max_retries - 1:
+                                delay = self.base_delay * (2 ** attempt)  # Exponential backoff
+
+                                if self.logger:
+                                    self.logger.log_event("fetch_url", "retry_browser_headers", {
+                                        "url": url,
+                                        "attempt": attempt + 1,
+                                        "status": status,
+                                        "retry_delay": delay
+                                    })
+
+                                await asyncio.sleep(delay)
+                                continue
+
+                        # Non-retry status or final attempt
+                        return html if html else None, status
+
+            except asyncio.TimeoutError:
+                if attempt < self.max_retries - 1:
+                    delay = self.base_delay * (2 ** attempt)
+                    if self.logger:
+                        self.logger.log_event("fetch_url", "retry_timeout", {
+                            "url": url,
+                            "attempt": attempt + 1,
+                            "retry_delay": delay
+                        })
+                    await asyncio.sleep(delay)
+                    continue
+                return None, 408  # Timeout
+
+            except aiohttp.ClientError as e:
+                if self.logger:
+                    self.logger.log_error(e, {
+                        "phase": "fetch_url_network",
+                        "url": url,
+                        "attempt": attempt + 1
+                    })
+                if attempt < self.max_retries - 1:
+                    delay = self.base_delay * (2 ** attempt)
+                    await asyncio.sleep(delay)
+                    continue
+                return None, 500  # Network error
+
+        # All retries exhausted
+        return None, 503
 
     async def _summarize(self, url: str = None, **kwargs) -> SkillResult:
         """

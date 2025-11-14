@@ -2364,3 +2364,636 @@ aiohttp.client_exceptions.InvalidUrlClientError: http://localhost:99999/
 2025-11-14 11:57:24,630 - hugo - INFO - [extract] parse_failed: {"url": "http://localhost:8770/", "reason": "No content extracted"}
 2025-11-14 11:57:24,630 - hugo - INFO - [skill] completed: {"skill": "extract_and_answer", "success": false, "execution_time_ms": 3.0}
 2025-11-14 11:57:24,634 - hugo - INFO - [skill_manager] run_stored: {"skill": "extract_and_answer", "success": false}
+2025-11-14 11:59:06,976 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 11:59:08,211 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:59:08,211 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:59:08,213 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:59:08,213 - hugo - INFO - [memory] factual_memories_loaded: {"count": 6, "faiss_added": 6}
+2025-11-14 11:59:08,223 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:59:08,227 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:59:08,385 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 11:59:08,386 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:59:08,388 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:59:08,389 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:59:08,393 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:59:08,395 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:59:08,396 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 11:59:08,397 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 11:59:13,119 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:13,120 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:59:13,120 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:59:13,121 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_115908", "streaming": false, "message_length": 33}
+2025-11-14 11:59:13,121 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:13,121 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:13,122 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:59:13,122 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:59:13,298 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 11:59:13,821 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 11:59:13,822 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 11:59:13,822 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 11:59:13,822 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 11:59:14,021 - hugo - INFO - [extract] fetch_failed: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "status": 202}
+2025-11-14 11:59:14,022 - hugo - INFO - [extract] parse_failed: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "reason": "No content extracted"}
+2025-11-14 11:59:14,152 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 35, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:59:14,152 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:59:14,153 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1029.771}
+2025-11-14 11:59:14,157 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:59:14,158 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:14,170 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 36, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:59:14,171 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:59:14,171 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_115908", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:59:14,172 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:14,172 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:59:24,237 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:24,237 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 11:59:24,238 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:59:24,238 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_115908", "streaming": false, "message_length": 33}
+2025-11-14 11:59:24,239 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:24,239 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:24,239 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:59:24,240 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:59:24,418 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 11:59:24,948 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 11:59:24,965 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 37, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:59:24,965 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:59:24,966 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 726.573}
+2025-11-14 11:59:24,970 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 11:59:24,970 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:24,986 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 38, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:59:24,987 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:59:24,987 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_115908", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:59:24,987 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_115908"}
+2025-11-14 11:59:24,988 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:59:32,582 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_115908"}
+2025-11-14 11:59:32,588 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "results", "couldn", "extract", "clear"], "total_keywords": 8}
+2025-11-14 11:59:32,588 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 11:59:32,589 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 11:59:58,414 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 468}
+2025-11-14 11:59:58,416 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 98, "insights_count": 2, "confidence": 0.7}
+2025-11-14 11:59:58,443 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 39, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 11:59:58,443 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 11:59:58,444 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 480}
+2025-11-14 11:59:58,444 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_115908", "insights_count": 2, "keywords_count": 8, "sentiment": 0.0}
+2025-11-14 11:59:58,445 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_115908", "message_count": 3}
+2025-11-14 12:07:05,628 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:07:07,317 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:07:07,325 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:07:07,327 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:07:07,327 - hugo - INFO - [memory] factual_memories_loaded: {"count": 8, "faiss_added": 8}
+2025-11-14 12:07:07,337 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:07:07,341 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:07:07,502 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:07:07,507 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:07:07,508 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:07:07,510 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:07:07,513 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:07:07,516 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:07:07,516 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:07:07,518 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:09:02,745 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:02,746 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:09:02,746 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:02,746 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_120707", "streaming": false, "message_length": 33}
+2025-11-14 12:09:02,747 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:02,747 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:02,748 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:02,748 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:02,949 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:09:03,479 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:09:03,480 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:09:03,480 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:09:03,481 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:09:04,222 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:09:04,222 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:09:04,223 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:09:04,395 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 610, "sources_used": 1}
+2025-11-14 12:09:04,416 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 40, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:09:04,416 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:09:04,417 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1668.609}
+2025-11-14 12:09:04,421 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:09:04,421 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:04,456 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 41, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:04,457 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:04,457 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_120707", "content_length": 610, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:09:04,458 - hugo - INFO - [user] response: {"content": "Search \"when does wicked part 2 come out?\"\nInterests\nNo results found for \"when does wicked part 2 come out?\"\nTitles\nNo results found for \"when does wicked part 2 come out?\"\nPeople\nNo results found for \"when does wicked part 2 come out?\"\nMore results\nSearch \"when does wicked part 2 come out?\" within...\nMovies\nTV\nTV Episodes\nMusic Videos\nPodcasts\nPodcast Episodes\nVideo Games\nCompanies\nKeywords\nQuotes\nPlot Summaries\nBiographies\nAdvanced search\nCreate a more specific search using a variety of options and filters\nMovies, TV & more\nPeople\nCollaborations\nBrowse\nGenres\nKeywords\nSign in to enable adult matches.", "streaming": false, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:04,458 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:19,630 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:19,630 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:09:19,630 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:19,630 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_120707", "streaming": false, "message_length": 33}
+2025-11-14 12:09:19,631 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:19,631 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:19,631 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:19,632 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:19,805 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:09:20,339 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:09:20,356 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 42, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:09:20,356 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:09:20,357 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 724.005}
+2025-11-14 12:09:20,361 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:09:20,362 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:20,386 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 43, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:20,387 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:20,387 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_120707", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:09:20,388 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:20,388 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:24,589 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:24,590 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:09:24,590 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:24,590 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_120707", "streaming": false, "message_length": 33}
+2025-11-14 12:09:24,591 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:24,591 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:24,592 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:24,592 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:24,781 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:09:25,307 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:09:25,308 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:09:25,308 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:09:25,309 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:09:26,000 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:09:26,001 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:09:26,001 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:09:26,035 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 610, "sources_used": 1}
+2025-11-14 12:09:26,076 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 44, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:09:26,077 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:09:26,077 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1484.648}
+2025-11-14 12:09:26,096 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:09:26,096 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:26,119 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 45, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:26,120 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:26,120 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_120707", "content_length": 610, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:09:26,121 - hugo - INFO - [user] response: {"content": "Search \"when does wicked part 2 come out?\"\nInterests\nNo results found for \"when does wicked part 2 come out?\"\nTitles\nNo results found for \"when does wicked part 2 come out?\"\nPeople\nNo results found for \"when does wicked part 2 come out?\"\nMore results\nSearch \"when does wicked part 2 come out?\" within...\nMovies\nTV\nTV Episodes\nMusic Videos\nPodcasts\nPodcast Episodes\nVideo Games\nCompanies\nKeywords\nQuotes\nPlot Summaries\nBiographies\nAdvanced search\nCreate a more specific search using a variety of options and filters\nMovies, TV & more\nPeople\nCollaborations\nBrowse\nGenres\nKeywords\nSign in to enable adult matches.", "streaming": false, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:26,121 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:43,220 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night 2025", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:43,221 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night 2025"}
+2025-11-14 12:09:43,222 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:09:43,222 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_120707", "streaming": false, "message_length": 38}
+2025-11-14 12:09:43,223 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:43,223 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:43,223 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:43,224 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:09:43,391 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night 2025", "status": 202}
+2025-11-14 12:09:43,915 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night 2025", "attempts": 2}
+2025-11-14 12:09:43,931 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 46, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:09:43,931 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:09:43,932 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 708.006}
+2025-11-14 12:09:43,935 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:09:43,936 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:43,954 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 47, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:43,954 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:09:43,955 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_120707", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:09:43,955 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_120707"}
+2025-11-14 12:09:43,956 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:10:30,716 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_120707"}
+2025-11-14 12:10:30,722 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["does", "wicked", "come", "results", "search"], "total_keywords": 10}
+2025-11-14 12:10:30,722 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:10:30,723 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:11:17,766 - hugo - INFO - [reflection] ollama_timeout: {"attempt": 1, "error": "HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=45)"}
+2025-11-14 12:11:17,767 - hugo - INFO - [reflection] ollama_retry: {"attempt": 1, "delay_seconds": 2}
+2025-11-14 12:11:19,783 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 2, "max_retries": 2}
+2025-11-14 12:11:36,639 - hugo - INFO - [reflection] ollama_success: {"attempt": 2, "response_length": 471}
+2025-11-14 12:11:36,640 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 108, "insights_count": 2, "confidence": 0.8}
+2025-11-14 12:11:36,659 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 48, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:11:36,659 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:11:36,660 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 483}
+2025-11-14 12:11:36,660 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_120707", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 12:11:36,661 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_120707", "message_count": 5}
+2025-11-14 12:13:55,538 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:13:57,412 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:13:57,420 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:13:57,422 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:13:57,422 - hugo - INFO - [memory] factual_memories_loaded: {"count": 12, "faiss_added": 12}
+2025-11-14 12:13:57,433 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:13:57,436 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:13:57,609 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:13:57,619 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:13:57,621 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:13:57,622 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:13:57,626 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:13:57,628 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:13:57,629 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:13:57,631 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:14:42,746 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:42,747 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:14:42,747 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:14:42,747 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_121357", "streaming": false, "message_length": 33}
+2025-11-14 12:14:42,748 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:42,748 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:42,748 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:14:42,749 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:14:42,965 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:14:43,497 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:14:43,498 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:14:43,498 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:14:43,499 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:14:44,022 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:14:44,022 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:14:44,023 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:14:44,187 - hugo - INFO - [extract] fallback_search_triggered: {"query": "When does Wicked Part 2 come out?", "reason": "Navigation noise or no results detected"}
+2025-11-14 12:14:45,064 - hugo - INFO - [extract] fallback_search_success: {"source": "ddg_lite", "content_length": 4026}
+2025-11-14 12:14:45,065 - hugo - ERROR - [error] exception: {"error_type": "ImportError", "error_message": "cannot import name 'generate_reply' from 'core.cognition' (C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\core\\cognition.py)", "context": {"phase": "fallback_search_and_extract"}}
+2025-11-14 12:14:45,065 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 791, in _fallback_search_and_extract
+    from core.cognition import generate_reply
+ImportError: cannot import name 'generate_reply' from 'core.cognition' (C:\Users\hocke\Documents\GitHub\Hugo\core\cognition.py)
+2025-11-14 12:14:45,066 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 31, "sources_used": 1}
+2025-11-14 12:14:45,083 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 49, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:14:45,084 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:14:45,084 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 2335.5009999999997}
+2025-11-14 12:14:45,088 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:14:45,089 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:45,112 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 50, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:14:45,112 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:14:45,113 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_121357", "content_length": 31, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:14:45,113 - hugo - INFO - [user] response: {"content": "No clear information available.", "streaming": false, "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:45,113 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:14:53,948 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:53,948 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:14:53,949 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:14:53,949 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_121357", "streaming": false, "message_length": 33}
+2025-11-14 12:14:53,949 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:53,950 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:53,950 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:14:53,950 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:14:54,148 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:14:54,681 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:14:54,699 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 51, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:14:54,699 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:14:54,700 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 750.364}
+2025-11-14 12:14:54,704 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:14:54,704 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:54,726 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 52, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:14:54,726 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:14:54,727 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_121357", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:14:54,727 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_121357"}
+2025-11-14 12:14:54,728 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:20:59,549 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_121357"}
+2025-11-14 12:20:59,555 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "clear", "information", "available", "results"], "total_keywords": 9}
+2025-11-14 12:20:59,555 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:20:59,556 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:21:24,549 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 543}
+2025-11-14 12:21:24,550 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 112, "insights_count": 2, "confidence": 0.8}
+2025-11-14 12:21:24,567 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 53, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:21:24,567 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:21:24,568 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 557}
+2025-11-14 12:21:24,568 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_121357", "insights_count": 2, "keywords_count": 9, "sentiment": 0.0}
+2025-11-14 12:21:24,569 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_121357", "message_count": 3}
+2025-11-14 12:21:47,777 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:21:49,496 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:21:49,504 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:21:49,507 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:21:49,508 - hugo - INFO - [memory] factual_memories_loaded: {"count": 14, "faiss_added": 14}
+2025-11-14 12:21:49,518 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:21:49,522 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:21:49,686 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:21:49,688 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:21:49,690 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:21:49,691 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:21:49,695 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:21:49,697 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:21:49,698 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:21:49,699 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:22:16,667 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:16,667 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:22:16,668 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:22:16,668 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_122149", "streaming": false, "message_length": 33}
+2025-11-14 12:22:16,669 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:16,669 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:16,669 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:16,670 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:16,888 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:22:17,418 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:22:17,420 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:22:17,420 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:22:17,421 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:22:18,302 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:22:18,302 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:22:18,303 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:22:18,469 - hugo - INFO - [extract] fallback_search_triggered: {"query": "When does Wicked Part 2 come out?", "reason": "Navigation noise or no results detected"}
+2025-11-14 12:22:18,470 - hugo - ERROR - [error] exception: {"error_type": "AttributeError", "error_message": "type object 'RuntimeManager' has no attribute 'get_instance'", "context": {"phase": "fallback_search_and_extract"}}
+2025-11-14 12:22:18,470 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 799, in _fallback_search_and_extract
+    runtime = RuntimeManager.get_instance()
+AttributeError: type object 'RuntimeManager' has no attribute 'get_instance'
+2025-11-14 12:22:18,471 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 31, "sources_used": 1}
+2025-11-14 12:22:18,494 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 54, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:22:18,495 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:22:18,495 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1826.088}
+2025-11-14 12:22:18,500 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:22:18,500 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:18,524 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 55, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:18,524 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:18,524 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_122149", "content_length": 31, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:22:18,525 - hugo - INFO - [user] response: {"content": "No clear information available.", "streaming": false, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:18,525 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:22:23,100 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:23,100 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:22:23,101 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:22:23,101 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_122149", "streaming": false, "message_length": 33}
+2025-11-14 12:22:23,101 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:23,102 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:23,102 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:23,103 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:23,311 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:22:23,842 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:22:23,843 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:22:23,843 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:22:23,844 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:22:24,870 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:22:24,871 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:22:24,871 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:22:24,911 - hugo - INFO - [extract] fallback_search_triggered: {"query": "When does Wicked Part 2 come out?", "reason": "Navigation noise or no results detected"}
+2025-11-14 12:22:24,912 - hugo - ERROR - [error] exception: {"error_type": "AttributeError", "error_message": "type object 'RuntimeManager' has no attribute 'get_instance'", "context": {"phase": "fallback_search_and_extract"}}
+2025-11-14 12:22:24,912 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 799, in _fallback_search_and_extract
+    runtime = RuntimeManager.get_instance()
+AttributeError: type object 'RuntimeManager' has no attribute 'get_instance'
+2025-11-14 12:22:24,912 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 31, "sources_used": 1}
+2025-11-14 12:22:24,937 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 56, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:22:24,938 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:22:24,938 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1836.256}
+2025-11-14 12:22:24,942 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:22:24,942 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:24,959 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 57, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:24,960 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:24,960 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_122149", "content_length": 31, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:22:24,961 - hugo - INFO - [user] response: {"content": "No clear information available.", "streaming": false, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:24,961 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:22:26,651 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:26,652 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:22:26,653 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:22:26,653 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_122149", "streaming": false, "message_length": 33}
+2025-11-14 12:22:26,653 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:26,654 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:26,654 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:26,654 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:22:26,799 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:22:27,330 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:22:27,347 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 58, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:22:27,347 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:22:27,348 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 694.0039999999999}
+2025-11-14 12:22:27,352 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:22:27,352 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:27,371 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 59, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:27,371 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:22:27,372 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_122149", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:22:27,372 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_122149"}
+2025-11-14 12:22:27,373 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:24:00,237 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_122149"}
+2025-11-14 12:24:00,243 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "clear", "information", "available", "results"], "total_keywords": 9}
+2025-11-14 12:24:00,243 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:24:00,244 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:24:24,719 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 522}
+2025-11-14 12:24:24,721 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 108, "insights_count": 2, "confidence": 0.7}
+2025-11-14 12:24:24,739 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 60, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:24:24,739 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:24:24,740 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 534}
+2025-11-14 12:24:24,740 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_122149", "insights_count": 2, "keywords_count": 9, "sentiment": 0.0}
+2025-11-14 12:24:24,741 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_122149", "message_count": 4}
+2025-11-14 12:30:34,261 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:30:34,261 - hugo - ERROR - [error] exception: {"error_type": "UnicodeEncodeError", "error_message": "'charmap' codec can't encode characters in position 2-43: character maps to <undefined>", "context": {"phase": "boot"}}
+2025-11-14 12:30:34,261 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\runtime_manager.py", line 93, in boot
+    self._display_banner()
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\runtime_manager.py", line 184, in _display_banner
+    print(banner)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-43: character maps to <undefined>
+2025-11-14 12:30:34,263 - hugo - ERROR - [error] exception: {"error_type": "UnicodeEncodeError", "error_message": "'charmap' codec can't encode character '\\u2717' in position 2: character maps to <undefined>", "context": {}}
+2025-11-14 12:30:34,263 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\runtime_manager.py", line 93, in boot
+    self._display_banner()
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\runtime_manager.py", line 184, in _display_banner
+    print(banner)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-43: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 120, in run
+    asyncio.run(self._execute_command(args))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\asyncio\base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "c:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 156, in _execute_command
+    await self.cmd_shell()
+  File "c:\Users\hocke\Documents\GitHub\Hugo\runtime\cli.py", line 443, in cmd_shell
+    await self.runtime_manager.boot()
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\runtime_manager.py", line 132, in boot
+    print(f"\n✗ Boot failed: {str(e)}\n")
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2717' in position 2: character maps to <undefined>
+2025-11-14 12:31:57,477 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:32:19,920 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:32:19,921 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 12:32:31,740 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 11.82, "status": "success", "response_length": 63}
+2025-11-14 12:32:31,740 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 63, "bypassed_normal_flow": true}
+2025-11-14 12:35:26,010 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:35:27,154 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:35:27,155 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:35:27,157 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:35:27,158 - hugo - INFO - [memory] factual_memories_loaded: {"count": 17, "faiss_added": 17}
+2025-11-14 12:35:27,168 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:35:27,173 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:35:27,337 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:35:27,338 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:35:27,340 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:35:27,341 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:35:27,345 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:35:27,347 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:35:27,348 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:35:27,349 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:35:32,526 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:32,527 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:35:32,528 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:35:32,528 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_123527", "streaming": false, "message_length": 33}
+2025-11-14 12:35:32,529 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:32,529 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:32,529 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:35:32,530 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:35:32,682 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:35:33,212 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:35:33,213 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:35:33,214 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:35:33,214 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:35:33,751 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:35:33,751 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:35:33,751 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:35:33,885 - hugo - INFO - [extract] synthesis_started: {"query": "When does Wicked Part 2 come out?", "combined_length": 609}
+2025-11-14 12:35:33,886 - hugo - INFO - [extract] no_cognition_available: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:35:33,886 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 31, "sources_used": 1}
+2025-11-14 12:35:33,896 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 61, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:35:33,897 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:35:33,897 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1367.269}
+2025-11-14 12:35:33,901 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:35:33,902 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:33,913 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 62, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:35:33,913 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:35:33,914 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_123527", "content_length": 31, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:35:33,914 - hugo - INFO - [user] response: {"content": "No clear information available.", "streaming": false, "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:33,914 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:35:37,697 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:37,697 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:35:37,697 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:35:37,698 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_123527", "streaming": false, "message_length": 33}
+2025-11-14 12:35:37,698 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:37,698 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:37,699 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:35:37,699 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:35:37,872 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:35:38,396 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:35:38,414 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 63, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:35:38,414 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:35:38,415 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 715.171}
+2025-11-14 12:35:38,419 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:35:38,419 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:38,439 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 64, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:35:38,440 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:35:38,440 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_123527", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:35:38,441 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_123527"}
+2025-11-14 12:35:38,441 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:35:52,551 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_123527"}
+2025-11-14 12:35:52,556 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "clear", "information", "available", "results"], "total_keywords": 9}
+2025-11-14 12:35:52,556 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:35:52,557 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:36:17,199 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 644}
+2025-11-14 12:36:17,200 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 72, "insights_count": 2, "confidence": 0.8}
+2025-11-14 12:36:17,215 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 65, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:36:17,215 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:36:17,216 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 661}
+2025-11-14 12:36:17,216 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_123527", "insights_count": 2, "keywords_count": 9, "sentiment": 0.0}
+2025-11-14 12:36:17,217 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_123527", "message_count": 3}
+2025-11-14 12:40:24,580 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:40:24,581 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:40:24,642 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:40:24,644 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:40:24,645 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:40:24,647 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:40:24,650 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:40:24,652 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:40:24,653 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:42:05,988 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 12:42:07,262 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 12:42:07,263 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:42:07,265 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 12:42:07,266 - hugo - INFO - [memory] factual_memories_loaded: {"count": 19, "faiss_added": 19}
+2025-11-14 12:42:07,276 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 12:42:07,280 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 12:42:07,438 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 12:42:07,440 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 12:42:07,442 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 12:42:07,443 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 12:42:07,447 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 12:42:07,449 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 12:42:07,450 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 12:42:07,452 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 12:42:10,939 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_124207"}
+2025-11-14 12:42:10,940 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 12:42:10,940 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:42:10,940 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_124207", "streaming": false, "message_length": 33}
+2025-11-14 12:42:10,941 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_124207"}
+2025-11-14 12:42:10,941 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_124207"}
+2025-11-14 12:42:10,941 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:42:10,942 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:42:11,150 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:42:11,675 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:42:11,676 - hugo - INFO - [web_search] fallback_detected: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:42:11,676 - hugo - INFO - [web_search] chaining_to_extract: {"query": "When does Wicked Part 2 come out?", "fallback_url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?"}
+2025-11-14 12:42:11,676 - hugo - INFO - [extract] fetch_started: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "query": "When does Wicked Part 2 come out?"}
+2025-11-14 12:42:12,235 - hugo - INFO - [extract] parse_success: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "content_length": 609, "title": "Find - IMDb", "method": "direct"}
+2025-11-14 12:42:12,236 - hugo - INFO - [extract] chunk_count: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunks": 1, "total_chunks": 1}
+2025-11-14 12:42:12,237 - hugo - INFO - [extract] summary_generated: {"url": "https://www.imdb.com/find?q=When+does+Wicked+Part+2+come+out?", "chunk_index": 0, "summary_length": 609}
+2025-11-14 12:42:12,369 - hugo - INFO - [extract] synthesis_started: {"query": "When does Wicked Part 2 come out?", "combined_length": 609}
+2025-11-14 12:42:12,369 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 12:42:26,400 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 14.03, "status": "success", "response_length": 31}
+2025-11-14 12:42:26,401 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 31, "bypassed_normal_flow": true}
+2025-11-14 12:42:26,402 - hugo - INFO - [extract] synthesis_completed: {"query": "When does Wicked Part 2 come out?", "answer_length": 31}
+2025-11-14 12:42:26,403 - hugo - INFO - [extract] final_answer_cleaned: {"original_length": 31, "cleaned_length": 31}
+2025-11-14 12:42:26,403 - hugo - INFO - [extract] final_answer: {"query": "When does Wicked Part 2 come out?", "answer_length": 31, "sources_used": 1}
+2025-11-14 12:42:26,422 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 66, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 12:42:26,422 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 12:42:26,423 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 15482.163999999999}
+2025-11-14 12:42:26,428 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:42:26,429 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_124207"}
+2025-11-14 12:42:26,446 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 67, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:42:26,447 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:42:26,447 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_124207", "content_length": 31, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:42:26,448 - hugo - INFO - [user] response: {"content": "No clear information available.", "streaming": false, "session_id": "shell_20251114_124207"}
+2025-11-14 12:42:26,448 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:43:41,505 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_124207"}
+2025-11-14 12:43:41,505 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 12:43:41,506 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:43:41,506 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_124207", "streaming": false, "message_length": 33}
+2025-11-14 12:43:41,506 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_124207"}
+2025-11-14 12:43:41,507 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_124207"}
+2025-11-14 12:43:41,507 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:43:41,507 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 12:43:41,743 - hugo - INFO - [web_search] poll_started: {"query": "When is Pittsburgh light up night", "status": 202}
+2025-11-14 12:43:42,271 - hugo - INFO - [web_search] poll_success: {"query": "When is Pittsburgh light up night", "attempts": 2}
+2025-11-14 12:43:42,287 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 68, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 12:43:42,287 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 12:43:42,287 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 780.292}
+2025-11-14 12:43:42,291 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 12:43:42,291 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_124207"}
+2025-11-14 12:43:42,307 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 69, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 12:43:42,307 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 12:43:42,308 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_124207", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 12:43:42,308 - hugo - INFO - [user] response: {"content": "I found results but couldn't extract clear information. Try being more specific.", "streaming": false, "session_id": "shell_20251114_124207"}
+2025-11-14 12:43:42,308 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 12:43:59,694 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_124207"}
+2025-11-14 12:43:59,699 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "clear", "information", "available", "results"], "total_keywords": 9}
+2025-11-14 12:43:59,700 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 12:43:59,700 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 12:44:21,252 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 433}
+2025-11-14 12:44:21,253 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 72, "insights_count": 2, "confidence": 0.7}
+2025-11-14 12:44:21,271 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 70, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 12:44:21,272 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 12:44:21,272 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 455}
+2025-11-14 12:44:21,273 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_124207", "insights_count": 2, "keywords_count": 9, "sentiment": 0.0}
+2025-11-14 12:44:21,273 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_124207", "message_count": 3}
+2025-11-14 12:47:54,652 - hugo - INFO - [web_search] poll_started: {"query": "When does Wicked Part 2 come out?", "status": 202}
+2025-11-14 12:47:55,180 - hugo - INFO - [web_search] poll_success: {"query": "When does Wicked Part 2 come out?", "attempts": 2}
+2025-11-14 12:47:55,181 - hugo - INFO - [web_search] search_complete: {"query": "When does Wicked Part 2 come out?", "has_abstract": false, "has_answer": false, "has_definition": false, "url_count": 0, "status": "no_results"}
+2025-11-14 12:47:55,182 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "object MagicMock can't be used in 'await' expression", "context": {"phase": "web_search", "query": "When does Wicked Part 2 come out?"}}
+2025-11-14 12:47:55,182 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\web_search.py", line 235, in _search
+    await self.memory.store(search_entry, persist_long_term=True)
+TypeError: object MagicMock can't be used in 'await' expression
+2025-11-14 12:47:55,321 - hugo - INFO - [web_search] poll_started: {"query": "Who directed Dune?", "status": 202}
+2025-11-14 12:47:55,855 - hugo - INFO - [web_search] poll_success: {"query": "Who directed Dune?", "attempts": 2}
+2025-11-14 12:47:55,856 - hugo - INFO - [web_search] search_complete: {"query": "Who directed Dune?", "has_abstract": false, "has_answer": false, "has_definition": false, "url_count": 0, "status": "no_results"}
+2025-11-14 12:47:55,856 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "object MagicMock can't be used in 'await' expression", "context": {"phase": "web_search", "query": "Who directed Dune?"}}
+2025-11-14 12:47:55,856 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\web_search.py", line 235, in _search
+    await self.memory.store(search_entry, persist_long_term=True)
+TypeError: object MagicMock can't be used in 'await' expression
+2025-11-14 12:47:56,014 - hugo - INFO - [web_search] poll_started: {"query": "Marvel Avengers cast", "status": 202}
+2025-11-14 12:47:56,544 - hugo - INFO - [web_search] poll_success: {"query": "Marvel Avengers cast", "attempts": 2}
+2025-11-14 12:47:56,545 - hugo - INFO - [web_search] search_complete: {"query": "Marvel Avengers cast", "has_abstract": false, "has_answer": false, "has_definition": false, "url_count": 0, "status": "no_results"}
+2025-11-14 12:47:56,545 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "object MagicMock can't be used in 'await' expression", "context": {"phase": "web_search", "query": "Marvel Avengers cast"}}
+2025-11-14 12:47:56,545 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\web_search.py", line 235, in _search
+    await self.memory.store(search_entry, persist_long_term=True)
+TypeError: object MagicMock can't be used in 'await' expression
+2025-11-14 12:47:56,726 - hugo - INFO - [web_search] poll_started: {"query": "Who is Elon Musk?", "status": 202}
+2025-11-14 12:47:57,257 - hugo - INFO - [web_search] poll_success: {"query": "Who is Elon Musk?", "attempts": 2}
+2025-11-14 12:47:57,258 - hugo - INFO - [web_search] search_complete: {"query": "Who is Elon Musk?", "has_abstract": true, "has_answer": false, "has_definition": false, "url_count": 6, "status": "success"}
+2025-11-14 12:47:57,258 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "object MagicMock can't be used in 'await' expression", "context": {"phase": "web_search", "query": "Who is Elon Musk?"}}
+2025-11-14 12:47:57,258 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\web_search.py", line 235, in _search
+    await self.memory.store(search_entry, persist_long_term=True)
+TypeError: object MagicMock can't be used in 'await' expression
