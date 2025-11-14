@@ -173,6 +173,33 @@ class MemoryManager:
             except Exception as e:
                 self.logger.log_error(e)
 
+    def _extract_note_content(self, text: str) -> str:
+        """
+        Extract note content from natural language.
+
+        Removes common note-taking prefixes and returns the core content.
+
+        Args:
+            text: Original text
+
+        Returns:
+            Extracted note content
+        """
+        text_lower = text.lower()
+
+        # Patterns to remove
+        removal_patterns = [
+            r'^(make|create|write|take|add)\s+(a\s+)?(note|notes?)\s+(saying|that|about|to|:)?\s*',
+            r'^(note|notes?)\s*:\s*',
+            r'^(remember|record)\s+(that\s+)?',
+        ]
+
+        content = text
+        for pattern in removal_patterns:
+            content = re.sub(pattern, '', content, flags=re.IGNORECASE).strip()
+
+        return content if content else text
+
     def classify_memory(self, message_text: str) -> MemoryClassification:
         """
         Classify a memory using rule-based detection with optional LLM fallback.
@@ -307,7 +334,95 @@ class MemoryManager:
                         reasoning="preference_detected"
                     )
 
-        # Pattern 5: Tasks and reminders
+        # Pattern 5: Notes and journal entries with SKILL TRIGGERING
+        # NOTE: This must come BEFORE task patterns to catch "make a note" before "remember to"
+        note_create_patterns = [
+            r'\b(make|create|write|take|add)\s+(a\s+)?(note|notes?)\b',
+            r'\bnote\s*:\s*',
+        ]
+
+        note_read_patterns = [
+            r'\b(what|show|list|get|display|view)\s+(are\s+)?(my\s+)?(note|notes)\b',
+            r'\b(my\s+)?notes?\s*\?',
+        ]
+
+        note_search_patterns = [
+            r'\bsearch\s+(my\s+)?notes?\s+(for\s+)?',
+            r'\bfind\s+(my\s+)?notes?\s+(about|containing|with)\b',
+        ]
+
+        # Check for note creation
+        for pattern in note_create_patterns:
+            if re.search(pattern, text_lower):
+                note_content = self._extract_note_content(text)
+                return MemoryClassification(
+                    memory_type="note",
+                    importance=0.75,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="note",
+                    reasoning="note_creation_intent",
+                    metadata={
+                        "skill_trigger": "notes",
+                        "skill_action": "add",
+                        "skill_payload": {"content": note_content}
+                    }
+                )
+
+        # Check for note retrieval
+        for pattern in note_read_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="conversation",
+                    importance=0.5,
+                    should_persist=False,
+                    embedding_allowed=False,
+                    reasoning="note_list_query",
+                    metadata={
+                        "skill_trigger": "notes",
+                        "skill_action": "list",
+                        "skill_payload": {"limit": 10}
+                    }
+                )
+
+        # Check for note search
+        for pattern in note_search_patterns:
+            if re.search(pattern, text_lower):
+                # Extract search query
+                search_query = re.sub(r'\b(search|find)\s+(my\s+)?notes?\s+(for|about|containing|with)\s+', '', text_lower).strip()
+                return MemoryClassification(
+                    memory_type="conversation",
+                    importance=0.5,
+                    should_persist=False,
+                    embedding_allowed=False,
+                    reasoning="note_search_query",
+                    metadata={
+                        "skill_trigger": "notes",
+                        "skill_action": "search",
+                        "skill_payload": {"query": search_query}
+                    }
+                )
+
+        # General note patterns (without skill triggering)
+        general_note_patterns = [
+            r'\btoday (i|was)\b',
+            r'\bthinking about\b',
+            r'\brealized that\b',
+            r'\blearned that\b',
+        ]
+
+        for pattern in general_note_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="note",
+                    importance=0.65,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="note",
+                    reasoning="note_or_journal"
+                )
+
+        # Pattern 6: Tasks and reminders
         task_patterns = [
             r'\b(remind|remember)\b.*\bto\b',
             r'\bi need to\b',
@@ -329,7 +444,7 @@ class MemoryManager:
                     reasoning="task_or_reminder"
                 )
 
-        # Pattern 6: Knowledge (definitions, explanations, facts about the world)
+        # Pattern 7: Knowledge (definitions, explanations, facts about the world)
         knowledge_patterns = [
             r'\bwhat is\b',
             r'\bwhat are\b',
@@ -371,27 +486,7 @@ class MemoryManager:
                     reasoning="emotional_content"
                 )
 
-        # Pattern 8: Notes and journal entries (longer, reflective content)
-        note_patterns = [
-            r'\b(note|journal|diary)\b',
-            r'\btoday (i|was)\b',
-            r'\bthinking about\b',
-            r'\brealized that\b',
-            r'\blearned that\b',
-        ]
-
-        for pattern in note_patterns:
-            if re.search(pattern, text_lower):
-                return MemoryClassification(
-                    memory_type="note",
-                    importance=0.65,
-                    should_persist=True,
-                    embedding_allowed=True,
-                    entity_type="note",
-                    reasoning="note_or_journal"
-                )
-
-        # Pattern 9: Ignore (greetings, acknowledgments)
+        # Pattern 8: Ignore (greetings, acknowledgments)
         ignore_patterns = [
             r'^(hi|hello|hey|thanks|thank you|ok|okay|yes|no|sure|fine|good|great|awesome)[\s!.]*$',
             r'^(bye|goodbye|see you|later|cya)[\s!.]*$',
@@ -532,6 +627,7 @@ Return ONLY valid JSON in this format:
                 "embedding_allowed": classification.embedding_allowed,
                 "entity_type": classification.entity_type,
                 "reasoning": classification.reasoning,
+                "skill_trigger": classification.metadata.get("skill_trigger"),
                 "content_preview": entry.content[:80]
             })
 

@@ -237,6 +237,9 @@ class CognitionEngine:
         """
         Save user message to memory before processing.
 
+        This method also checks for skill trigger metadata attached by the
+        memory classification system and auto-executes skills when detected.
+
         Args:
             message: User message
             session_id: Session identifier
@@ -257,11 +260,83 @@ class CognitionEngine:
                 is_fact=False
             )
 
+            # Store in memory (classification happens inside store())
             await self.memory.store(user_entry, persist_long_term=False)
+
             self.logger.log_event("cognition", "user_message_saved", {
                 "session_id": session_id,
                 "content_length": len(message)
             })
+
+            # Check for skill trigger metadata attached during classification
+            if "skill_trigger" in user_entry.metadata:
+                self.logger.log_event("cognition", "skill_trigger_detected", {
+                    "skill_name": user_entry.metadata["skill_trigger"],
+                    "action": user_entry.metadata.get("skill_action", "unknown"),
+                    "session_id": session_id
+                })
+
+                # Auto-execute skill if skill manager is available
+                if self.runtime_manager and hasattr(self.runtime_manager, 'skills') and self.runtime_manager.skills:
+                    skill_name = user_entry.metadata["skill_trigger"]
+                    skill_action = user_entry.metadata.get("skill_action", "help")
+                    skill_payload = user_entry.metadata.get("skill_payload", {})
+
+                    self.logger.log_event("cognition", "skill_autorun_started", {
+                        "skill": skill_name,
+                        "action": skill_action,
+                        "session_id": session_id
+                    })
+
+                    try:
+                        # Execute the skill
+                        result = await self.runtime_manager.skills.run_skill(
+                            skill_name,
+                            action=skill_action,
+                            **skill_payload
+                        )
+
+                        self.logger.log_event("cognition", "skill_autorun_completed", {
+                            "skill": skill_name,
+                            "action": skill_action,
+                            "success": result.success,
+                            "message": result.message,
+                            "session_id": session_id
+                        })
+
+                        # Store skill result in memory if successful
+                        if result.success and result.output:
+                            skill_result_entry = MemoryEntry(
+                                id=None,
+                                session_id=session_id,
+                                timestamp=datetime.now(),
+                                memory_type="skill_execution",
+                                content=f"Skill '{skill_name}' executed: {result.message}",
+                                embedding=None,
+                                metadata={
+                                    "skill_name": skill_name,
+                                    "skill_action": skill_action,
+                                    "skill_output": result.output,
+                                    "auto_triggered": True
+                                },
+                                importance_score=0.6,
+                                is_fact=False
+                            )
+                            await self.memory.store(skill_result_entry, persist_long_term=False)
+
+                    except Exception as skill_error:
+                        self.logger.log_error(skill_error, {
+                            "phase": "skill_autorun",
+                            "skill": skill_name,
+                            "action": skill_action,
+                            "session_id": session_id
+                        })
+                else:
+                    self.logger.log_event("cognition", "skill_autorun_skipped", {
+                        "reason": "skill_manager_not_available",
+                        "skill": user_entry.metadata["skill_trigger"],
+                        "session_id": session_id
+                    })
 
         except Exception as e:
             self.logger.log_error(e, {"phase": "save_user_message"})

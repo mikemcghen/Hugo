@@ -90,6 +90,9 @@ class HugoREPL:
                 elif user_input.lower().startswith('skill ') or user_input.lower() == 'skill':
                     await self._handle_skill_command(user_input)
                     continue
+                elif user_input.lower().startswith('/skill'):
+                    await self._handle_skill_command(user_input)
+                    continue
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
@@ -189,6 +192,14 @@ Task commands:
   task show <id>        Show a specific task
   task done <id>        Mark a task as done
   task assign <id> <owner>  Assign a task to an owner
+
+Skill commands:
+  skill list            List all loaded skills
+  /skill list           List all loaded skills
+  skill run <name> <args>   Execute a skill
+  /skill run <name> <args>  Execute a skill
+  skill reload          Reload all skills from disk
+  /skill reload         Reload all skills from disk
 
 Reflection commands:
   /reflect recent       Show recent reflections
@@ -1085,14 +1096,20 @@ Just type naturally to chat with Hugo!
     # ==============================================
 
     async def _handle_skill_command(self, command: str):
-        """Handle skill console commands"""
+        """Handle skill console commands (skill and /skill)"""
+        # Strip leading slash if present
+        command = command.lstrip('/')
+
         parts = command.split(maxsplit=2)
 
         if len(parts) < 2 or parts[1].lower() == 'help':
             print("\nSkill commands:")
             print("  skill list               - List all loaded skills")
+            print("  /skill list              - List all loaded skills")
             print("  skill run <name> <args>  - Execute a skill")
+            print("  /skill run <name> <args> - Execute a skill")
             print("  skill reload             - Reload all skills from disk")
+            print("  /skill reload            - Reload all skills from disk")
             return
 
         subcommand = parts[1].lower()

@@ -11,7 +11,8 @@
       "Bash(python scripts/test_task_system.py:*)",
       "Bash(python scripts/test_cognition.py:*)",
       "Bash(test:*)",
-      "Bash(python scripts/test_skills.py:*)"
+      "Bash(python scripts/test_skills.py:*)",
+      "Bash(python scripts/test_skill_autorun.py:*)"
     ],
     "deny": [],
     "ask": []
