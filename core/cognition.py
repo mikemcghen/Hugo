@@ -57,7 +57,6 @@ class ContextAssembly:
     """Assembled context for reasoning"""
     short_term_memory: List[Dict[str, Any]]
     long_term_memory: List[Dict[str, Any]]
-    relevant_directives: List[str]
     active_tasks: List[Dict[str, Any]]
     session_state: Dict[str, Any]
 
@@ -90,18 +89,16 @@ class CognitionEngine:
     maintaining personality consistency while adapting to context.
     """
 
-    def __init__(self, memory_manager, directive_filter, logger, runtime_manager=None):
+    def __init__(self, memory_manager, logger, runtime_manager=None):
         """
         Initialize the cognition engine.
 
         Args:
             memory_manager: MemoryManager instance for context retrieval
-            directive_filter: DirectiveFilter for ethical/behavioral checks
             logger: HugoLogger instance
             runtime_manager: Optional RuntimeManager for worker agent delegation
         """
         self.memory = memory_manager
-        self.directives = directive_filter
         self.logger = logger
         self.current_mood = MoodSpectrum.CONVERSATIONAL
         self.runtime_manager = runtime_manager
@@ -199,6 +196,76 @@ class CognitionEngine:
             "mood_spectrum": {}
         }
 
+    async def generate_reply(self, message: str, session_id: str, streaming: bool = False):
+        """
+        Main public API for generating replies.
+
+        This is the primary entry point for the REPL and other clients.
+        Handles both streaming and non-streaming modes.
+
+        Args:
+            message: User message
+            session_id: Current session identifier
+            streaming: If True, yield chunks; if False, return complete response
+
+        Returns:
+            If streaming=False: ResponsePackage
+            If streaming=True: Generator yielding chunks, then ResponsePackage
+        """
+        self.logger.log_event("cognition", "generate_reply_started", {
+            "session_id": session_id,
+            "streaming": streaming,
+            "message_length": len(message)
+        })
+
+        # Save user message to memory first
+        await self._save_user_message(message, session_id)
+
+        if streaming:
+            # Return streaming generator
+            return self.process_input_streaming(message, session_id)
+        else:
+            # Return complete response
+            response_package = await self.process_input(message, session_id)
+
+            # Post-process: Save assistant response to memory
+            await self.post_process(response_package.content, session_id)
+
+            return response_package
+
+    async def _save_user_message(self, message: str, session_id: str):
+        """
+        Save user message to memory before processing.
+
+        Args:
+            message: User message
+            session_id: Session identifier
+        """
+        try:
+            from core.memory import MemoryEntry
+            from datetime import datetime
+
+            user_entry = MemoryEntry(
+                id=None,
+                session_id=session_id,
+                timestamp=datetime.now(),
+                memory_type="user_message",
+                content=message,
+                embedding=None,
+                metadata={},
+                importance_score=0.5,
+                is_fact=False
+            )
+
+            await self.memory.store(user_entry, persist_long_term=False)
+            self.logger.log_event("cognition", "user_message_saved", {
+                "session_id": session_id,
+                "content_length": len(message)
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "save_user_message"})
+
     async def process_input(self, user_input: str, session_id: str) -> ResponsePackage:
         """
         Main entry point for processing user input through the cognitive pipeline.
@@ -226,7 +293,7 @@ class CognitionEngine:
         context = await self._assemble_context(perception, session_id)
 
         # Step 3: Synthesis
-        reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id)
+        reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id, user_input)
 
         # Step 4: Output Construction
         response = await self._construct_output(reasoning, perception, generated_text, prompt_metadata)
@@ -431,7 +498,7 @@ class CognitionEngine:
             content=generated_response,
             tone=perception.detected_mood,
             reasoning_chain=reasoning_chain,
-            directive_checks=["privacy_ok", "truthfulness_ok"],
+            directive_checks=[],
             metadata={
                 "timestamp": datetime.now().isoformat(),
                 "model": self.model_name,
@@ -450,11 +517,63 @@ class CognitionEngine:
             }
         )
 
+        # Post-process: Save assistant response to memory
+        await self.post_process(generated_response, session_id)
+
         # Post reflection
         await self._post_reflect(perception, reasoning_chain, response)
 
         # Yield final response package for metadata storage
         yield response
+
+    async def post_process(self, response_text: str, session_id: str):
+        """
+        Post-process the response: save to memory, update conversation state.
+
+        This ensures every assistant response is persisted to SQLite and FAISS
+        for future recall and reflection.
+
+        Args:
+            response_text: Generated response text
+            session_id: Current session identifier
+        """
+        try:
+            from core.memory import MemoryEntry
+            from datetime import datetime
+
+            # Create memory entry for assistant response
+            assistant_entry = MemoryEntry(
+                id=None,
+                session_id=session_id,
+                timestamp=datetime.now(),
+                memory_type="assistant_response",
+                content=response_text,
+                embedding=None,  # Will be generated by memory manager
+                metadata={
+                    "model": self.model_name,
+                    "engine": self.model_engine,
+                    "persona_name": self.persona.get("name", "Hugo"),
+                    "mood": self.current_mood.value
+                },
+                importance_score=0.5,
+                is_fact=False
+            )
+
+            # Store in memory (SQLite + FAISS)
+            await self.memory.store(assistant_entry, persist_long_term=True)
+
+            self.logger.log_event("cognition", "response_saved_to_memory", {
+                "session_id": session_id,
+                "content_length": len(response_text),
+                "model": self.model_name,
+                "mood": self.current_mood.value
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {
+                "phase": "post_process",
+                "session_id": session_id
+            })
 
     def _detect_sentiment(self, text: str) -> Dict[str, Any]:
         """
@@ -569,7 +688,6 @@ class CognitionEngine:
         # Extract persona details
         identity = self.persona.get("identity", {})
         personality = self.persona.get("personality", {})
-        directives = self.persona.get("directives", {})
 
         persona_name = self.persona.get("name", "Hugo")
         persona_role = identity.get("role", "Assistant")
@@ -580,16 +698,11 @@ class CognitionEngine:
         mood_spectrum = self.persona.get("mood_spectrum", {})
         current_mood_desc = mood_spectrum.get(self.current_mood.value, "Engaged and helpful")
 
-        # Build directive summary
-        core_ethics = directives.get("core_ethics", [])
-        directive_summary = ", ".join(core_ethics[:3])  # Top 3 directives
-
         # Assemble the prompt
         prompt_parts = [
             f"[Persona: {persona_name} — {persona_role}]",
             f"[Core Traits: {core_traits}]",
             f"[Current Mood: {self.current_mood.value.title()} - {current_mood_desc}]",
-            f"[Directives: {directive_summary}]",
             "",
             f"{persona_desc}",
             "",
@@ -711,6 +824,152 @@ class CognitionEngine:
 
         return base_tone
 
+    async def build_prompt(self, user_message: str, session_id: str,
+                          include_facts: bool = True,
+                          include_reflections: bool = True,
+                          include_conversation: bool = True) -> str:
+        """
+        Build a complete prompt with persona, memories, and context.
+
+        This is a public wrapper around the internal prompt assembly logic,
+        useful for testing, debugging, or custom prompt generation.
+
+        Args:
+            user_message: User message to respond to
+            session_id: Current session ID
+            include_facts: Include factual memories (default: True)
+            include_reflections: Include reflection insights (default: True)
+            include_conversation: Include recent conversation (default: True)
+
+        Returns:
+            Complete formatted prompt string
+        """
+        # Use internal perception and context assembly
+        perception = await self._perceive(user_message)
+        context = await self._assemble_context(perception, session_id)
+
+        # Assemble full prompt
+        prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
+
+        self.logger.log_event("cognition", "prompt_built", {
+            "session_id": session_id,
+            "prompt_length": len(prompt_data["prompt"]),
+            "include_facts": include_facts,
+            "include_reflections": include_reflections,
+            "include_conversation": include_conversation
+        })
+
+        return prompt_data["prompt"]
+
+    async def retrieve_relevant_memories(self, query: str, limit: int = 10) -> Dict[str, Any]:
+        """
+        Retrieve relevant memories for a given query.
+
+        Returns factual memories, semantic search results, and reflection insights.
+
+        Args:
+            query: Search query
+            limit: Maximum results per category
+
+        Returns:
+            Dictionary with:
+              - factual_memories: List of factual memory entries
+              - semantic_results: List of semantically similar memories
+              - reflections: List of reflection insights
+        """
+        result = {
+            "factual_memories": [],
+            "semantic_results": [],
+            "reflections": []
+        }
+
+        try:
+            # Get factual memories
+            if hasattr(self.memory, 'get_factual_memories'):
+                facts = await self.memory.get_factual_memories(limit=limit)
+                result["factual_memories"] = [
+                    {
+                        "content": fact.content,
+                        "entity_type": fact.entity_type,
+                        "importance": fact.importance_score
+                    }
+                    for fact in facts
+                ]
+
+            # Get semantic search results
+            if hasattr(self.memory, 'search_semantic'):
+                semantic_results = await self.memory.search_semantic(
+                    query,
+                    limit=limit,
+                    threshold=0.5
+                )
+                result["semantic_results"] = [
+                    {
+                        "content": mem.content,
+                        "memory_type": mem.memory_type,
+                        "importance": mem.importance_score,
+                        "is_fact": mem.is_fact
+                    }
+                    for mem in semantic_results
+                ]
+
+            # Get reflection insights
+            if hasattr(self, 'runtime_manager') and self.runtime_manager:
+                if hasattr(self.runtime_manager, 'reflection'):
+                    reflections = await self.runtime_manager.reflection.get_reflection_insights(limit=5)
+                    result["reflections"] = reflections
+
+            self.logger.log_event("cognition", "memories_retrieved", {
+                "query": query[:50],
+                "factual_count": len(result["factual_memories"]),
+                "semantic_count": len(result["semantic_results"]),
+                "reflection_count": len(result["reflections"])
+            })
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "retrieve_relevant_memories"})
+
+        return result
+
+    async def call_ollama(self, prompt: str, streaming: bool = False, temperature: float = 0.7):
+        """
+        Call Ollama API directly with a prompt.
+
+        Public wrapper for direct model inference, useful for testing
+        or custom inference scenarios.
+
+        Args:
+            prompt: Input prompt
+            streaming: If True, return generator; if False, return complete response
+            temperature: Sampling temperature (0.0-1.0)
+
+        Returns:
+            If streaming=False: Complete response string
+            If streaming=True: Generator yielding chunks
+        """
+        self.logger.log_event("cognition", "ollama_direct_call", {
+            "streaming": streaming,
+            "temperature": temperature,
+            "prompt_length": len(prompt)
+        })
+
+        if streaming:
+            # Return streaming generator
+            return self.stream_local_infer(prompt, temperature=temperature)
+        else:
+            # Return complete response
+            if self.ollama_async_mode:
+                return await self._local_infer_async(prompt, temperature=temperature)
+            else:
+                # Run in executor to avoid blocking
+                loop = asyncio.get_event_loop()
+                return await loop.run_in_executor(
+                    None,
+                    self._local_infer,
+                    prompt,
+                    temperature
+                )
+
     async def _perceive(self, user_input: str) -> PerceptionResult:
         """
         Perception Layer: Recognize intent, tone, and emotional context.
@@ -789,7 +1048,6 @@ class CognitionEngine:
         return ContextAssembly(
             short_term_memory=short_term_memory,
             long_term_memory=[],
-            relevant_directives=["Privacy First", "Truthfulness"],
             active_tasks=[],
             session_state={}
         )
@@ -1230,7 +1488,7 @@ class CognitionEngine:
 
         yield self._fallback_response(prompt)
 
-    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
+    async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str, user_input: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
         """
         Synthesis Layer: Construct internal reasoning chain with personality injection.
 
@@ -1238,12 +1496,13 @@ class CognitionEngine:
             perception: Perception analysis results
             context: Assembled context from memory
             session_id: Current session identifier
+            user_input: Original user input
 
         Returns:
             Tuple of (ReasoningChain, generated_response, prompt_metadata)
         """
         # Assemble persona-driven contextual prompt
-        user_message = perception.corrected_input if perception.corrected_input else perception.raw_input
+        user_message = perception.corrected_input if perception.corrected_input else user_input
         prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
         prompt = prompt_data["prompt"]
         prompt_metadata = prompt_data["metadata"]
@@ -1306,17 +1565,11 @@ class CognitionEngine:
         """
         from datetime import datetime
 
-        # Apply directive filters
-        directive_checks = ["privacy_ok", "truthfulness_ok"]
-
-        # TODO: Implement actual directive filtering
-        # filtered_response = self.directives.apply_filters(generated_text)
-
         return ResponsePackage(
             content=generated_text,
             tone=perception.detected_mood,
             reasoning_chain=reasoning,
-            directive_checks=directive_checks,
+            directive_checks=[],
             metadata={
                 "timestamp": datetime.now().isoformat(),
                 "model": self.model_name,

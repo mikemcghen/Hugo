@@ -8,7 +8,10 @@
       "Bash(git add:*)",
       "Bash(git push)",
       "Bash(python scripts/test_mem_console.py:*)",
-      "Bash(python scripts/test_task_system.py:*)"
+      "Bash(python scripts/test_task_system.py:*)",
+      "Bash(python scripts/test_cognition.py:*)",
+      "Bash(test:*)",
+      "Bash(python scripts/test_skills.py:*)"
     ],
     "deny": [],
     "ask": []

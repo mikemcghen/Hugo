@@ -1,0 +1,9 @@
+name: "notes"
+description: "Create, search, and list personal notes"
+version: "1.0.0"
+entrypoint: "skills.example.notes_skill:NotesSkill"
+trigger: "manual"
+permissions:
+  - filesystem_read
+  - filesystem_write
+  - database_write

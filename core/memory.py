@@ -1,25 +1,34 @@
 """
 Memory Manager
 --------------
-Implements Hugo's hybrid memory architecture:
+Implements Hugo's hybrid memory architecture with intelligent classification:
 - Short-term: SQLite-based session memory (fast, ephemeral)
 - Long-term: PostgreSQL with pgvector (persistent, searchable)
 - Vector index: FAISS local cache + pgvector for semantic search
 
-Memory Types:
-- Episodic: Conversation history, events
-- Semantic: Knowledge, learned patterns
-- Procedural: Skills, capabilities
+Memory Classification:
+- factual: User-specific information (persisted, high priority)
+- credential: Passwords, API keys, secrets (persisted, restricted retrieval)
+- preference: User preferences and settings (persisted)
+- identity: Self-identity, aspirations, goals (persisted, highest priority)
+- task: Tasks, reminders, todos (persisted)
+- knowledge: Definitions, explanations, facts about world (persisted)
+- emotional: Emotional context and sentiment (persisted)
+- note: Important notes and journal entries (persisted)
+- conversation: General chitchat (not persisted)
+- ignore: Noise, greetings, acknowledgments (not persisted)
 """
 
 import asyncio
 import os
+import re
+import requests
+import json
 import numpy as np
 import faiss
-from typing import List, Dict, Optional, Any
-from dataclasses import dataclass
+from typing import List, Dict, Optional, Any, Tuple
+from dataclasses import dataclass, field
 from datetime import datetime
-import json
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
@@ -34,18 +43,30 @@ class MemoryEntry:
     id: Optional[int]
     session_id: str
     timestamp: datetime
-    memory_type: str  # episodic, semantic, procedural, reflection
+    memory_type: str  # factual, credential, preference, identity, task, knowledge, emotional, note, conversation, reflection
     content: str
     embedding: Optional[List[float]]
     metadata: Dict[str, Any]
     importance_score: float
-    is_fact: bool = False  # True if contains factual user information
+    is_fact: bool = False  # Deprecated: Use memory_type == "factual"
     entity_type: Optional[str] = None  # animal, person, location, preference, etc.
+
+
+@dataclass
+class MemoryClassification:
+    """Result of memory classification"""
+    memory_type: str  # factual, credential, preference, identity, task, knowledge, emotional, note, conversation, ignore
+    importance: float  # 0.0 to 1.0
+    should_persist: bool
+    embedding_allowed: bool = True
+    entity_type: Optional[str] = None  # For factual memories
+    reasoning: Optional[str] = None  # Why this classification was chosen
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 class MemoryManager:
     """
-    Manages Hugo's layered memory system with semantic search capabilities.
+    Manages Hugo's layered memory system with intelligent classification.
 
     Architecture:
     - Hot cache: Recent memories in RAM
@@ -53,6 +74,20 @@ class MemoryManager:
     - Long-term: PostgreSQL for persistent storage
     - Vector search: FAISS + pgvector for semantic retrieval
     """
+
+    # Memory type priority for retrieval (higher = more important)
+    MEMORY_PRIORITY = {
+        "identity": 10,
+        "factual": 9,
+        "preference": 8,
+        "emotional": 7,
+        "knowledge": 6,
+        "task": 5,
+        "note": 4,
+        "conversation": 3,
+        "credential": 1,  # Low priority, only retrieved when explicitly requested
+        "ignore": 0
+    }
 
     def __init__(self, sqlite_conn, postgres_conn, logger):
         """
@@ -75,6 +110,11 @@ class MemoryManager:
         self.embedding_model_name = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
         self.embedding_dimension = int(os.getenv("EMBEDDING_DIMENSION", "384"))
         self.enable_faiss = os.getenv("ENABLE_FAISS", "true").lower() == "true"
+
+        # Ollama configuration for LLM-based classification
+        self.ollama_api = os.getenv("OLLAMA_API", "http://localhost:11434/api/generate")
+        self.classification_model = os.getenv("CLASSIFICATION_MODEL", "llama3:8b")
+        self.enable_llm_classification = os.getenv("ENABLE_LLM_CLASSIFICATION", "false").lower() == "true"
 
         # Initialize embedding model
         self.embedding_model = None
@@ -133,83 +173,383 @@ class MemoryManager:
             except Exception as e:
                 self.logger.log_error(e)
 
-    def _detect_facts(self, content: str) -> tuple[bool, Optional[str]]:
+    def classify_memory(self, message_text: str) -> MemoryClassification:
         """
-        Detect if content contains factual user information.
+        Classify a memory using rule-based detection with optional LLM fallback.
 
-        Questions are NEVER stored as facts, even if they mention entities.
-        Only declarative sentences are considered factual.
+        Classification priority:
+        1. Credentials (passwords, API keys, secrets)
+        2. Identity (I am, I want to be, aspirations)
+        3. Factual (user-specific declarative information)
+        4. Preference (likes, dislikes, settings)
+        5. Task (reminders, todos, obligations)
+        6. Knowledge (definitions, explanations, facts about world)
+        7. Emotional (feelings, sentiment, mood)
+        8. Note (journal entries, important notes)
+        9. Conversation (normal chitchat)
+        10. Ignore (greetings, acknowledgments, noise)
 
         Args:
-            content: Message content to analyze
+            message_text: Message content to classify
 
         Returns:
-            Tuple of (is_fact, entity_type)
+            MemoryClassification with type, importance, and persistence flag
         """
-        content_lower = content.lower().strip()
+        text = message_text.strip()
+        text_lower = text.lower()
 
-        # Guard: Never treat questions as facts
-        # Check if ends with '?'
-        if content.strip().endswith('?'):
-            return False, None
+        # Guard: Empty or very short messages are usually noise
+        if len(text) < 3:
+            return MemoryClassification(
+                memory_type="ignore",
+                importance=0.0,
+                should_persist=False,
+                embedding_allowed=False,
+                reasoning="too_short"
+            )
 
-        # Check if starts with question phrases (case-insensitive)
-        question_starters = ["do you", "can you", "will you", "would you", "could you",
-                            "are you", "is there", "did you", "have you", "what",
-                            "when", "where", "why", "how", "who"]
-        for starter in question_starters:
-            if content_lower.startswith(starter):
-                return False, None
+        # Guard: Questions are usually conversation unless they're tasks
+        is_question = text.endswith('?')
 
-        # Fact indicators with entity types (only for declarative sentences)
-        fact_patterns = {
-            "animal": ["cat", "dog", "pet", "bird", "fish", "hamster", "rabbit", "parrot", "bunny", "bunnies"],
-            "person": ["name is", "called", "my wife", "my husband", "my friend", "my child", "my son", "my daughter"],
-            "location": ["live in", "from", "city", "country", "state", "address"],
-            "preference": ["favorite", "prefer", "like", "love", "enjoy", "interested in", "hobby"],
-            "possession": ["own", "have", "got", "bought", "car", "house", "computer"],
-            "occupation": ["work as", "job", "career", "profession", "engineer", "teacher", "doctor"],
-            "contact": ["email", "phone", "number", "address", "@"]
+        # Pattern 1: Credentials (HIGHEST PRIORITY for security)
+        credential_patterns = [
+            (r'password\s*(?:is|:|=)\s*[\w\d@#$%^&*()]+', "password"),
+            (r'api[_\s]?key\s*(?:is|:|=)\s*[\w\d-]+', "api_key"),
+            (r'secret\s*(?:is|:|=)\s*[\w\d]+', "secret"),
+            (r'token\s*(?:is|:|=)\s*[\w\d]+', "token"),
+            (r'access[_\s]?key\s*(?:is|:|=)\s*[\w\d]+', "access_key"),
+        ]
+
+        for pattern, cred_type in credential_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="credential",
+                    importance=0.95,
+                    should_persist=True,
+                    embedding_allowed=False,  # Don't embed sensitive data
+                    entity_type=cred_type,
+                    reasoning=f"credential:{cred_type}",
+                    metadata={"credential_type": cred_type}
+                )
+
+        # Pattern 2: Identity (who I am, aspirations, goals)
+        identity_patterns = [
+            r'\bi am\b(?! (going|doing|working|thinking|feeling|happy|sad))',
+            r'\bi want to be\b',
+            r'\bi aspire to\b',
+            r'\bmy goal is\b',
+            r'\bmy purpose\b',
+            r'\bmy mission\b',
+            r'\bi define myself\b',
+            r'\bi see myself as\b',
+        ]
+
+        for pattern in identity_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="identity",
+                    importance=0.95,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="identity",
+                    reasoning="identity_statement"
+                )
+
+        # Pattern 3: Factual information (declarative statements about user)
+        factual_patterns = {
+            "animal": [r'\b(cat|dog|pet|bird|fish|hamster|rabbit|parrot|bunny|bunnies)\b'],
+            "person": [r'\bname is\b', r'\bcalled\b', r'\b(my wife|my husband|my friend|my child|my son|my daughter|my brother|my sister|my parent)\b'],
+            "location": [r'\blive in\b', r'\bfrom\b', r'\bcity\b.*\bis\b', r'\bcountry\b.*\bis\b', r'\baddress\b'],
+            "occupation": [r'\bwork as\b', r'\bjob\b.*\bis\b', r'\bcareer\b', r'\b(engineer|teacher|doctor|developer|designer|manager)\b'],
+            "contact": [r'\bemail\b.*\bis\b', r'\bphone\b', r'\bnumber\b.*\bis\b', r'@\w+\.\w+'],
+            "possession": [r'\b(own|have|got|bought)\b.*\b(car|house|computer|laptop|bike|watch)\b'],
+            "birthday": [r'\bbirthday\b', r'\bborn on\b', r'\bborn in\b'],
+            "routine": [r'\busually\b', r'\bevery (day|morning|evening|week)\b', r'\broutine\b'],
         }
 
-        for entity_type, patterns in fact_patterns.items():
-            for pattern in patterns:
-                if pattern in content_lower:
-                    return True, entity_type
+        # Only classify as factual if NOT a question
+        if not is_question:
+            for entity_type, patterns in factual_patterns.items():
+                for pattern in patterns:
+                    if re.search(pattern, text_lower):
+                        # Additional check: Not a question starter
+                        question_starters = ["do you", "can you", "will you", "would you", "could you",
+                                            "are you", "is there", "did you", "have you", "what",
+                                            "when", "where", "why", "how", "who"]
+                        if any(text_lower.startswith(starter) for starter in question_starters):
+                            continue
 
-        return False, None
+                        return MemoryClassification(
+                            memory_type="factual",
+                            importance=0.85,
+                            should_persist=True,
+                            embedding_allowed=True,
+                            entity_type=entity_type,
+                            reasoning=f"factual:{entity_type}"
+                        )
+
+        # Pattern 4: Preferences
+        preference_patterns = [
+            r'\b(favorite|prefer|like|love|enjoy|hate|dislike)\b',
+            r'\b(interested in|hobby|hobbies)\b',
+            r'\b(best|worst)\b.*\b(food|color|movie|song|book|game|music|genre)\b',
+        ]
+
+        if not is_question:
+            for pattern in preference_patterns:
+                if re.search(pattern, text_lower):
+                    return MemoryClassification(
+                        memory_type="preference",
+                        importance=0.80,
+                        should_persist=True,
+                        embedding_allowed=True,
+                        entity_type="preference",
+                        reasoning="preference_detected"
+                    )
+
+        # Pattern 5: Tasks and reminders
+        task_patterns = [
+            r'\b(remind|remember)\b.*\bto\b',
+            r'\bi need to\b',
+            r'\bi have to\b',
+            r'\bi must\b',
+            r'\bdon\'t forget\b',
+            r'\btodo\b',
+            r'\btask\b',
+        ]
+
+        for pattern in task_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="task",
+                    importance=0.75,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="task",
+                    reasoning="task_or_reminder"
+                )
+
+        # Pattern 6: Knowledge (definitions, explanations, facts about the world)
+        knowledge_patterns = [
+            r'\bwhat is\b',
+            r'\bwhat are\b',
+            r'\bdefine\b',
+            r'\bexplain\b',
+            r'\bhow does\b',
+            r'\bhow do\b',
+            r'\btell me about\b',
+        ]
+
+        if is_question:
+            for pattern in knowledge_patterns:
+                if re.search(pattern, text_lower):
+                    return MemoryClassification(
+                        memory_type="knowledge",
+                        importance=0.60,
+                        should_persist=True,
+                        embedding_allowed=True,
+                        entity_type="knowledge",
+                        reasoning="knowledge_query"
+                    )
+
+        # Pattern 7: Emotional content
+        emotional_patterns = [
+            r'\b(feel|feeling|felt|emotion)\b',
+            r'\b(happy|sad|angry|frustrated|excited|anxious|worried|stressed|calm|peaceful|depressed|joyful)\b',
+            r'\b(love|hate|fear|hope|wish)\b',
+            r'\bi\'m (so|very)?\s*(happy|sad|angry|excited|worried|stressed)\b',
+        ]
+
+        for pattern in emotional_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="emotional",
+                    importance=0.70,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="emotional",
+                    reasoning="emotional_content"
+                )
+
+        # Pattern 8: Notes and journal entries (longer, reflective content)
+        note_patterns = [
+            r'\b(note|journal|diary)\b',
+            r'\btoday (i|was)\b',
+            r'\bthinking about\b',
+            r'\brealized that\b',
+            r'\blearned that\b',
+        ]
+
+        for pattern in note_patterns:
+            if re.search(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="note",
+                    importance=0.65,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="note",
+                    reasoning="note_or_journal"
+                )
+
+        # Pattern 9: Ignore (greetings, acknowledgments)
+        ignore_patterns = [
+            r'^(hi|hello|hey|thanks|thank you|ok|okay|yes|no|sure|fine|good|great|awesome)[\s!.]*$',
+            r'^(bye|goodbye|see you|later|cya)[\s!.]*$',
+            r'^(um|uh|hmm|well)[\s.]*$',
+        ]
+
+        for pattern in ignore_patterns:
+            if re.match(pattern, text_lower):
+                return MemoryClassification(
+                    memory_type="ignore",
+                    importance=0.0,
+                    should_persist=False,
+                    embedding_allowed=False,
+                    reasoning="greeting_or_acknowledgment"
+                )
+
+        # LLM Fallback: Use Ollama to classify ambiguous cases
+        if self.enable_llm_classification:
+            try:
+                llm_classification = self._classify_with_llm(message_text)
+                if llm_classification:
+                    return llm_classification
+            except Exception as e:
+                self.logger.log_error(e, {"phase": "llm_classification_fallback"})
+
+        # Default: Normal conversation (not persisted)
+        return MemoryClassification(
+            memory_type="conversation",
+            importance=0.3,
+            should_persist=False,
+            embedding_allowed=False,
+            reasoning="general_conversation"
+        )
+
+    def _classify_with_llm(self, message_text: str) -> Optional[MemoryClassification]:
+        """
+        Use Ollama LLM to classify ambiguous memories.
+
+        Args:
+            message_text: Message to classify
+
+        Returns:
+            MemoryClassification or None if classification fails
+        """
+        try:
+            classification_prompt = f"""Classify this message into ONE of these memory types:
+- factual: Personal facts about the user
+- preference: User likes/dislikes
+- identity: Who the user is or wants to be
+- task: Something user needs to do
+- knowledge: General knowledge or definition
+- emotional: Emotional state or feelings
+- note: Journal entry or important note
+- conversation: General chitchat
+
+Message: "{message_text}"
+
+Return ONLY valid JSON in this format:
+{{"type": "factual", "importance": 0.85, "reason": "brief explanation"}}"""
+
+            payload = {
+                "model": self.classification_model,
+                "prompt": classification_prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.1,
+                    "num_predict": 100
+                }
+            }
+
+            response = requests.post(self.ollama_api, json=payload, timeout=10)
+            response.raise_for_status()
+
+            result = response.json()
+            llm_response = result.get("response", "").strip()
+
+            # Extract JSON from response
+            json_match = re.search(r'\{[^}]+\}', llm_response)
+            if json_match:
+                classification_data = json.loads(json_match.group())
+                memory_type = classification_data.get("type", "conversation")
+                importance = float(classification_data.get("importance", 0.5))
+                reason = classification_data.get("reason", "llm_classified")
+
+                # Determine persistence
+                should_persist = memory_type not in ["conversation", "ignore"]
+
+                return MemoryClassification(
+                    memory_type=memory_type,
+                    importance=importance,
+                    should_persist=should_persist,
+                    embedding_allowed=should_persist,
+                    reasoning=f"llm:{reason}"
+                )
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "llm_classification"})
+
+        return None
 
     async def store(self, entry: MemoryEntry, persist_long_term: bool = False):
         """
-        Store a memory entry in appropriate layer(s).
+        Store a memory entry using intelligent classification.
 
-        Automatically detects and tags factual information.
-        Facts are ALWAYS persisted to SQLite for cross-session recall.
+        Automatically classifies user messages and determines persistence.
+        Only persistent memories are embedded and indexed in FAISS.
 
         Args:
             entry: MemoryEntry to store
-            persist_long_term: If True, also write to PostgreSQL
+            persist_long_term: If True, force long-term persistence
         """
-        # Detect facts if this is a user message
-        if entry.memory_type == "user_message" and not entry.is_fact:
-            is_fact, entity_type = self._detect_facts(entry.content)
-            if is_fact:
+        # Classify user messages
+        if entry.memory_type == "user_message":
+            classification = self.classify_memory(entry.content)
+
+            # Update entry based on classification
+            entry.memory_type = classification.memory_type
+            entry.importance_score = max(entry.importance_score, classification.importance)
+
+            # Merge metadata
+            if classification.metadata:
+                entry.metadata.update(classification.metadata)
+
+            # Backward compatibility: Set is_fact for factual memories
+            if classification.memory_type == "factual":
                 entry.is_fact = True
-                entry.entity_type = entity_type
-                entry.importance_score = max(entry.importance_score, 0.85)  # Boost factual memories
+                entry.entity_type = classification.entity_type
 
-                # Log fact extraction
-                self.logger.log_event("memory", "fact_extracted", {
-                    "summary": entry.content[:80],
-                    "entity_type": entity_type
+            # Update persistence flag
+            if classification.should_persist:
+                persist_long_term = True
+
+            # Log classification
+            self.logger.log_event("memory", "memory_classified", {
+                "type": classification.memory_type,
+                "importance": classification.importance,
+                "should_persist": classification.should_persist,
+                "embedding_allowed": classification.embedding_allowed,
+                "entity_type": classification.entity_type,
+                "reasoning": classification.reasoning,
+                "content_preview": entry.content[:80]
+            })
+
+            # Don't store "ignore" type memories at all
+            if classification.memory_type == "ignore":
+                self.logger.log_event("memory", "memory_ignored", {
+                    "reason": classification.reasoning,
+                    "content_preview": entry.content[:80]
                 })
+                return
 
-        # Force facts to be persisted long-term
-        if entry.is_fact:
+        # Force persistence for important memory types
+        if entry.memory_type in ["identity", "factual", "credential", "preference", "task", "knowledge", "emotional", "note"]:
             persist_long_term = True
 
-        # Generate embedding if not present
-        if entry.embedding is None and self.enable_faiss:
+        # Generate embedding ONLY for persistent memories where allowed
+        embedding_allowed = entry.memory_type not in ["credential", "ignore", "conversation"]
+        if persist_long_term and embedding_allowed and entry.embedding is None and self.enable_faiss:
             entry.embedding = await self._generate_embedding(entry.content)
 
         # Add to cache
@@ -217,8 +557,8 @@ class MemoryManager:
         if len(self.cache) > self.cache_size:
             self.cache.pop(0)
 
-        # Add to FAISS index if enabled
-        if self.enable_faiss and self.faiss_index and entry.embedding:
+        # Add to FAISS index ONLY for persistent, embeddable memories
+        if persist_long_term and embedding_allowed and self.enable_faiss and self.faiss_index and entry.embedding:
             try:
                 embedding_vector = np.array([entry.embedding], dtype=np.float32)
                 self.faiss_index.add(embedding_vector)
@@ -231,10 +571,10 @@ class MemoryManager:
             except Exception as e:
                 self.logger.log_error(e)
 
-        # Store in SQLite (short-term)
+        # Store in SQLite (short-term) - always store for session context
         await self._store_sqlite(entry)
 
-        # Persist facts and long-term memories to SQLite memories table
+        # Persist to SQLite memories table for long-term storage
         if persist_long_term and self.sqlite:
             try:
                 import pickle
@@ -259,7 +599,8 @@ class MemoryManager:
 
                 self.logger.log_event("memory", "sqlite_persisted", {
                     "memory_id": memory_id,
-                    "is_fact": entry.is_fact,
+                    "memory_type": entry.memory_type,
+                    "importance": entry.importance_score,
                     "entity_type": entry.entity_type
                 })
 
@@ -274,8 +615,8 @@ class MemoryManager:
             "type": entry.memory_type,
             "long_term": persist_long_term,
             "has_embedding": entry.embedding is not None,
-            "is_fact": entry.is_fact,
-            "entity_type": entry.entity_type if entry.is_fact else None
+            "importance": entry.importance_score,
+            "entity_type": entry.entity_type
         })
 
     async def retrieve_recent(self, session_id: str, limit: int = 20) -> List[MemoryEntry]:
@@ -293,21 +634,56 @@ class MemoryManager:
         # Placeholder implementation
         return [e for e in self.cache if e.session_id == session_id][:limit]
 
-    async def search_semantic(self, query: str, limit: int = 10,
-                            threshold: float = 0.6) -> List[MemoryEntry]:
+    async def retrieve_by_type(self, session_id: str, types: List[str], limit: int = 5) -> List[MemoryEntry]:
         """
-        Search memories using hybrid semantic + factual ranking.
+        Retrieve memories filtered by memory types.
+
+        Args:
+            session_id: Session identifier
+            types: List of memory types to retrieve
+            limit: Maximum number of entries per type
+
+        Returns:
+            List of MemoryEntry objects matching the types
+        """
+        results = []
+        for memory_type in types:
+            type_memories = [
+                e for e in self.cache
+                if e.session_id == session_id and e.memory_type == memory_type
+            ]
+            # Sort by importance descending
+            type_memories.sort(key=lambda m: m.importance_score, reverse=True)
+            results.extend(type_memories[:limit])
+
+        # Sort final results by type priority
+        results.sort(key=lambda m: self.MEMORY_PRIORITY.get(m.memory_type, 0), reverse=True)
+
+        return results[:limit * len(types)]
+
+    async def search_semantic(self, query: str, limit: int = 10,
+                            threshold: float = 0.6,
+                            exclude_credentials: bool = True,
+                            memory_types: Optional[List[str]] = None) -> List[MemoryEntry]:
+        """
+        Search memories using hybrid semantic + type-based ranking.
 
         Ranking formula:
         - Base: FAISS cosine similarity
-        - Boost: +0.15 if is_fact=True
+        - Boost: +0.30 if memory_type='identity'
+        - Boost: +0.20 if memory_type='factual'
+        - Boost: +0.15 if memory_type='preference'
         - Boost: +0.10 if memory within last 30 days
         - Boost: +0.05 if memory_type='reflection'
+
+        Credentials are excluded by default for security.
 
         Args:
             query: Search query text
             limit: Maximum results to return
             threshold: Minimum similarity score (0-1)
+            exclude_credentials: If True, exclude credential memories (default: True)
+            memory_types: Optional list of memory types to filter by
 
         Returns:
             List of semantically similar MemoryEntry objects, ranked by relevance
@@ -331,7 +707,7 @@ class MemoryManager:
             # Convert L2 distances to similarity scores
             similarities = 1 - (distances[0] ** 2 / 2)
 
-            # Hybrid ranking with boosts
+            # Hybrid ranking with type-based boosts
             scored_results = []
             from datetime import timedelta
 
@@ -347,20 +723,25 @@ class MemoryManager:
                     continue
 
                 memory = self.cache[idx]
+
+                # Exclude credentials unless explicitly requested
+                if exclude_credentials and memory.memory_type == "credential":
+                    continue
+
+                # Filter by memory types if specified
+                if memory_types and memory.memory_type not in memory_types:
+                    continue
+
                 score = base_similarity
 
-                # Factual memory boost (+0.15)
-                if memory.is_fact:
-                    score += 0.15
+                # Type-based boosts (using priority mapping)
+                priority_boost = self.MEMORY_PRIORITY.get(memory.memory_type, 0) / 100.0
+                score += priority_boost
 
                 # Recency boost (+0.10 for last 30 days)
                 age_days = (datetime.now() - memory.timestamp).days
                 if age_days <= 30:
                     score += 0.10
-
-                # Reflection boost (+0.05)
-                if memory.memory_type == "reflection":
-                    score += 0.05
 
                 scored_results.append((score, memory))
 
@@ -373,8 +754,11 @@ class MemoryManager:
             self.logger.log_event("memory", "semantic_search_completed", {
                 "query_length": len(query),
                 "results": len(results),
-                "factual_results": sum(1 for m in results if m.is_fact),
-                "reflection_results": sum(1 for m in results if m.memory_type == "reflection")
+                "memory_types": memory_types,
+                "type_distribution": {
+                    mem_type: sum(1 for m in results if m.memory_type == mem_type)
+                    for mem_type in set(m.memory_type for m in results)
+                }
             })
 
             return results
@@ -496,7 +880,7 @@ class MemoryManager:
 
     async def get_factual_memories(self, limit: int = 10) -> List[MemoryEntry]:
         """
-        Retrieve factual memories (user-specific information) from cache.
+        Retrieve factual memories from cache.
 
         Args:
             limit: Maximum number of facts to return
@@ -504,7 +888,7 @@ class MemoryManager:
         Returns:
             List of factual MemoryEntry objects, sorted by importance
         """
-        facts = [m for m in self.cache if m.is_fact]
+        facts = [m for m in self.cache if m.memory_type == "factual" or m.is_fact]
         facts.sort(key=lambda m: m.importance_score, reverse=True)
         return facts[:limit]
 
@@ -596,7 +980,7 @@ class MemoryManager:
                 id=None,
                 session_id=session_id,
                 timestamp=datetime.now(),
-                memory_type="user_message",
+                memory_type="factual",
                 content=new_content,
                 embedding=None,  # Will be generated
                 metadata={
@@ -627,11 +1011,21 @@ class MemoryManager:
     def get_stats(self) -> Dict[str, Any]:
         """Get memory system statistics"""
         faiss_size = self.faiss_index.ntotal if self.faiss_index else 0
-        fact_count = sum(1 for m in self.cache if m.is_fact)
+
+        # Count by memory type
+        type_counts = {}
+        for mem in self.cache:
+            mem_type = mem.memory_type
+            type_counts[mem_type] = type_counts.get(mem_type, 0) + 1
 
         return {
             "cache_size": len(self.cache),
-            "factual_memories": fact_count,
+            "memory_types": type_counts,
+            "factual_memories": type_counts.get("factual", 0),
+            "credentials": type_counts.get("credential", 0),
+            "preferences": type_counts.get("preference", 0),
+            "identity": type_counts.get("identity", 0),
+            "tasks": type_counts.get("task", 0),
             "sqlite_records": 0,  # TODO: Query actual count
             "postgres_records": 0,  # TODO: Query actual count
             "faiss_index_size": faiss_size,
@@ -641,9 +1035,9 @@ class MemoryManager:
 
     async def load_factual_memories(self):
         """
-        Load all factual memories from SQLite and hydrate cache + FAISS index.
+        Load all persistent memories from SQLite and hydrate cache + FAISS index.
 
-        This should be called on boot to restore cross-session facts.
+        This should be called on boot to restore cross-session memories.
         """
         if not self.sqlite:
             self.logger.log_event("memory", "factual_load_skipped", {
@@ -676,7 +1070,6 @@ class MemoryManager:
                         self.logger.log_error(e, {"phase": "embedding_deserialization", "memory_id": mem_dict['id']})
 
                 # Parse timestamp
-                from datetime import datetime
                 try:
                     timestamp = datetime.fromisoformat(mem_dict['timestamp'])
                 except:
@@ -692,8 +1085,8 @@ class MemoryManager:
                     embedding=embedding,
                     metadata=mem_dict['metadata'],
                     importance_score=mem_dict['importance_score'],
-                    is_fact=True,
-                    entity_type=mem_dict['entity_type']
+                    is_fact=mem_dict.get('is_fact', False),
+                    entity_type=mem_dict.get('entity_type')
                 )
 
                 # Add to cache
@@ -880,9 +1273,9 @@ class MemoryManager:
                     'id': mem.id,
                     'score': mem.importance_score,  # Using importance as proxy for relevance
                     'content': mem.content,
-                    'is_fact': mem.is_fact,
-                    'entity_type': mem.entity_type,
                     'memory_type': mem.memory_type,
+                    'entity_type': mem.entity_type,
+                    'is_fact': mem.is_fact,
                     'created_at': mem.timestamp.isoformat() if hasattr(mem.timestamp, 'isoformat') else str(mem.timestamp)
                 })
 

@@ -314,3 +314,50 @@
 2025-11-13 15:08:06,565 - hugo - INFO - [tasks] task_status_updated: {"task_id": 1, "status": "in_progress"}
 2025-11-13 15:08:06,568 - hugo - INFO - [tasks] task_assigned: {"task_id": 2, "owner": "claude-agent"}
 2025-11-13 15:08:06,571 - hugo - INFO - [tasks] task_status_updated: {"task_id": 3, "status": "done"}
+2025-11-13 15:40:24,595 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 15:40:24,603 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 15:40:24,615 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 15:40:24,616 - hugo - INFO - [cognition] context_assembled: {"session_id": "test_session_20251113_154024", "memory_count": 0}
+2025-11-13 15:40:25,496 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 17, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 15:40:25,497 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "test_session_20251113_154024", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 0, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 895}
+2025-11-13 15:40:25,497 - hugo - INFO - [cognition] prompt_built: {"session_id": "test_session_20251113_154024", "prompt_length": 895, "include_facts": true, "include_reflections": true, "include_conversation": true}
+2025-11-13 15:40:25,503 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 4, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 15:40:25,504 - hugo - INFO - [cognition] memories_retrieved: {"query": "pets", "factual_count": 0, "semantic_count": 0, "reflection_count": 0}
+2025-11-13 15:40:25,504 - hugo - INFO - [cognition] directive_violations_detected: {"violations": ["privacy:contains_password"], "response_preview": "Your password is abc123"}
+2025-11-13 15:40:25,504 - hugo - INFO - [cognition] directives_applied: {"violations": 1, "has_uncertainty": false}
+2025-11-13 15:40:25,505 - hugo - INFO - [cognition] directives_applied: {"violations": 0, "has_uncertainty": true}
+2025-11-13 15:40:25,505 - hugo - INFO - [cognition] directives_applied: {"violations": 0, "has_uncertainty": false}
+2025-11-13 15:40:25,505 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "__init__() missing 1 required positional argument: 'id'", "context": {"phase": "post_process", "session_id": "test_session_20251113_154024"}}
+2025-11-13 15:40:25,506 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\cognition.py", line 613, in post_process
+    assistant_entry = MemoryEntry(
+TypeError: __init__() missing 1 required positional argument: 'id'
+2025-11-13 15:41:05,234 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 15:41:05,235 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 15:41:05,248 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 15:41:05,248 - hugo - INFO - [cognition] context_assembled: {"session_id": "test_session_20251113_154105", "memory_count": 0}
+2025-11-13 15:41:05,388 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 17, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 15:41:05,388 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "test_session_20251113_154105", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 0, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 895}
+2025-11-13 15:41:05,389 - hugo - INFO - [cognition] prompt_built: {"session_id": "test_session_20251113_154105", "prompt_length": 895, "include_facts": true, "include_reflections": true, "include_conversation": true}
+2025-11-13 15:41:05,395 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 4, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 15:41:05,396 - hugo - INFO - [cognition] memories_retrieved: {"query": "pets", "factual_count": 0, "semantic_count": 0, "reflection_count": 0}
+2025-11-13 15:41:05,396 - hugo - INFO - [cognition] directive_violations_detected: {"violations": ["privacy:contains_password"], "response_preview": "Your password is abc123"}
+2025-11-13 15:41:05,396 - hugo - INFO - [cognition] directives_applied: {"violations": 1, "has_uncertainty": false}
+2025-11-13 15:41:05,397 - hugo - INFO - [cognition] directives_applied: {"violations": 0, "has_uncertainty": true}
+2025-11-13 15:41:05,397 - hugo - INFO - [cognition] directives_applied: {"violations": 0, "has_uncertainty": false}
+2025-11-13 15:41:05,407 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": false, "entity_type": null}
+2025-11-13 15:41:05,407 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 15:41:05,408 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "test_session_20251113_154105", "content_length": 34, "model": "llama3:8b", "mood": "conversational"}
+2025-11-13 16:05:06,898 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 16:05:06,898 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 16:05:06,908 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 16:05:06,909 - hugo - INFO - [cognition] context_assembled: {"session_id": "test_session_20251113_160506", "memory_count": 0}
+2025-11-13 16:05:07,038 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 17, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 16:05:07,038 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "test_session_20251113_160506", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 0, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 839}
+2025-11-13 16:05:07,039 - hugo - INFO - [cognition] prompt_built: {"session_id": "test_session_20251113_160506", "prompt_length": 839, "include_facts": true, "include_reflections": true, "include_conversation": true}
+2025-11-13 16:05:07,045 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 4, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 16:05:07,045 - hugo - INFO - [cognition] memories_retrieved: {"query": "pets", "factual_count": 0, "semantic_count": 0, "reflection_count": 0}
+2025-11-13 16:05:07,057 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "is_fact": false, "entity_type": null}
+2025-11-13 16:05:07,057 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 16:05:07,058 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "test_session_20251113_160506", "content_length": 34, "model": "llama3:8b", "mood": "conversational"}

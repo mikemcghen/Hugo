@@ -87,6 +87,9 @@ class HugoREPL:
                 elif user_input.lower().startswith('task ') or user_input.lower() == 'task':
                     await self._handle_task_command(user_input)
                     continue
+                elif user_input.lower().startswith('skill ') or user_input.lower() == 'skill':
+                    await self._handle_skill_command(user_input)
+                    continue
                 elif user_input.lower().startswith('/reflect'):
                     await self._handle_reflect_command(user_input)
                     continue
@@ -1076,3 +1079,136 @@ Just type naturally to chat with Hugo!
         except Exception as e:
             self.logger.log_error(e, {"phase": "task_assign", "task_id": task_id_str})
             print(f"\nError assigning task: {str(e)}")
+
+    # ==============================================
+    # SKILL CONSOLE COMMANDS
+    # ==============================================
+
+    async def _handle_skill_command(self, command: str):
+        """Handle skill console commands"""
+        parts = command.split(maxsplit=2)
+
+        if len(parts) < 2 or parts[1].lower() == 'help':
+            print("\nSkill commands:")
+            print("  skill list               - List all loaded skills")
+            print("  skill run <name> <args>  - Execute a skill")
+            print("  skill reload             - Reload all skills from disk")
+            return
+
+        subcommand = parts[1].lower()
+
+        if subcommand == 'list':
+            await self._skill_list()
+        elif subcommand == 'run' and len(parts) >= 3:
+            await self._skill_run(parts[2])
+        elif subcommand == 'reload':
+            await self._skill_reload()
+        else:
+            print(f"\nUnknown skill command or missing argument")
+            print("Type 'skill help' for available commands")
+
+    async def _skill_list(self):
+        """List all loaded skills"""
+        if not self.runtime.skills:
+            print("\n(Skill manager not initialized)")
+            return
+
+        try:
+            skills = self.runtime.skills.list_skills()
+
+            if not skills:
+                print("\nNo skills loaded yet.")
+                return
+
+            print("\n" + "=" * 90)
+            print(f"{'Name':<15} {'Version':<10} {'Trigger':<10} {'Description'}")
+            print("=" * 90)
+
+            for skill in skills:
+                name = skill['name'][:14]
+                version = skill.get('version', 'N/A')[:9]
+                trigger = skill.get('trigger', 'manual')[:9]
+                description = skill.get('description', 'No description')[:50]
+                description = description + '...' if len(skill.get('description', '')) > 50 else description
+
+                print(f"{name:<15} {version:<10} {trigger:<10} {description}")
+
+            print("=" * 90)
+            print(f"Total: {len(skills)} skill(s)")
+            print()
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "skill_list"})
+            print(f"\nError listing skills: {str(e)}")
+
+    async def _skill_run(self, args_str: str):
+        """Run a skill with arguments"""
+        if not self.runtime.skills:
+            print("\n(Skill manager not initialized)")
+            return
+
+        try:
+            # Parse skill name and arguments
+            # Format: skill run <skill_name> action=<action> arg1=value1 arg2=value2
+            parts = args_str.split()
+            if not parts:
+                print("\nUsage: skill run <name> [action=<action>] [arg1=value1] [arg2=value2]")
+                return
+
+            skill_name = parts[0]
+            kwargs = {}
+
+            # Parse key=value arguments
+            for arg in parts[1:]:
+                if '=' in arg:
+                    key, value = arg.split('=', 1)
+                    kwargs[key] = value
+                else:
+                    # If no '=' found, treat it as action (for backward compatibility)
+                    if 'action' not in kwargs:
+                        kwargs['action'] = arg
+
+            # Execute skill
+            print(f"\n→ Running skill '{skill_name}'...")
+            result = await self.runtime.skills.run_skill(skill_name, **kwargs)
+
+            # Display result
+            if result.success:
+                print(f"✓ {result.message}")
+                if result.output:
+                    if isinstance(result.output, str):
+                        print(f"\n{result.output}")
+                    elif isinstance(result.output, list):
+                        if result.output:
+                            print()
+                            for item in result.output:
+                                print(f"  - {item}")
+                    elif isinstance(result.output, dict):
+                        print()
+                        for key, value in result.output.items():
+                            print(f"  {key}: {value}")
+            else:
+                print(f"✗ {result.message}")
+
+            print()
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "skill_run", "args": args_str})
+            print(f"\nError running skill: {str(e)}")
+
+    async def _skill_reload(self):
+        """Reload all skills from disk"""
+        if not self.runtime.skills:
+            print("\n(Skill manager not initialized)")
+            return
+
+        try:
+            print("\n→ Reloading skills...")
+            self.runtime.skills.reload_skills()
+
+            skills_count = self.runtime.skills.registry.count()
+            print(f"✓ Reloaded {skills_count} skill(s)")
+
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "skill_reload"})
+            print(f"\nError reloading skills: {str(e)}")

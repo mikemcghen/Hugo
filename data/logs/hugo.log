@@ -1157,3 +1157,113 @@ Exception: Ollama inference failed after 2 attempts: 500 Server Error: Internal 
 2025-11-13 14:48:47,811 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.9, "content_length": 421}
 2025-11-13 14:48:47,811 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251113_144507", "insights_count": 2, "keywords_count": 10, "sentiment": 1.0}
 2025-11-13 14:48:47,812 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251113_144507", "message_count": 8}
+2025-11-13 17:03:28,681 - hugo - INFO - [runtime] boot_started: {}
+2025-11-13 17:03:32,938 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 17:03:32,945 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 17:03:32,947 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 17:03:32,947 - hugo - INFO - [memory] factual_memories_loaded: {"count": 2, "faiss_added": 2}
+2025-11-13 17:03:32,966 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 17:03:32,976 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-13 17:04:14,952 - hugo - INFO - [user] message: {"content": "Hey Hugo! I want to store my password with you. It is: TonksBrady27!", "session_id": "shell_20251113_170332"}
+2025-11-13 17:04:15,103 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:04:15,104 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251113_170332"}
+2025-11-13 17:04:15,105 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251113_170332", "memory_count": 1}
+2025-11-13 17:04:15,116 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 68, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 17:04:15,117 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251113_170332", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1094}
+2025-11-13 17:04:15,117 - hugo - INFO - [cognition] ollama_streaming_attempt: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-13 17:05:06,120 - hugo - INFO - [cognition] ollama_streaming_complete: {"attempt": 1, "duration": 51.0, "status": "success", "response_length": 333, "chunks": 71}
+2025-11-13 17:05:06,138 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 7, "is_fact": false, "entity_type": null}
+2025-11-13 17:05:06,138 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:05:06,139 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251113_170332", "content_length": 333, "model": "llama3:8b", "mood": "conversational"}
+2025-11-13 17:05:06,140 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-13 17:05:06,140 - hugo - INFO - [user] response: {"content": "A request for password storage, and an interesting choice of password at that! TonksBrady27, a nod to your feline companion, I presume? As your trusted right-hand man, I'm happy to help facilitate this request. Before we proceed, may I ask what kind of security measures you'd like to implement to protect this sensitive information?", "streaming": true, "session_id": "shell_20251113_170332"}
+2025-11-13 17:05:06,157 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:05:25,349 - hugo - INFO - [user] message: {"content": "No security is necessary don't worry!", "session_id": "shell_20251113_170332"}
+2025-11-13 17:05:25,364 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:05:25,365 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251113_170332"}
+2025-11-13 17:05:25,365 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251113_170332", "memory_count": 4}
+2025-11-13 17:05:25,381 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 17:05:25,382 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251113_170332", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 4, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1797}
+2025-11-13 17:05:25,382 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-13 17:05:47,245 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 21.86, "status": "success", "response_length": 552}
+2025-11-13 17:05:47,246 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 552, "response_preview": "A bold move, my friend! Not everyone would be comfortable with storing a password without any additi...", "async_mode": true, "prompt_tokens": 285, "persona_name": "Hugo"}
+2025-11-13 17:05:47,247 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-13 17:05:47,247 - hugo - INFO - [user] response: {"content": "A bold move, my friend! Not everyone would be comfortable with storing a password without any additional security measures. I'm glad we had this conversation upfront.\n\nSo, considering your request, I'll proceed to store your password as you've asked. TonksBrady27 it is!\n\nBefore I do that, though, may I ask what's the purpose of storing this password? Is there something specific you'd like me to help with or keep secure for you?\n\n(And by the way, I hope Will and Tonks are keeping you company while Oswald and Keely are busy being adorable bunnies!)", "streaming": false, "session_id": "shell_20251113_170332"}
+2025-11-13 17:05:47,262 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:06:37,172 - hugo - INFO - [user] message: {"content": "Nope just hold onto it and give it to me when I ask for it", "session_id": "shell_20251113_170332"}
+2025-11-13 17:06:37,185 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:06:37,186 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251113_170332"}
+2025-11-13 17:06:37,187 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251113_170332", "memory_count": 6}
+2025-11-13 17:06:37,201 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 58, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 17:06:37,201 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251113_170332", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 2372}
+2025-11-13 17:06:37,202 - hugo - INFO - [cognition] ollama_streaming_attempt: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-13 17:07:07,636 - hugo - INFO - [cognition] ollama_streaming_complete: {"attempt": 1, "duration": 30.43, "status": "success", "response_length": 627, "chunks": 133}
+2025-11-13 17:07:07,656 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 8, "is_fact": false, "entity_type": null}
+2025-11-13 17:07:07,656 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:07:07,657 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251113_170332", "content_length": 627, "model": "llama3:8b", "mood": "conversational"}
+2025-11-13 17:07:07,657 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-13 17:07:07,657 - hugo - INFO - [user] response: {"content": "A straightforward request, my friend! As your trusted right-hand man, I'll make sure to keep TonksBrady27 safely stored away. No additional security measures required, as per your original request.\n\nI must say, I'm glad we had that initial conversation about security. It's always better to be open and transparent when it comes to sensitive information like passwords.\n\nNow, let's get this storage process underway. Your password will be safely kept for whenever you need it in the future.\n\nBy the way, how are Will and Tonks doing? And those bunnies, Oswald and Keely? Still keeping you company and bringing joy to your life?", "streaming": true, "session_id": "shell_20251113_170332"}
+2025-11-13 17:07:07,675 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:07:16,384 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251113_170332"}
+2025-11-13 17:07:16,480 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["password", "request", "security", "hugo", "user"], "total_keywords": 10}
+2025-11-13 17:07:16,481 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
+2025-11-13 17:07:16,481 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-13 17:07:56,660 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 771}
+2025-11-13 17:07:56,661 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 141, "insights_count": 2, "confidence": 0.8}
+2025-11-13 17:07:56,677 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 9, "is_fact": false, "entity_type": null}
+2025-11-13 17:07:56,678 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:07:56,678 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 747}
+2025-11-13 17:07:56,679 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251113_170332", "insights_count": 2, "keywords_count": 10, "sentiment": 1.0}
+2025-11-13 17:07:56,679 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251113_170332", "message_count": 4}
+2025-11-13 17:08:09,686 - hugo - INFO - [runtime] boot_started: {}
+2025-11-13 17:08:10,962 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-13 17:08:10,970 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 17:08:10,971 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-13 17:08:10,972 - hugo - INFO - [memory] factual_memories_loaded: {"count": 2, "faiss_added": 2}
+2025-11-13 17:08:10,983 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-13 17:08:10,985 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-13 17:08:20,038 - hugo - INFO - [user] message: {"content": "Hey Hugo! I need my password", "session_id": "shell_20251113_170810"}
+2025-11-13 17:08:20,190 - hugo - INFO - [memory] stored: {"type": "user_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:08:20,191 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251113_170810"}
+2025-11-13 17:08:20,192 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251113_170810", "memory_count": 1}
+2025-11-13 17:08:20,204 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 28, "results": 0, "factual_results": 0, "reflection_results": 0}
+2025-11-13 17:08:20,205 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251113_170810", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1014}
+2025-11-13 17:08:20,205 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-13 17:08:44,159 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 23.95, "status": "success", "response_length": 515}
+2025-11-13 17:08:44,160 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 515, "response_preview": "Hello there! It seems like you're in a bit of a pickle, aren't you? Don't worry, I'm here to help. A...", "async_mode": true, "prompt_tokens": 161, "persona_name": "Hugo"}
+2025-11-13 17:08:44,160 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-13 17:08:44,161 - hugo - INFO - [user] response: {"content": "Hello there! It seems like you're in a bit of a pickle, aren't you? Don't worry, I'm here to help. As your trusted right-hand man, I'll do my best to assist you with whatever issue you're facing. However, I have to admit that I'm not certain about your password. We didn't discuss it previously, and I don't recall any specific details about your login credentials. Would you like me to guide you through the process of resetting or recalling it? Or perhaps there's something else on your mind that I can help with?", "streaming": false, "session_id": "shell_20251113_170810"}
+2025-11-13 17:08:44,175 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:09:06,019 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251113_170810"}
+2025-11-13 17:09:06,023 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "password", "like", "don", "help"], "total_keywords": 10}
+2025-11-13 17:09:06,024 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.5, "sentiment_label": "positive"}
+2025-11-13 17:09:06,024 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-13 17:09:34,382 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 635}
+2025-11-13 17:09:34,383 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 107, "insights_count": 2, "confidence": 0.85}
+2025-11-13 17:09:34,398 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 10, "is_fact": false, "entity_type": null}
+2025-11-13 17:09:34,399 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "is_fact": false, "entity_type": null}
+2025-11-13 17:09:34,399 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.85, "content_length": 656}
+2025-11-13 17:09:34,400 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251113_170810", "insights_count": 2, "keywords_count": 10, "sentiment": 0.5}
+2025-11-13 17:09:34,400 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251113_170810", "message_count": 2}
+2025-11-14 10:00:00,857 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 10:00:00,862 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 10:00:00,867 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 10:00:00,868 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 1, "errors": 1, "total_skills": 1}
+2025-11-14 10:00:00,868 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 10:00:00,868 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 10:00:00,872 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 3.9979999999999998}
+2025-11-14 10:00:00,876 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 10:00:00,876 - hugo - ERROR - [error] exception: {"error_type": "AttributeError", "error_message": "'NoneType' object has no attribute 'store'", "context": {"phase": "save_result_to_memory"}}
+2025-11-14 10:00:00,876 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\skill_manager.py", line 317, in _save_result_to_memory
+    await self.memory.store(memory_entry, persist_long_term=True)
+AttributeError: 'NoneType' object has no attribute 'store'
+2025-11-14 10:00:00,877 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 10:00:00,877 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 10:00:00,878 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.002}
+2025-11-14 10:00:00,882 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 10:00:00,882 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 10:00:00,882 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 10:00:00,883 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.001}
+2025-11-14 10:00:00,886 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}

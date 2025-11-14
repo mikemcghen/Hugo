@@ -10,7 +10,6 @@ __codename__ = "The Right Hand"
 from .cognition import CognitionEngine
 from .memory import MemoryManager
 from .reflection import ReflectionEngine
-from .directives import DirectiveFilter
 from .scheduler import MaintenanceScheduler
 from .logger import HugoLogger
 from .runtime_manager import RuntimeManager
@@ -19,7 +18,6 @@ __all__ = [
     "CognitionEngine",
     "MemoryManager",
     "ReflectionEngine",
-    "DirectiveFilter",
     "MaintenanceScheduler",
     "HugoLogger",
     "RuntimeManager",

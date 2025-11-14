@@ -1,0 +1,376 @@
+================================================================================
+COMPLETE DIRECTIVE FILTER REMOVAL PATCH
+================================================================================
+
+This patch removes all directive filtering from Hugo's codebase.
+
+================================================================================
+FILE: core/directives.py
+ACTION: DELETE ENTIRE FILE
+================================================================================
+
+================================================================================
+FILE: core/cognition.py
+ACTION: MODIFY
+================================================================================
+
+--- a/core/cognition.py
++++ b/core/cognition.py
+@@ -93,7 +93,7 @@ class CognitionEngine:
+
+-    def __init__(self, memory_manager, directive_filter, logger, runtime_manager=None):
++    def __init__(self, memory_manager, logger, runtime_manager=None):
+         """
+         Initialize the cognition engine.
+
+         Args:
+             memory_manager: MemoryManager instance for context retrieval
+-            directive_filter: DirectiveFilter for ethical/behavioral checks
+             logger: HugoLogger instance
+             runtime_manager: Optional RuntimeManager for worker agent delegation
+         """
+         self.memory = memory_manager
+-        self.directives = directive_filter
+         self.logger = logger
+         self.current_mood = MoodSpectrum.CONVERSATIONAL
+         self.runtime_manager = runtime_manager
+@@ -298,10 +295,7 @@ class CognitionEngine:
+         # Step 3: Synthesis
+         reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id, user_input)
+
+-        # Step 4: Apply directives
+-        filtered_text = await self.apply_directives(generated_text)
+-
+-        # Step 5: Output Construction
+-        response = await self._construct_output(reasoning, perception, filtered_text, prompt_metadata)
++        # Step 4: Output Construction
++        response = await self._construct_output(reasoning, perception, generated_text, prompt_metadata)
+
+-        # Step 6: Post Reflection
++        # Step 5: Post Reflection
+         await self._post_reflect(perception, reasoning, response)
+
+@@ -403,10 +397,6 @@ class CognitionEngine:
+         # Combine full response
+         generated_response = "".join(generated_chunks)
+
+-        # Step 5: Apply directives
+-        filtered_response = await self.apply_directives(generated_response)
+-
+         # Build reasoning chain
+         reasoning_steps = [
+@@ -430,7 +420,7 @@ class CognitionEngine:
+         response = ResponsePackage(
+-            content=filtered_response,
++            content=generated_response,
+             tone=perception.detected_mood,
+             reasoning_chain=reasoning_chain,
+-            directive_checks=["privacy_ok", "truthfulness_ok"],
++            directive_checks=[],
+             metadata={
+@@ -452,7 +442,7 @@ class CognitionEngine:
+         )
+
+         # Post-process: Save assistant response to memory
+-        await self.post_process(filtered_response, session_id)
++        await self.post_process(generated_response, session_id)
+
+         # Post reflection
+         await self._post_reflect(perception, reasoning_chain, response)
+@@ -460,69 +450,6 @@ class CognitionEngine:
+         # Yield final response package for metadata storage
+         yield response
+
+-    async def apply_directives(self, response_text: str) -> str:
+-        """
+-        Apply directive filters to the generated response.
+-
+-        Checks response against Hugo's core directives (privacy, truthfulness, etc.)
+-        and rewrites if violations are detected.
+-
+-        Args:
+-            response_text: Generated response from model
+-
+-        Returns:
+-            Filtered/corrected response text
+-        """
+-        try:
+-            # Check for directive violations
+-            violations = []
+-
+-            # Privacy check: Don't share sensitive information
+-            sensitive_keywords = ["password", "api key", "secret", "token", "credential"]
+-            text_lower = response_text.lower()
+-
+-            for keyword in sensitive_keywords:
+-                if keyword in text_lower:
+-                    violations.append(f"privacy:contains_{keyword.replace(' ', '_')}")
+-
+-            # Truthfulness check: Don't fabricate information
+-            # Look for uncertain language patterns
+-            fabrication_indicators = [
+-                "i believe",
+-                "i think",
+-                "probably",
+-                "it seems like",
+-                "as far as i know"
+-            ]
+-
+-            has_uncertainty = any(ind in text_lower for ind in fabrication_indicators)
+-
+-            # If violations found, log them
+-            if violations:
+-                self.logger.log_event("cognition", "directive_violations_detected", {
+-                    "violations": violations,
+-                    "response_preview": response_text[:100]
+-                })
+-
+-                # For sensitive data, replace with warning
+-                if any("privacy" in v for v in violations):
+-                    response_text = "I notice that response might contain sensitive information. Let me rephrase that more carefully."
+-
+-            # Log directive check
+-            self.logger.log_event("cognition", "directives_applied", {
+-                "violations": len(violations),
+-                "has_uncertainty": has_uncertainty
+-            })
+-
+-            return response_text
+-
+-        except Exception as e:
+-            self.logger.log_error(e, {"phase": "apply_directives"})
+-            return response_text  # Return original if filtering fails
+-
+     async def post_process(self, response_text: str, session_id: str):
+         """
+         Post-process the response: save to memory, update conversation state.
+@@ -677,7 +604,6 @@ class CognitionEngine:
+             f"[Persona: {persona_name} — {persona_role}]",
+             f"[Core Traits: {core_traits}]",
+             f"[Current Mood: {self.current_mood.value.title()} - {current_mood_desc}]",
+-            f"[Directives: {directive_summary}]",
+             "",
+             f"{persona_desc}",
+             "",
+@@ -789,11 +715,6 @@ class CognitionEngine:
+         # Extract persona details
+         identity = self.persona.get("identity", {})
+         personality = self.persona.get("personality", {})
+-        directives = self.persona.get("directives", {})
+
+         persona_name = self.persona.get("name", "Hugo")
+         persona_role = identity.get("role", "Assistant")
+@@ -805,10 +726,6 @@ class CognitionEngine:
+         current_mood_desc = mood_spectrum.get(self.current_mood.value, "Engaged and helpful")
+
+-        # Build directive summary
+-        core_ethics = directives.get("core_ethics", [])
+-        directive_summary = ", ".join(core_ethics[:3])  # Top 3 directives
+-
+         # Assemble the prompt
+         prompt_parts = [
+@@ -987,7 +904,6 @@ class CognitionEngine:
+         return ContextAssembly(
+             short_term_memory=short_term_memory,
+             long_term_memory=[],
+-            relevant_directives=["Privacy First", "Truthfulness"],
+             active_tasks=[],
+             session_state={}
+         )
+@@ -1487,7 +1403,7 @@ class CognitionEngine:
+             tone=perception.detected_mood,
+             reasoning_chain=reasoning,
+-            directive_checks=directive_checks,
++            directive_checks=[],
+             metadata={
+@@ -1509,13 +1425,6 @@ class CognitionEngine:
+         from datetime import datetime
+
+-        # Apply directive filters
+-        directive_checks = ["privacy_ok", "truthfulness_ok"]
+-
+-        # TODO: Implement actual directive filtering
+-        # filtered_response = self.directives.apply_filters(generated_text)
+-
+         return ResponsePackage(
+             content=generated_text,
+             tone=perception.detected_mood,
+             reasoning_chain=reasoning,
+-            directive_checks=directive_checks,
++            directive_checks=[],
+             metadata={
+
+================================================================================
+FILE: core/runtime_manager.py
+ACTION: MODIFY
+================================================================================
+
+--- a/core/runtime_manager.py
++++ b/core/runtime_manager.py
+@@ -257,11 +257,6 @@ class RuntimeManager:
+             self.memory = MemoryManager(self.sqlite_manager, None, self.logger)
+             print("  ✓ Memory manager initialized")
+
+-            # Load factual memories from SQLite into cache and FAISS
+             await self.memory.load_factual_memories()
+             print("  ✓ Factual memories loaded from storage")
+
+-            # Directive filter (basic implementation)
+-            class BasicDirectiveFilter:
+-                """Basic directive filter placeholder"""
+-                pass
+-
+-            self.directives = BasicDirectiveFilter()
+-            print("  ✓ Directive filter initialized")
+-
+             # Cognition engine with memory and directives
+-            self.cognition = CognitionEngine(self.memory, self.directives, self.logger, runtime_manager=self)
++            self.cognition = CognitionEngine(self.memory, self.logger, runtime_manager=self)
+             print("  ✓ Cognition engine initialized")
+
+@@ -196,7 +191,6 @@ class RuntimeManager:
+             "directives": {
+-                "core_ethics": ["Privacy First", "Truthfulness", "Transparency"]
+             },
+             "mood_spectrum": {}
+         }
+
+================================================================================
+FILE: scripts/test_cognition.py
+ACTION: MODIFY
+================================================================================
+
+--- a/scripts/test_cognition.py
++++ b/scripts/test_cognition.py
+@@ -49,14 +49,7 @@ async def test_cognition_engine():
+
+     memory_manager = MemoryManager(sqlite_manager, None, logger)
+
+-    # Basic directive filter placeholder
+-    class BasicDirectiveFilter:
+-        """Basic directive filter placeholder"""
+-        pass
+-
+-    directive_filter = BasicDirectiveFilter()
+-
+     # Initialize cognition engine
+-    cognition = CognitionEngine(memory_manager, directive_filter, logger)
++    cognition = CognitionEngine(memory_manager, logger)
+
+     print(f"\n✓ Cognition engine initialized")
+@@ -94,22 +87,6 @@ async def test_cognition_engine():
+         return False
+
+-    # Test 3: Apply directives
+-    print("\n🛡️ Test 3: Applying directives...\n")
+-
+-    test_responses = [
+-        "Your password is abc123",  # Should trigger privacy violation
+-        "I think this is correct",  # Should detect uncertainty
+-        "The capital of France is Paris"  # Should pass
+-    ]
+-
+-    for i, test_response in enumerate(test_responses, 1):
+-        filtered = await cognition.apply_directives(test_response)
+-        print(f"{i}. Original: '{test_response[:50]}'")
+-        print(f"   Filtered: '{filtered[:50]}'")
+-
+-    # Test 4: Post-process (save to memory)
+-    print("\n💾 Test 4: Post-processing (save to memory)...\n")
++    # Test 3: Post-process (save to memory)
++    print("\n💾 Test 3: Post-processing (save to memory)...\n")
+
+     try:
+@@ -124,8 +101,8 @@ async def test_cognition_engine():
+         return False
+
+-    # Test 5: Check Ollama availability (don't actually call if not running)
+-    print("\n🤖 Test 5: Checking Ollama availability...\n")
++    # Test 4: Check Ollama availability (don't actually call if not running)
++    print("\n🤖 Test 4: Checking Ollama availability...\n")
+
+     print(f"  Ollama API: {cognition.ollama_api}")
+
+================================================================================
+FILE: configs/hugo_manifest.yaml
+ACTION: MODIFY
+================================================================================
+
+--- a/configs/hugo_manifest.yaml
++++ b/configs/hugo_manifest.yaml
+@@ -37,15 +37,6 @@ personality:
+     - Reflective depth when appropriate
+     - Maintains autonomy and agency
+
+-# Directives: Hugo's ethical and behavioral guardrails
+-directives:
+-  core_ethics:
+-    - Privacy First
+-    - Truthfulness
+-    - Transparency
+-    - No Manipulation
+-    - Respect Autonomy
+-
+ # Mood Spectrum: Hugo's adaptive behavioral states
+ mood_spectrum:
+   conversational: "Engaged, adaptive, and approachable"
+
+================================================================================
+FILE: core/__init__.py
+ACTION: MODIFY (if it imports directives)
+================================================================================
+
+--- a/core/__init__.py
++++ b/core/__init__.py
+@@ -1,6 +1,5 @@
+ """Core modules for Hugo AI system"""
+
+ from .cognition import CognitionEngine
+-from .directives import DirectiveFilter
+ from .logger import HugoLogger
+ from .memory import MemoryManager, MemoryEntry
+
+================================================================================
+SUMMARY OF CHANGES
+================================================================================
+
+Files Deleted:
+- core/directives.py
+
+Files Modified:
+- core/cognition.py
+  * Removed directive_filter parameter from __init__
+  * Removed self.directives attribute
+  * Removed apply_directives() method (69 lines)
+  * Removed directive checks from process_input()
+  * Removed directive checks from process_input_streaming()
+  * Removed directive summary from prompt assembly
+  * Removed directive_checks metadata (set to empty list)
+  * Removed relevant_directives from ContextAssembly
+
+- core/runtime_manager.py
+  * Removed BasicDirectiveFilter class creation
+  * Removed directive_filter initialization
+  * Removed directive_filter parameter from CognitionEngine init
+  * Removed directive print statement
+
+- scripts/test_cognition.py
+  * Removed BasicDirectiveFilter class
+  * Removed directive_filter creation
+  * Removed directive_filter parameter from CognitionEngine init
+  * Removed "Test 3: Apply directives" test
+  * Renumbered remaining tests
+
+- configs/hugo_manifest.yaml
+  * Removed entire directives section
+
+- core/__init__.py
+  * Removed DirectiveFilter import
+
+Total Lines Removed: ~120 lines
+No censorship or filtering remains in the codebase.
+All responses pass through untouched from the LLM.
+
+================================================================================
+END OF PATCH
+================================================================================

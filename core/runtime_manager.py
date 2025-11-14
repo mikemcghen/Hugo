@@ -74,7 +74,7 @@ class RuntimeManager:
         self.memory = None
         self.reflection = None
         self.tasks = None
-        self.directives = None
+        self.skills = None
         self.scheduler = None
 
     async def boot(self) -> bool:
@@ -260,16 +260,8 @@ class RuntimeManager:
             await self.memory.load_factual_memories()
             print("  ✓ Factual memories loaded from storage")
 
-            # Directive filter (basic implementation)
-            class BasicDirectiveFilter:
-                """Basic directive filter placeholder"""
-                pass
-
-            self.directives = BasicDirectiveFilter()
-            print("  ✓ Directive filter initialized")
-
-            # Cognition engine with memory and directives
-            self.cognition = CognitionEngine(self.memory, self.directives, self.logger, runtime_manager=self)
+            # Cognition engine with memory
+            self.cognition = CognitionEngine(self.memory, self.logger, runtime_manager=self)
             print("  ✓ Cognition engine initialized")
 
             # Reflection engine with SQLite manager
@@ -281,6 +273,12 @@ class RuntimeManager:
             from core.tasks import TaskManager
             self.tasks = TaskManager(self.sqlite_manager, self.logger)
             print("  ✓ Task manager initialized")
+
+            # Skill manager with SQLite and memory connections
+            from skills.skill_manager import SkillManager
+            self.skills = SkillManager(self.logger, self.sqlite_manager, self.memory)
+            self.skills.load_skills()
+            print("  ✓ Skill manager initialized")
 
             # Scheduler will be initialized later
             self.scheduler = None
@@ -356,6 +354,7 @@ class RuntimeManager:
                 "cognition": "running" if self.cognition else "stopped",
                 "memory": "running" if self.memory else "stopped",
                 "reflection": "running" if self.reflection else "stopped",
+                "skills": "running" if self.skills else "stopped",
                 "scheduler": "running" if self.scheduler else "stopped"
             }
         }

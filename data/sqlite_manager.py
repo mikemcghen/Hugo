@@ -8,6 +8,12 @@ Tables:
 - session_summary: Session metadata and summaries
 - pending_tasks: Active tasks and reminders
 - context_embeddings: Cached embeddings for quick lookup
+- reflections: Session and macro reflections
+- meta_reflections: Aggregated weekly insights
+- memories: Long-term persistent memories
+- tasks: Structured task tracking system
+- skills: Skill execution tracking
+- notes: Personal notes storage
 """
 
 import sqlite3
@@ -170,6 +176,27 @@ class SQLiteManager:
             )
         """)
 
+        # Skills table (skill execution tracking)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS skills (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                args TEXT,
+                result TEXT,
+                executed_at TEXT NOT NULL
+            )
+        """)
+
+        # Notes table (for notes skill)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                content TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                metadata TEXT
+            )
+        """)
+
         # Create indices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_session ON recent_messages(session_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON recent_messages(timestamp)")
@@ -184,6 +211,9 @@ class SQLiteManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_owner ON tasks(owner)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status_owner ON tasks(status, owner)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_skills_name ON skills(name)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_skills_executed_at ON skills(executed_at)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at)")
 
         self.conn.commit()
 
@@ -763,3 +793,229 @@ class SQLiteManager:
             })
 
         return memories
+
+    # ==============================================
+    # SKILL SYSTEM METHODS
+    # ==============================================
+
+    async def store_skill_run(self, name: str, args: str, result: str, executed_at: str) -> int:
+        """
+        Store a skill execution in the database.
+
+        Args:
+            name: Skill name
+            args: JSON string of arguments
+            result: JSON string of execution result
+            executed_at: ISO format timestamp
+
+        Returns:
+            ID of the stored skill run
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._store_skill_run_sync,
+            name, args, result, executed_at
+        )
+
+    def _store_skill_run_sync(self, name, args, result, executed_at):
+        """Synchronous skill run storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO skills
+            (name, args, result, executed_at)
+            VALUES (?, ?, ?, ?)
+        """, (name, args, result, executed_at))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_skill_history(self, skill_name: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Retrieve skill execution history.
+
+        Args:
+            skill_name: Optional filter by skill name
+            limit: Maximum number of records
+
+        Returns:
+            List of skill execution dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_skill_history_sync, skill_name, limit)
+
+    def _get_skill_history_sync(self, skill_name, limit):
+        """Synchronous skill history retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+
+        if skill_name:
+            cursor.execute("""
+                SELECT id, name, args, result, executed_at
+                FROM skills
+                WHERE name = ?
+                ORDER BY executed_at DESC
+                LIMIT ?
+            """, (skill_name, limit))
+        else:
+            cursor.execute("""
+                SELECT id, name, args, result, executed_at
+                FROM skills
+                ORDER BY executed_at DESC
+                LIMIT ?
+            """, (limit,))
+
+        history = []
+        for row in cursor.fetchall():
+            history.append({
+                'id': row['id'],
+                'name': row['name'],
+                'args': json.loads(row['args']) if row['args'] else {},
+                'result': json.loads(row['result']) if row['result'] else {},
+                'executed_at': row['executed_at']
+            })
+
+        return history
+
+    # ==============================================
+    # NOTES SKILL METHODS
+    # ==============================================
+
+    async def store_note(self, content: str, created_at: str, metadata: Optional[str] = None) -> int:
+        """
+        Store a note in the database.
+
+        Args:
+            content: Note content
+            created_at: ISO format timestamp
+            metadata: Optional JSON string of metadata
+
+        Returns:
+            ID of the stored note
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._store_note_sync,
+            content, created_at, metadata
+        )
+
+    def _store_note_sync(self, content, created_at, metadata):
+        """Synchronous note storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO notes
+            (content, created_at, metadata)
+            VALUES (?, ?, ?)
+        """, (content, created_at, metadata))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def list_notes(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        List recent notes.
+
+        Args:
+            limit: Maximum number of notes to return
+
+        Returns:
+            List of note dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._list_notes_sync, limit)
+
+    def _list_notes_sync(self, limit):
+        """Synchronous note listing"""
+        import json
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT id, content, created_at, metadata
+            FROM notes
+            ORDER BY created_at DESC
+            LIMIT ?
+        """, (limit,))
+
+        notes = []
+        for row in cursor.fetchall():
+            notes.append({
+                'id': row['id'],
+                'content': row['content'],
+                'created_at': row['created_at'],
+                'metadata': json.loads(row['metadata']) if row['metadata'] else {}
+            })
+
+        return notes
+
+    async def search_notes(self, query: str) -> List[Dict[str, Any]]:
+        """
+        Search notes by keyword using SQLite LIKE.
+
+        Args:
+            query: Search query string
+
+        Returns:
+            List of matching note dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._search_notes_sync, query)
+
+    def _search_notes_sync(self, query):
+        """Synchronous note search"""
+        import json
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT id, content, created_at, metadata
+            FROM notes
+            WHERE content LIKE ?
+            ORDER BY created_at DESC
+        """, (f"%{query}%",))
+
+        notes = []
+        for row in cursor.fetchall():
+            notes.append({
+                'id': row['id'],
+                'content': row['content'],
+                'created_at': row['created_at'],
+                'metadata': json.loads(row['metadata']) if row['metadata'] else {}
+            })
+
+        return notes
+
+    async def get_note(self, note_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Get a specific note by ID.
+
+        Args:
+            note_id: Note ID to retrieve
+
+        Returns:
+            Note dictionary or None if not found
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_note_sync, note_id)
+
+    def _get_note_sync(self, note_id):
+        """Synchronous note retrieval"""
+        import json
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT id, content, created_at, metadata
+            FROM notes
+            WHERE id = ?
+        """, (note_id,))
+
+        row = cursor.fetchone()
+        if not row:
+            return None
+
+        return {
+            'id': row['id'],
+            'content': row['content'],
+            'created_at': row['created_at'],
+            'metadata': json.loads(row['metadata']) if row['metadata'] else {}
+        }
