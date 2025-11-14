@@ -1558,3 +1558,17 @@ AttributeError: 'NoneType' object has no attribute 'store'
 2025-11-14 11:12:40,096 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
 2025-11-14 11:12:40,097 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
 2025-11-14 11:12:40,097 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "test_internet_trigger_session", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:15:55,357 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 11:15:56,504 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:15:56,505 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:15:56,509 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:15:56,509 - hugo - INFO - [memory] factual_memories_loaded: {"count": 2, "faiss_added": 2}
+2025-11-14 11:15:56,519 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:15:56,524 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:15:56,683 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:15:56,685 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:15:56,695 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:15:56,699 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:15:56,701 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:15:56,702 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:15:56,716 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
