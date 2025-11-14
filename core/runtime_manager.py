@@ -249,9 +249,12 @@ class RuntimeManager:
             from data.sqlite_manager import SQLiteManager
 
             # Initialize SQLite manager first
-            self.sqlite_manager = SQLiteManager(db_path="data/memory/hugo_session.db")
+            self.sqlite_manager = SQLiteManager(db_path="data/memory/hugo_session.db", logger=self.logger)
             await self.sqlite_manager.connect()
-            print("  ✓ SQLite manager initialized")
+
+            # Start thread-safe write queue drain loop
+            asyncio.create_task(self.sqlite_manager.drain_queue_loop())
+            print("  ✓ SQLite manager initialized (thread-safe mode)")
 
             # Memory manager with SQLite connection (PostgreSQL still None)
             self.memory = MemoryManager(self.sqlite_manager, None, self.logger)

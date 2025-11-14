@@ -99,6 +99,21 @@ class WebSearchSkill(BaseSkill):
             # Deploy agent for investigation
             report = await self.search_agent.investigate(query)
 
+            # Check if agent encountered an error
+            if report.get("error"):
+                if self.logger:
+                    self.logger.log_event("web_search", "reporting_agent_error", {
+                        "query": query,
+                        "error": report["error"]
+                    })
+
+                return SkillResult(
+                    success=False,
+                    output={"error_passthrough": True, "agent_error": report["error"]},
+                    message=f"Agent encountered an error: {report['error']}",
+                    metadata={"error_passthrough": True}
+                )
+
             # Check if investigation was successful
             if not report["success"]:
                 return SkillResult(

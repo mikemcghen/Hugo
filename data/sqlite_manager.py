@@ -30,16 +30,22 @@ class SQLiteManager:
     Fast, ephemeral storage for current session context.
     """
 
-    def __init__(self, db_path: str = "data/memory/hugo_session.db"):
+    def __init__(self, db_path: str = "data/memory/hugo_session.db", logger=None):
         """
         Initialize SQLite manager.
 
         Args:
             db_path: Path to SQLite database file
+            logger: Optional HugoLogger instance for structured logging
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = None
+        self.logger = logger
+
+        # Thread-safe write queue
+        self.write_queue = asyncio.Queue()
+        self._queue_running = False
 
     async def connect(self):
         """Connect to SQLite database and create tables"""
@@ -242,6 +248,120 @@ class SQLiteManager:
 
         self.conn.commit()
 
+    async def drain_queue_loop(self):
+        """
+        Main thread drain loop for thread-safe SQLite writes.
+
+        This loop processes all write operations from the write_queue,
+        ensuring that all SQLite writes happen in a single thread.
+        """
+        self._queue_running = True
+
+        if self.logger:
+            self.logger.log_event("sqlite", "drain_queue_started", {
+                "thread_safe": True
+            })
+
+        try:
+            while self._queue_running:
+                # Get next write job from queue
+                job = await self.write_queue.get()
+
+                if job is None:  # Shutdown signal
+                    break
+
+                operation_type = job.get("type")
+                payload = job.get("payload")
+                future = job.get("future")
+
+                if self.logger:
+                    self.logger.log_event("sqlite", "write_queued", {
+                        "operation": operation_type
+                    })
+
+                try:
+                    # Execute the appropriate synchronous write operation in executor
+                    # This ensures all writes happen in the same thread
+                    loop = asyncio.get_event_loop()
+
+                    if operation_type == "store_message":
+                        await loop.run_in_executor(None, lambda: self._store_message_sync(**payload))
+                        result = None
+                    elif operation_type == "store_reflection":
+                        result = await loop.run_in_executor(None, lambda: self._store_reflection_sync(**payload))
+                    elif operation_type == "store_meta_reflection":
+                        result = await loop.run_in_executor(None, lambda: self._store_meta_reflection_sync(**payload))
+                    elif operation_type == "store_memory":
+                        result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+                    elif operation_type == "store_skill_run":
+                        result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+                    elif operation_type == "store_note":
+                        result = await loop.run_in_executor(None, lambda: self._store_note_sync(**payload))
+                    elif operation_type == "store_task":
+                        result = await loop.run_in_executor(None, lambda: self._store_task_sync(**payload))
+                    elif operation_type == "update_task":
+                        await loop.run_in_executor(None, lambda: self._update_task_sync(**payload))
+                        result = None
+                    else:
+                        raise ValueError(f"Unknown operation type: {operation_type}")
+
+                    if self.logger:
+                        self.logger.log_event("sqlite", "write_completed_main_thread", {
+                            "operation": operation_type
+                        })
+
+                    # Resolve future with success
+                    if future:
+                        future.set_result(result)
+
+                except Exception as e:
+                    if self.logger:
+                        self.logger.log_error(e, {
+                            "phase": "drain_queue_loop",
+                            "operation": operation_type
+                        })
+
+                    # Resolve future with exception
+                    if future:
+                        future.set_exception(e)
+
+                finally:
+                    self.write_queue.task_done()
+
+        except Exception as e:
+            if self.logger:
+                self.logger.log_error(e, {"phase": "drain_queue_loop_crashed"})
+        finally:
+            self._queue_running = False
+
+    async def _queue_write(self, operation_type: str, payload: Dict[str, Any]) -> Any:
+        """
+        Queue a write operation and wait for it to complete.
+
+        Args:
+            operation_type: Type of write operation
+            payload: Operation parameters
+
+        Returns:
+            Result from the write operation
+        """
+        # Create a future to wait for completion
+        loop = asyncio.get_event_loop()
+        future = loop.create_future()
+
+        # Package the job
+        job = {
+            "type": operation_type,
+            "payload": payload,
+            "future": future
+        }
+
+        # Queue the job
+        await self.write_queue.put(job)
+
+        # Wait for completion
+        return await future
+
     async def store_message(self, session_id: str, role: str, content: str,
                           embedding: Optional[bytes] = None,
                           metadata: Optional[Dict] = None,
@@ -259,11 +379,14 @@ class SQLiteManager:
         """
         import json
 
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, self._store_message_sync,
-                                  session_id, role, content, embedding,
-                                  json.dumps(metadata) if metadata else None,
-                                  importance)
+        await self._queue_write("store_message", {
+            "session_id": session_id,
+            "role": role,
+            "content": content,
+            "embedding": embedding,
+            "metadata_json": json.dumps(metadata) if metadata else None,
+            "importance": importance
+        })
 
     def _store_message_sync(self, session_id, role, content, embedding, metadata_json, importance):
         """Synchronous message storage"""
@@ -419,18 +542,19 @@ class SQLiteManager:
         """
         import json
 
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._store_reflection_sync,
-            session_id, reflection_type, summary,
-            json.dumps(insights) if insights else None,
-            json.dumps(patterns) if patterns else None,
-            json.dumps(improvements) if improvements else None,
-            sentiment,
-            json.dumps(keywords) if keywords else None,
-            confidence, embedding,
-            json.dumps(metadata) if metadata else None
-        )
+        return await self._queue_write("store_reflection", {
+            "session_id": session_id,
+            "reflection_type": reflection_type,
+            "summary": summary,
+            "insights_json": json.dumps(insights) if insights else None,
+            "patterns_json": json.dumps(patterns) if patterns else None,
+            "improvements_json": json.dumps(improvements) if improvements else None,
+            "sentiment": sentiment,
+            "keywords_json": json.dumps(keywords) if keywords else None,
+            "confidence": confidence,
+            "embedding": embedding,
+            "metadata_json": json.dumps(metadata) if metadata else None
+        })
 
     def _store_reflection_sync(self, session_id, reflection_type, summary,
                                insights_json, patterns_json, improvements_json,
@@ -533,16 +657,17 @@ class SQLiteManager:
         """
         import json
 
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._store_meta_reflection_sync,
-            summary,
-            json.dumps(insights) if insights else None,
-            json.dumps(patterns) if patterns else None,
-            json.dumps(improvements) if improvements else None,
-            reflections_analyzed, time_window_days, confidence, embedding,
-            json.dumps(metadata) if metadata else None
-        )
+        return await self._queue_write("store_meta_reflection", {
+            "summary": summary,
+            "insights_json": json.dumps(insights) if insights else None,
+            "patterns_json": json.dumps(patterns) if patterns else None,
+            "improvements_json": json.dumps(improvements) if improvements else None,
+            "reflections_analyzed": reflections_analyzed,
+            "time_window_days": time_window_days,
+            "confidence": confidence,
+            "embedding": embedding,
+            "metadata_json": json.dumps(metadata) if metadata else None
+        })
 
     def _store_meta_reflection_sync(self, summary, insights_json, patterns_json,
                                     improvements_json, reflections_analyzed,
@@ -801,13 +926,16 @@ class SQLiteManager:
         """
         import json
 
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._store_memory_sync,
-            session_id, memory_type, content, embedding,
-            json.dumps(metadata) if metadata else None,
-            importance_score, 1 if is_fact else 0, entity_type
-        )
+        return await self._queue_write("store_memory", {
+            "session_id": session_id,
+            "memory_type": memory_type,
+            "content": content,
+            "embedding": embedding,
+            "metadata_json": json.dumps(metadata) if metadata else None,
+            "importance_score": importance_score,
+            "is_fact": 1 if is_fact else 0,
+            "entity_type": entity_type
+        })
 
     def _store_memory_sync(self, session_id, memory_type, content, embedding,
                            metadata_json, importance_score, is_fact, entity_type):
@@ -1007,11 +1135,12 @@ class SQLiteManager:
         Returns:
             ID of the stored skill run
         """
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._store_skill_run_sync,
-            name, args, result, executed_at
-        )
+        return await self._queue_write("store_skill_run", {
+            "name": name,
+            "args": args,
+            "result": result,
+            "executed_at": executed_at
+        })
 
     def _store_skill_run_sync(self, name, args, result, executed_at):
         """Synchronous skill run storage"""
@@ -1090,11 +1219,11 @@ class SQLiteManager:
         Returns:
             ID of the stored note
         """
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, self._store_note_sync,
-            content, created_at, metadata
-        )
+        return await self._queue_write("store_note", {
+            "content": content,
+            "created_at": created_at,
+            "metadata": metadata
+        })
 
     def _store_note_sync(self, content, created_at, metadata):
         """Synchronous note storage"""

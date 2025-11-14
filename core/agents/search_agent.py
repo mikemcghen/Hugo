@@ -54,55 +54,79 @@ class SearchAgent:
         Returns:
             Structured investigation report with findings
         """
-        if self.logger:
-            self.logger.log_event("agent", "search_agent_started", {
+        try:
+            if self.logger:
+                self.logger.log_event("agent", "search_agent_started", {
+                    "query": query,
+                    "timestamp": datetime.now().isoformat()
+                })
+
+            # Step 1: Collect URLs from multiple sources
+            urls = await self._collect_urls(query)
+
+            if self.logger:
+                self.logger.log_event("agent", "urls_collected", {
+                    "query": query,
+                    "total_urls": len(urls),
+                    "sources": list(set(u.get("source") for u in urls))
+                })
+
+            # Step 2: Extract content from each URL
+            extracted_passages = await self._extract_content(query, urls)
+
+            if self.logger:
+                self.logger.log_event("agent", "extraction_complete", {
+                    "query": query,
+                    "successful_extractions": len(extracted_passages),
+                    "total_urls": len(urls)
+                })
+
+            # Step 3: Combine evidence
+            combined_evidence = self._combine_evidence(extracted_passages)
+
+            # Step 4: Generate report
+            report = {
                 "query": query,
-                "timestamp": datetime.now().isoformat()
-            })
+                "urls_checked": [u["url"] for u in urls],
+                "extracted_passages": extracted_passages,
+                "combined_evidence": combined_evidence,
+                "sources_used": list(set(u.get("source") for u in urls)),
+                "timestamp": datetime.now().isoformat(),
+                "success": len(extracted_passages) > 0,
+                "error": None
+            }
 
-        # Step 1: Collect URLs from multiple sources
-        urls = await self._collect_urls(query)
+            if self.logger:
+                self.logger.log_event("agent", "report_ready", {
+                    "query": query,
+                    "passages_count": len(extracted_passages),
+                    "evidence_length": len(combined_evidence),
+                    "success": report["success"]
+                })
 
-        if self.logger:
-            self.logger.log_event("agent", "urls_collected", {
+            return report
+
+        except Exception as e:
+            # Log the error
+            if self.logger:
+                self.logger.log_event("agent", "error_detected", {
+                    "query": query,
+                    "error": str(e),
+                    "error_type": type(e).__name__
+                })
+                self.logger.log_error(e, {"phase": "search_agent_investigate", "query": query})
+
+            # Return error report instead of raising
+            return {
                 "query": query,
-                "total_urls": len(urls),
-                "sources": list(set(u.get("source") for u in urls))
-            })
-
-        # Step 2: Extract content from each URL
-        extracted_passages = await self._extract_content(query, urls)
-
-        if self.logger:
-            self.logger.log_event("agent", "extraction_complete", {
-                "query": query,
-                "successful_extractions": len(extracted_passages),
-                "total_urls": len(urls)
-            })
-
-        # Step 3: Combine evidence
-        combined_evidence = self._combine_evidence(extracted_passages)
-
-        # Step 4: Generate report
-        report = {
-            "query": query,
-            "urls_checked": [u["url"] for u in urls],
-            "extracted_passages": extracted_passages,
-            "combined_evidence": combined_evidence,
-            "sources_used": list(set(u.get("source") for u in urls)),
-            "timestamp": datetime.now().isoformat(),
-            "success": len(extracted_passages) > 0
-        }
-
-        if self.logger:
-            self.logger.log_event("agent", "report_ready", {
-                "query": query,
-                "passages_count": len(extracted_passages),
-                "evidence_length": len(combined_evidence),
-                "success": report["success"]
-            })
-
-        return report
+                "urls_checked": [],
+                "extracted_passages": [],
+                "combined_evidence": "",
+                "sources_used": [],
+                "timestamp": datetime.now().isoformat(),
+                "success": False,
+                "error": f"{type(e).__name__}: {str(e)}"
+            }
 
     async def _collect_urls(self, query: str) -> List[Dict[str, str]]:
         """

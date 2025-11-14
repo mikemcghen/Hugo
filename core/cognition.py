@@ -578,6 +578,11 @@ class CognitionEngine:
             if not output:
                 return "I couldn't find any information about that."
 
+            # Check for error passthrough from agent
+            if output.get('error_passthrough'):
+                agent_error = output.get('agent_error', 'Unknown error')
+                return f"Agent encountered an error: {agent_error}"
+
             # Check if this is agent-based search (new format)
             if output.get('combined_evidence'):
                 response_parts = []
