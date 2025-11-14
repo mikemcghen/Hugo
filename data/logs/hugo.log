@@ -1499,3 +1499,62 @@ AttributeError: 'NoneType' object has no attribute 'store'
 2025-11-14 10:35:57,791 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
 2025-11-14 10:35:57,791 - hugo - INFO - [cognition] skill_autorun_completed: {"skill": "notes", "action": "search", "success": true, "message": "Found 1 notes matching 'test'", "session_id": "test_autorun_session"}
 2025-11-14 10:35:57,792 - hugo - INFO - [memory] stored: {"type": "skill_execution", "long_term": false, "has_embedding": false, "importance": 0.6, "entity_type": null}
+2025-11-14 11:02:02,337 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 11:02:03,526 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:02:03,527 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:02:03,529 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:02:03,529 - hugo - INFO - [memory] factual_memories_loaded: {"count": 2, "faiss_added": 2}
+2025-11-14 11:02:03,540 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:02:03,544 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:02:03,937 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:02:03,941 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:02:03,948 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:02:03,952 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:02:03,954 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:02:03,955 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:02:03,959 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 11:02:28,359 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_110203"}
+2025-11-14 11:02:28,363 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:02:28,363 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:02:28,364 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_110203"}
+2025-11-14 11:02:28,365 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_110203", "memory_count": 1}
+2025-11-14 11:02:28,521 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 33, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 11:02:28,521 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_110203", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 851}
+2025-11-14 11:02:28,522 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 11:02:50,140 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 21.62, "status": "success", "response_length": 471}
+2025-11-14 11:02:50,141 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 471, "response_preview": "I'm not certain. I don't have any specific information regarding the release date of Wicked Part 2. ...", "async_mode": true, "prompt_tokens": 128, "persona_name": "Hugo"}
+2025-11-14 11:02:50,141 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 11:02:50,141 - hugo - INFO - [user] response: {"content": "I'm not certain. I don't have any specific information regarding the release date of Wicked Part 2. However, I can suggest some ways for you to find that information! You could try checking the official social media channels or websites related to the production company or cast members involved in the project. Alternatively, you could look up entertainment news outlets or online forums where fans might be discussing and sharing updates about the movie's release date.", "streaming": false, "session_id": "shell_20251114_110203"}
+2025-11-14 11:02:50,142 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:04:19,397 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_110203"}
+2025-11-14 11:04:19,403 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["information", "release", "date", "hugo", "certain"], "total_keywords": 10}
+2025-11-14 11:04:19,403 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 11:04:19,403 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 11:04:49,902 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 657}
+2025-11-14 11:04:49,904 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 105, "insights_count": 2, "confidence": 0.7}
+2025-11-14 11:04:49,921 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 19, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 11:04:49,922 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 11:04:49,922 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 633}
+2025-11-14 11:04:49,923 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_110203", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 11:04:49,923 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_110203", "message_count": 2}
+2025-11-14 11:12:38,825 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:12:38,843 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:12:38,843 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:12:39,027 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:12:39,037 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:12:39,046 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:12:39,050 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:12:39,053 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:12:39,054 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:12:39,063 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:12:39,064 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "test_internet_trigger_session", "streaming": false, "message_length": 50}
+2025-11-14 11:12:39,065 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "test_internet_trigger_session"}
+2025-11-14 11:12:39,065 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "test_internet_trigger_session"}
+2025-11-14 11:12:39,065 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:12:39,066 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:12:39,275 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 210.0}
+2025-11-14 11:12:39,280 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 11:12:39,280 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "test_internet_trigger_session"}
+2025-11-14 11:12:40,096 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:12:40,097 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:12:40,097 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "test_internet_trigger_session", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}

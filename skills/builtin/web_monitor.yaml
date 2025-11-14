@@ -1,0 +1,9 @@
+name: "web_monitor"
+description: "Monitors web conditions and triggers alerts"
+version: "1.0.0"
+entrypoint: "skills.builtin.web_monitor:WebMonitorSkill"
+trigger: "agent"
+permissions:
+  - external_http
+  - internet_access
+  - database_write

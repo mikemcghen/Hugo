@@ -218,7 +218,34 @@ class CognitionEngine:
             "message_length": len(message)
         })
 
-        # Save user message to memory first
+        # Classify message to check for skill triggers (internet queries, notes, etc.)
+        classification = self.memory.classify_memory(message)
+
+        # Check if this is an internet query or skill trigger that should bypass LLM
+        if classification.metadata and "skill_trigger" in classification.metadata:
+            skill_name = classification.metadata["skill_trigger"]
+            skill_action = classification.metadata.get("skill_action", "help")
+            skill_payload = classification.metadata.get("skill_payload", {})
+
+            # Internet queries (web_search, fetch_url) bypass LLM entirely
+            if skill_name in ["web_search", "fetch_url"]:
+                self.logger.log_event("cognition", "internet_query_detected", {
+                    "skill": skill_name,
+                    "action": skill_action,
+                    "session_id": session_id
+                })
+
+                # Execute skill directly and return result
+                response_package = await self._execute_skill_bypass(
+                    skill_name, skill_action, skill_payload, message, session_id
+                )
+
+                # Save assistant response to memory
+                await self.post_process(response_package.content, session_id)
+
+                return response_package
+
+        # Save user message to memory (with skill trigger metadata if present)
         await self._save_user_message(message, session_id)
 
         if streaming:
@@ -340,6 +367,201 @@ class CognitionEngine:
 
         except Exception as e:
             self.logger.log_error(e, {"phase": "save_user_message"})
+
+    async def _execute_skill_bypass(self, skill_name: str, skill_action: str,
+                                    skill_payload: dict, original_message: str,
+                                    session_id: str) -> ResponsePackage:
+        """
+        Execute a skill and bypass the LLM entirely.
+
+        Used for internet queries where we want direct factual results
+        without LLM hallucination risk.
+
+        Args:
+            skill_name: Name of skill to execute
+            skill_action: Action to perform
+            skill_payload: Skill parameters
+            original_message: Original user message
+            session_id: Session identifier
+
+        Returns:
+            ResponsePackage with skill result as content
+        """
+        try:
+            from datetime import datetime
+
+            self.logger.log_event("cognition", "skill_bypass_started", {
+                "skill": skill_name,
+                "action": skill_action,
+                "session_id": session_id
+            })
+
+            # Execute skill
+            if self.runtime_manager and hasattr(self.runtime_manager, 'skills') and self.runtime_manager.skills:
+                result = await self.runtime_manager.skills.run_skill(
+                    skill_name,
+                    action=skill_action,
+                    **skill_payload
+                )
+
+                self.logger.log_event("cognition", "skill_bypass_completed", {
+                    "skill": skill_name,
+                    "action": skill_action,
+                    "success": result.success,
+                    "session_id": session_id
+                })
+
+                # Format response based on skill result
+                if result.success:
+                    response_content = self._format_skill_response(skill_name, result)
+                else:
+                    response_content = f"I tried to look that up but encountered an issue: {result.message}"
+
+                # Build response package
+                reasoning_chain = ReasoningChain(
+                    steps=[
+                        f"Detected internet query: {original_message}",
+                        f"Triggered skill: {skill_name}",
+                        f"Executed action: {skill_action}",
+                        "Bypassed LLM to avoid hallucination"
+                    ],
+                    assumptions=["User needs factual real-time information"],
+                    alternatives_considered=["LLM generation", "Direct skill execution"],
+                    selected_approach="direct_skill_bypass",
+                    confidence_score=0.95 if result.success else 0.5
+                )
+
+                response_package = ResponsePackage(
+                    content=response_content,
+                    tone=MoodSpectrum.OPERATIONAL,
+                    reasoning_chain=reasoning_chain,
+                    directive_checks=["internet_query_bypass"],
+                    metadata={
+                        "timestamp": datetime.now().isoformat(),
+                        "model": "skill_bypass",
+                        "engine": skill_name,
+                        "skill": skill_name,
+                        "action": skill_action,
+                        "success": result.success,
+                        "bypassed_llm": True,
+                        "session_id": session_id
+                    }
+                )
+
+                return response_package
+
+            else:
+                # Skill manager not available - fallback to LLM
+                self.logger.log_event("cognition", "skill_bypass_unavailable", {
+                    "reason": "skill_manager_not_available",
+                    "session_id": session_id
+                })
+
+                # Fall back to normal processing
+                return await self.process_input(original_message, session_id)
+
+        except Exception as e:
+            self.logger.log_error(e, {
+                "phase": "skill_bypass",
+                "skill": skill_name,
+                "session_id": session_id
+            })
+
+            # Return error response
+            from datetime import datetime
+
+            return ResponsePackage(
+                content=f"I encountered an error trying to look that up: {str(e)}",
+                tone=MoodSpectrum.OPERATIONAL,
+                reasoning_chain=ReasoningChain(
+                    steps=["Attempted skill bypass", "Encountered error"],
+                    assumptions=[],
+                    alternatives_considered=[],
+                    selected_approach="error_fallback",
+                    confidence_score=0.0
+                ),
+                directive_checks=[],
+                metadata={
+                    "timestamp": datetime.now().isoformat(),
+                    "error": str(e),
+                    "bypassed_llm": True,
+                    "session_id": session_id
+                }
+            )
+
+    def _format_skill_response(self, skill_name: str, result) -> str:
+        """
+        Format skill result into a natural language response.
+
+        Args:
+            skill_name: Name of the executed skill
+            result: SkillResult object
+
+        Returns:
+            Formatted response string
+        """
+        if skill_name == "web_search":
+            output = result.output
+            if not output:
+                return "I couldn't find any information about that."
+
+            response_parts = []
+
+            # Add abstract/summary if available
+            if output.get('abstract_text'):
+                response_parts.append(output['abstract_text'])
+
+                if output.get('abstract_source'):
+                    response_parts.append(f"\n\nSource: {output['abstract_source']}")
+
+                if output.get('abstract_url'):
+                    response_parts.append(f"URL: {output['abstract_url']}")
+
+            # Add answer if available
+            elif output.get('answer'):
+                response_parts.append(output['answer'])
+
+            # Add definition if available
+            elif output.get('definition'):
+                response_parts.append(output['definition'])
+
+                if output.get('definition_source'):
+                    response_parts.append(f"\n\nSource: {output['definition_source']}")
+
+            # Add related topics if no main content
+            elif output.get('related_topics'):
+                response_parts.append("I found these related topics:")
+                for i, topic in enumerate(output['related_topics'][:3], 1):
+                    response_parts.append(f"\n{i}. {topic['text']}")
+
+            if not response_parts:
+                return "I found results but couldn't extract clear information. Try being more specific."
+
+            return "\n".join(response_parts)
+
+        elif skill_name == "fetch_url":
+            output = result.output
+            if not output:
+                return "I couldn't fetch that URL."
+
+            response_parts = []
+            response_parts.append(f"Fetched: {output.get('title', 'Untitled')}\n")
+
+            content = output.get('content', '')
+            # Return first 800 characters
+            if len(content) > 800:
+                response_parts.append(content[:800] + "...")
+            else:
+                response_parts.append(content)
+
+            return "\n".join(response_parts)
+
+        else:
+            # Generic skill response
+            if result.output:
+                return str(result.output)
+            else:
+                return result.message
 
     async def process_input(self, user_input: str, session_id: str) -> ResponsePackage:
         """

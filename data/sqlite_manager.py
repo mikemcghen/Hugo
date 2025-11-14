@@ -197,6 +197,28 @@ class SQLiteManager:
             )
         """)
 
+        # Agent actions table (autonomous agent tracking)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS agent_actions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                action_type TEXT NOT NULL,
+                details TEXT,
+                executed_at TEXT NOT NULL,
+                success INTEGER NOT NULL
+            )
+        """)
+
+        # Web monitor rules table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS web_monitor_rules (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                target TEXT NOT NULL,
+                condition TEXT NOT NULL,
+                threshold REAL NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """)
+
         # Create indices
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_session ON recent_messages(session_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON recent_messages(timestamp)")
@@ -214,6 +236,9 @@ class SQLiteManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_skills_name ON skills(name)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_skills_executed_at ON skills(executed_at)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_agent_actions_executed_at ON agent_actions(executed_at)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_agent_actions_type ON agent_actions(action_type)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_web_monitor_rules_target ON web_monitor_rules(target)")
 
         self.conn.commit()
 
@@ -576,6 +601,177 @@ class SQLiteManager:
             'confidence': row['confidence'],
             'metadata': json.loads(row['metadata']) if row['metadata'] else {}
         }
+
+    # ==============================================
+    # AGENT ACTION METHODS
+    # ==============================================
+
+    async def save_agent_action(self, action_type: str, details: str, executed_at: str, success: int) -> int:
+        """
+        Save an autonomous agent action.
+
+        Args:
+            action_type: Type of action
+            details: Action details (JSON string or text)
+            executed_at: ISO format timestamp
+            success: 1 for success, 0 for failure
+
+        Returns:
+            ID of the stored action
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._save_agent_action_sync,
+            action_type, details, executed_at, success
+        )
+
+    def _save_agent_action_sync(self, action_type, details, executed_at, success):
+        """Synchronous agent action storage"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO agent_actions
+            (action_type, details, executed_at, success)
+            VALUES (?, ?, ?, ?)
+        """, (action_type, details, executed_at, success))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_agent_actions(self, action_type: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Retrieve agent action history.
+
+        Args:
+            action_type: Optional filter by action type
+            limit: Maximum number of records
+
+        Returns:
+            List of agent action dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_agent_actions_sync, action_type, limit)
+
+    def _get_agent_actions_sync(self, action_type, limit):
+        """Synchronous agent action retrieval"""
+        cursor = self.conn.cursor()
+
+        if action_type:
+            cursor.execute("""
+                SELECT id, action_type, details, executed_at, success
+                FROM agent_actions
+                WHERE action_type = ?
+                ORDER BY executed_at DESC
+                LIMIT ?
+            """, (action_type, limit))
+        else:
+            cursor.execute("""
+                SELECT id, action_type, details, executed_at, success
+                FROM agent_actions
+                ORDER BY executed_at DESC
+                LIMIT ?
+            """, (limit,))
+
+        actions = []
+        for row in cursor.fetchall():
+            actions.append({
+                'id': row['id'],
+                'action_type': row['action_type'],
+                'details': row['details'],
+                'executed_at': row['executed_at'],
+                'success': bool(row['success'])
+            })
+
+        return actions
+
+    # ==============================================
+    # WEB MONITOR METHODS
+    # ==============================================
+
+    async def add_monitor_rule(self, target: str, condition: str, threshold: float, created_at: str) -> int:
+        """
+        Add a web monitor rule.
+
+        Args:
+            target: URL or endpoint to monitor
+            condition: Condition (above, below, equals)
+            threshold: Threshold value
+            created_at: ISO format timestamp
+
+        Returns:
+            ID of the created rule
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None, self._add_monitor_rule_sync,
+            target, condition, threshold, created_at
+        )
+
+    def _add_monitor_rule_sync(self, target, condition, threshold, created_at):
+        """Synchronous monitor rule creation"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO web_monitor_rules
+            (target, condition, threshold, created_at)
+            VALUES (?, ?, ?, ?)
+        """, (target, condition, threshold, created_at))
+
+        self.conn.commit()
+        return cursor.lastrowid
+
+    async def get_monitor_rules(self) -> List[Dict[str, Any]]:
+        """
+        Get all web monitor rules.
+
+        Returns:
+            List of monitor rule dictionaries
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._get_monitor_rules_sync)
+
+    def _get_monitor_rules_sync(self):
+        """Synchronous monitor rules retrieval"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            SELECT id, target, condition, threshold, created_at
+            FROM web_monitor_rules
+            ORDER BY created_at DESC
+        """)
+
+        rules = []
+        for row in cursor.fetchall():
+            rules.append({
+                'id': row['id'],
+                'target': row['target'],
+                'condition': row['condition'],
+                'threshold': float(row['threshold']),
+                'created_at': row['created_at']
+            })
+
+        return rules
+
+    async def remove_monitor_rule(self, rule_id: int):
+        """
+        Remove a web monitor rule.
+
+        Args:
+            rule_id: Rule ID to remove
+        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._remove_monitor_rule_sync, rule_id)
+
+    def _remove_monitor_rule_sync(self, rule_id):
+        """Synchronous monitor rule removal"""
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM web_monitor_rules
+            WHERE id = ?
+        """, (rule_id,))
+
+        self.conn.commit()
 
     async def close(self):
         """Close database connection"""

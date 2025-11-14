@@ -1,0 +1,8 @@
+name: "web_search"
+description: "Searches the web and returns structured results"
+version: "1.0.0"
+entrypoint: "skills.builtin.web_search:WebSearchSkill"
+trigger: "manual_and_agent"
+permissions:
+  - external_http
+  - internet_access

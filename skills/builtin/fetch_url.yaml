@@ -1,0 +1,8 @@
+name: "fetch_url"
+description: "Downloads a webpage and summarizes it"
+version: "1.0.0"
+entrypoint: "skills.builtin.fetch_url:FetchUrlSkill"
+trigger: "manual_and_agent"
+permissions:
+  - external_http
+  - internet_access

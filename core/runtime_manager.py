@@ -75,6 +75,7 @@ class RuntimeManager:
         self.reflection = None
         self.tasks = None
         self.skills = None
+        self.agent = None
         self.scheduler = None
 
     async def boot(self) -> bool:
@@ -280,6 +281,11 @@ class RuntimeManager:
             self.skills.load_skills()
             print("  ✓ Skill manager initialized")
 
+            # Autonomous agent
+            from core.agent import HugoAgent
+            self.agent = HugoAgent(self.memory, self.skills, self.sqlite_manager, self.reflection, self.logger)
+            print("  ✓ Autonomous agent initialized")
+
             # Scheduler will be initialized later
             self.scheduler = None
 
@@ -306,13 +312,40 @@ class RuntimeManager:
         return True
 
     async def _start_scheduler(self) -> bool:
-        """Start the maintenance scheduler"""
+        """Start the maintenance scheduler and agent loop"""
         print("→ Starting scheduler...")
-        # TODO: Start scheduler in background
-        # if self.scheduler:
-        #     asyncio.create_task(self.scheduler.start())
-        print("  ✓ Scheduler started")
-        return True
+
+        try:
+            from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+            self.scheduler = AsyncIOScheduler()
+
+            # Add autonomous agent tick (every 5 seconds)
+            if self.agent:
+                self.scheduler.add_job(
+                    self.agent.tick,
+                    'interval',
+                    seconds=5,
+                    id='agent_tick',
+                    name='Autonomous Agent Tick'
+                )
+                self.logger.log_event("runtime", "agent_scheduler_added", {
+                    "interval_seconds": 5
+                })
+
+            # Start scheduler
+            self.scheduler.start()
+            print("  ✓ Scheduler started")
+
+            return True
+
+        except ImportError:
+            print("  ⚠ APScheduler not available, agent loop disabled")
+            return True
+        except Exception as e:
+            self.logger.log_error(e, {"phase": "start_scheduler"})
+            print(f"  ✗ Scheduler failed: {str(e)}")
+            return False
 
     async def _save_state(self):
         """Save Hugo's current state before shutdown"""
@@ -355,6 +388,7 @@ class RuntimeManager:
                 "memory": "running" if self.memory else "stopped",
                 "reflection": "running" if self.reflection else "stopped",
                 "skills": "running" if self.skills else "stopped",
+                "agent": "running" if self.agent and self.agent.enabled else "stopped",
                 "scheduler": "running" if self.scheduler else "stopped"
             }
         }

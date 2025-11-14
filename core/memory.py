@@ -238,6 +238,56 @@ class MemoryManager:
         # Guard: Questions are usually conversation unless they're tasks
         is_question = text.endswith('?')
 
+        # Pattern 0: Internet queries (BEFORE other patterns to catch questions)
+        # Check for URL in text first
+        url_pattern = r'https?://[^\s]+'
+        url_match = re.search(url_pattern, text)
+        if url_match:
+            url = url_match.group(0)
+            return MemoryClassification(
+                memory_type="internet_query",
+                importance=0.7,
+                should_persist=False,
+                embedding_allowed=False,
+                reasoning="url_fetch_request",
+                metadata={
+                    "skill_trigger": "fetch_url",
+                    "skill_action": "fetch",
+                    "skill_payload": {"url": url}
+                }
+            )
+
+        # Internet query patterns
+        internet_query_patterns = [
+            r'\b(when|what|who|where|which|whose)\s+(is|are|was|were|did|does|do|will|would|can|could)\b',
+            r'\b(how\s+(old|many|much|long|far|tall|big|small))\b',
+            r'\b(release\s+date|coming\s+out|premiere|launch|debut)\b',
+            r'\b(cast\s+of|starring|actors\s+in|directed\s+by)\b',
+            r'\b(news\s+(about|on|regarding)|latest\s+news|breaking\s+news)\b',
+            r'\b(price\s+of|cost\s+of|worth\s+of|stock\s+price|crypto\s+price)\b',
+            r'\b(weather\s+in|temperature\s+in|forecast\s+for)\b',
+            r'\b(who\s+(is|was|will\s+be)|what\s+(is|was|will\s+be))\s+(?!my|your|the\s+(reason|problem|issue))\b',
+            r'\b(current|latest|recent|updated)\s+(status|info|information|data)\b',
+            r'\b(tell\s+me\s+about|information\s+about|facts\s+about)\b',
+            r'\b(score\s+of|result\s+of|winner\s+of)\b',
+        ]
+
+        for pattern in internet_query_patterns:
+            if re.search(pattern, text_lower):
+                # Extract the query (use the full text)
+                return MemoryClassification(
+                    memory_type="internet_query",
+                    importance=0.7,
+                    should_persist=False,
+                    embedding_allowed=False,
+                    reasoning="internet_search_query",
+                    metadata={
+                        "skill_trigger": "web_search",
+                        "skill_action": "search",
+                        "skill_payload": {"query": text}
+                    }
+                )
+
         # Pattern 1: Credentials (HIGHEST PRIORITY for security)
         credential_patterns = [
             (r'password\s*(?:is|:|=)\s*[\w\d@#$%^&*()]+', "password"),
