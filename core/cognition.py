@@ -481,17 +481,26 @@ class CognitionEngine:
                 else:
                     response_content = f"I tried to look that up but encountered an issue: {result.message}"
 
-                # Build response package
+                # Build response package with agent deployment info
+                steps = [
+                    f"Detected internet query: {original_message}",
+                    f"Triggered skill: {skill_name}"
+                ]
+
+                if skill_name == "web_search":
+                    steps.append("Deployed SearchAgent for multi-source investigation")
+                    steps.append("Agent collected URLs from DuckDuckGo, Wikipedia, IMDb")
+                    steps.append("Agent extracted and synthesized evidence")
+                else:
+                    steps.append(f"Executed action: {skill_action}")
+
+                steps.append("Bypassed LLM to avoid hallucination")
+
                 reasoning_chain = ReasoningChain(
-                    steps=[
-                        f"Detected internet query: {original_message}",
-                        f"Triggered skill: {skill_name}",
-                        f"Executed action: {skill_action}",
-                        "Bypassed LLM to avoid hallucination"
-                    ],
+                    steps=steps,
                     assumptions=["User needs factual real-time information"],
-                    alternatives_considered=["LLM generation", "Direct skill execution"],
-                    selected_approach="direct_skill_bypass",
+                    alternatives_considered=["LLM generation", "Agent-based investigation"],
+                    selected_approach="autonomous_agent" if skill_name == "web_search" else "direct_skill_bypass",
                     confidence_score=0.95 if result.success else 0.5
                 )
 
@@ -569,43 +578,49 @@ class CognitionEngine:
             if not output:
                 return "I couldn't find any information about that."
 
+            # Check if this is agent-based search (new format)
+            if output.get('combined_evidence'):
+                response_parts = []
+
+                # Commander-style report
+                response_parts.append("Investigation complete.")
+
+                # Report sources used
+                sources = output.get('sources_used', [])
+                if sources:
+                    sources_str = ", ".join(s.upper() for s in sources)
+                    response_parts.append(f"Sources checked: {sources_str}")
+
+                # Report findings
+                passages_count = output.get('passages_count', 0)
+                if passages_count > 0:
+                    response_parts.append(f"Evidence collected from {passages_count} sources.")
+
+                    # Include combined evidence for synthesis
+                    evidence = output.get('combined_evidence', '')
+                    if evidence:
+                        response_parts.append(f"\nFindings:\n{evidence[:1000]}")
+
+                return "\n".join(response_parts)
+
+            # Legacy format support (if any old code still uses it)
             response_parts = []
 
-            # Add abstract/summary if available
             if output.get('abstract_text'):
                 response_parts.append(output['abstract_text'])
-
                 if output.get('abstract_source'):
                     response_parts.append(f"\n\nSource: {output['abstract_source']}")
 
-                if output.get('abstract_url'):
-                    response_parts.append(f"URL: {output['abstract_url']}")
-
-            # Add answer if available
             elif output.get('answer'):
                 response_parts.append(output['answer'])
 
-            # Add definition if available
             elif output.get('definition'):
                 response_parts.append(output['definition'])
-
                 if output.get('definition_source'):
                     response_parts.append(f"\n\nSource: {output['definition_source']}")
 
-            # Add related topics if no main content
-            elif output.get('related_topics'):
-                response_parts.append("I found these related topics:")
-                for i, topic in enumerate(output['related_topics'][:3], 1):
-                    response_parts.append(f"\n{i}. {topic['text']}")
-
-            # If we have response parts, return them
             if response_parts:
                 return "\n".join(response_parts)
-
-            # No direct answer available - return URL list for potential extraction
-            # The calling code can decide whether to trigger extract_and_answer
-            if output.get('urls'):
-                return f"I found {len(output['urls'])} related URLs but no direct answer. The system will attempt to extract information from these sources."
 
             return "I couldn't find any information about that."
 

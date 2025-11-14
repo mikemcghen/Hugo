@@ -1,40 +1,39 @@
 """
 Web Search Skill
 ----------------
-Searches the web using DuckDuckGo Instant Answer API.
+Agent-based multi-source web search system.
+
+This skill delegates all search operations to an autonomous SearchAgent
+that performs comprehensive investigations across multiple sources.
 
 Actions:
-- search: Perform a web search and return structured results
+- search: Deploy SearchAgent for multi-source investigation
 """
 
-import aiohttp
-import asyncio
 from typing import Dict, Any, List
 from datetime import datetime
 
 from skills.base_skill import BaseSkill, SkillResult
+from core.agents import SearchAgent
 
 
 class WebSearchSkill(BaseSkill):
     """
-    Web search skill using DuckDuckGo Instant Answer API.
+    Agent-based web search skill.
 
-    Provides structured web search results without tracking.
+    Deploys an autonomous SearchAgent to perform multi-source investigations
+    including DuckDuckGo, Wikipedia, IMDb, and optional Google search.
     """
 
     def __init__(self, logger=None, sqlite_manager=None, memory_manager=None):
         super().__init__(logger, sqlite_manager, memory_manager)
 
         self.name = "web_search"
-        self.description = "Searches the web and returns structured results"
-        self.version = "1.0.0"
+        self.description = "Agent-based multi-source web search"
+        self.version = "2.0.0"
 
-        # DuckDuckGo Instant Answer API (no API key required)
-        self.api_url = "https://api.duckduckgo.com/"
-
-        # Polling configuration for 202 ACCEPTED responses
-        self.max_poll_attempts = 5
-        self.poll_delay_ms = 500
+        # Initialize search agent
+        self.search_agent = None
 
     async def run(self, action: str = "search", **kwargs) -> SkillResult:
         """
@@ -45,7 +44,7 @@ class WebSearchSkill(BaseSkill):
             **kwargs: Action-specific arguments
 
         Returns:
-            SkillResult with search results
+            SkillResult with investigation report
         """
         if action == "search":
             return await self._search(**kwargs)
@@ -60,13 +59,13 @@ class WebSearchSkill(BaseSkill):
 
     async def _search(self, query: str = None, **kwargs) -> SkillResult:
         """
-        Perform web search with automatic polling for 202 ACCEPTED responses.
+        Deploy SearchAgent for investigation.
 
         Args:
             query: Search query string
 
         Returns:
-            SkillResult with search results
+            SkillResult with investigation findings
         """
         if not query:
             return SkillResult(
@@ -76,144 +75,56 @@ class WebSearchSkill(BaseSkill):
             )
 
         try:
-            # Call DuckDuckGo Instant Answer API with retry logic for 202
-            params = {
-                "q": query,
-                "format": "json",
-                "no_html": "1",
-                "skip_disambig": "1"
-            }
+            # Initialize search agent if not already done
+            if not self.search_agent:
+                # Import extract_and_answer skill for content extraction
+                extract_skill = None
+                try:
+                    from skills.skill_registry import SkillRegistry
+                    registry = SkillRegistry()
+                    extract_skill = registry.get("extract_and_answer")
+                except Exception:
+                    pass
 
-            timeout = aiohttp.ClientTimeout(total=10)
-            attempt = 0
-            data = None
+                self.search_agent = SearchAgent(
+                    logger=self.logger,
+                    extract_skill=extract_skill
+                )
 
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                while attempt < self.max_poll_attempts:
-                    attempt += 1
+            if self.logger:
+                self.logger.log_event("web_search", "deploying_agent", {
+                    "query": query
+                })
 
-                    async with session.get(self.api_url, params=params) as response:
-                        status = response.status
+            # Deploy agent for investigation
+            report = await self.search_agent.investigate(query)
 
-                        # HTTP 200 OK - Success
-                        if status == 200:
-                            if self.logger:
-                                if attempt > 1:
-                                    self.logger.log_event("web_search", "poll_success", {
-                                        "query": query,
-                                        "attempts": attempt
-                                    })
-                            data = await response.json()
-                            break
-
-                        # HTTP 202 ACCEPTED - Result not ready, poll again
-                        elif status == 202:
-                            if self.logger:
-                                if attempt == 1:
-                                    self.logger.log_event("web_search", "poll_started", {
-                                        "query": query,
-                                        "status": 202
-                                    })
-                                else:
-                                    self.logger.log_event("web_search", "poll_retry", {
-                                        "query": query,
-                                        "attempt": attempt,
-                                        "max_attempts": self.max_poll_attempts
-                                    })
-
-                            # Wait before retrying
-                            if attempt < self.max_poll_attempts:
-                                await asyncio.sleep(self.poll_delay_ms / 1000.0)
-                            continue
-
-                        # Any other status - Error
-                        else:
-                            if self.logger:
-                                self.logger.log_event("web_search", "poll_failed", {
-                                    "query": query,
-                                    "status": status,
-                                    "attempt": attempt
-                                })
-
-                            return SkillResult(
-                                success=False,
-                                output=None,
-                                message=f"Search API returned status {status}"
-                            )
-
-            # If we exhausted all retries without getting 200
-            if data is None:
-                if self.logger:
-                    self.logger.log_event("web_search", "poll_failed", {
-                        "query": query,
-                        "reason": "max_attempts_reached",
-                        "attempts": self.max_poll_attempts
-                    })
-
+            # Check if investigation was successful
+            if not report["success"]:
                 return SkillResult(
                     success=False,
                     output=None,
-                    message="Search results not ready (API stuck in 202)."
+                    message=f"Investigation found no results for '{query}'"
                 )
 
-            # Extract relevant information
+            # Format results for consumption
             results = {
                 "query": query,
                 "timestamp": datetime.now().isoformat(),
-                "abstract": data.get("Abstract", ""),
-                "abstract_text": data.get("AbstractText", ""),
-                "abstract_source": data.get("AbstractSource", ""),
-                "abstract_url": data.get("AbstractURL", ""),
-                "heading": data.get("Heading", ""),
-                "answer": data.get("Answer", ""),
-                "definition": data.get("Definition", ""),
-                "definition_source": data.get("DefinitionSource", ""),
-                "definition_url": data.get("DefinitionURL", ""),
-                "related_topics": []
+                "urls": report["urls_checked"],
+                "sources_used": report["sources_used"],
+                "combined_evidence": report["combined_evidence"],
+                "passages_count": len(report["extracted_passages"]),
+                "extracted_passages": report["extracted_passages"]
             }
 
-            # Extract related topics
-            for topic in data.get("RelatedTopics", [])[:5]:
-                if isinstance(topic, dict) and "Text" in topic:
-                    results["related_topics"].append({
-                        "text": topic.get("Text", ""),
-                        "url": topic.get("FirstURL", "")
-                    })
-
-            # Extract URLs from related topics for downstream processing
-            results["urls"] = []
-
-            # Add abstract URL if available
-            if results["abstract_url"]:
-                results["urls"].append(results["abstract_url"])
-
-            # Add definition URL if available
-            if results["definition_url"]:
-                results["urls"].append(results["definition_url"])
-
-            # Add related topic URLs
-            for topic in results["related_topics"]:
-                if topic.get("url"):
-                    results["urls"].append(topic["url"])
-
-            # Log result status
-            if self.logger:
-                self.logger.log_event("web_search", "search_complete", {
-                    "query": query,
-                    "has_abstract": bool(results["abstract_text"]),
-                    "has_answer": bool(results["answer"]),
-                    "has_definition": bool(results["definition"]),
-                    "url_count": len(results["urls"]),
-                    "status": "success" if results["urls"] else "no_results"
-                })
-
-            # Store in memory if available
+            # Store investigation in memory if available
             if self.memory:
                 from core.memory import MemoryEntry
 
-                content = f"Web search: {query}"
-                if results["abstract_text"]:
-                    content += f" - {results['abstract_text'][:200]}"
+                content = f"Web investigation: {query}"
+                if report["combined_evidence"]:
+                    content += f" - {report['combined_evidence'][:200]}"
 
                 search_entry = MemoryEntry(
                     id=None,
@@ -225,10 +136,11 @@ class WebSearchSkill(BaseSkill):
                     metadata={
                         "skill": "web_search",
                         "query": query,
-                        "source": results["abstract_source"],
-                        "url": results["abstract_url"]
+                        "sources": report["sources_used"],
+                        "urls_count": len(report["urls_checked"]),
+                        "agent_investigation": True
                     },
-                    importance_score=0.6,
+                    importance_score=0.7,
                     is_fact=True
                 )
 
@@ -237,30 +149,15 @@ class WebSearchSkill(BaseSkill):
             return SkillResult(
                 success=True,
                 output=results,
-                message=f"Search completed for '{query}'",
+                message=f"Investigation completed: {len(report['urls_checked'])} sources checked",
                 metadata={
                     "query": query,
-                    "has_results": bool(results["abstract_text"] or results["answer"] or results["definition"]),
-                    "url_count": len(results["urls"]),
-                    "status": "success" if results["urls"] else "no_results"
+                    "sources_used": report["sources_used"],
+                    "passages_count": len(report["extracted_passages"]),
+                    "agent_deployed": True
                 }
             )
 
-        except asyncio.TimeoutError:
-            return SkillResult(
-                success=False,
-                output=None,
-                message="Search request timed out"
-            )
-        except aiohttp.ClientError as e:
-            if self.logger:
-                self.logger.log_error(e, {"phase": "web_search", "query": query})
-
-            return SkillResult(
-                success=False,
-                output=None,
-                message=f"Network error: {str(e)}"
-            )
         except Exception as e:
             if self.logger:
                 self.logger.log_error(e, {"phase": "web_search", "query": query})
@@ -268,7 +165,7 @@ class WebSearchSkill(BaseSkill):
             return SkillResult(
                 success=False,
                 output=None,
-                message=f"Search failed: {str(e)}"
+                message=f"Search investigation failed: {str(e)}"
             )
 
     def _help(self) -> SkillResult:
@@ -282,13 +179,23 @@ class WebSearchSkill(BaseSkill):
 Web Search Skill Usage:
 ========================
 
+This skill deploys an autonomous SearchAgent that performs
+multi-source investigations including:
+  - DuckDuckGo HTML scraping
+  - Wikipedia search and extraction
+  - IMDb search for entertainment queries
+  - Optional Google Programmable Search
+
 Actions:
-  search    Search the web using DuckDuckGo
+  search    Deploy agent for investigation
             Args: query (required)
             Example: /net search "Python asyncio tutorial"
 
   help      Show this help message
             Example: /skill run web_search help
+
+The agent autonomously collects URLs, extracts content,
+and produces a structured evidence report.
 """
 
         return SkillResult(
@@ -299,4 +206,4 @@ Actions:
 
     def requires_permissions(self) -> List[str]:
         """Return required permissions"""
-        return ["external_http", "internet_access"]
+        return ["external_http", "internet_access", "agent_deployment"]
