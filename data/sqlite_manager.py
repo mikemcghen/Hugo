@@ -18,6 +18,7 @@ Tables:
 
 import sqlite3
 import asyncio
+import threading
 from typing import Dict, List, Optional, Any
 from pathlib import Path
 from datetime import datetime
@@ -40,12 +41,41 @@ class SQLiteManager:
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = None
         self.logger = logger
+
+        # Per-thread connection pool
+        self._connections: Dict[int, sqlite3.Connection] = {}
+        self._conn_lock = threading.Lock()
+
+        # Write serialization lock
+        self.write_lock = threading.RLock()
 
         # Thread-safe write queue
         self.write_queue = asyncio.Queue()
         self._queue_running = False
+
+    def _get_connection(self) -> sqlite3.Connection:
+        """
+        Get or create a connection for the current thread.
+
+        Returns:
+            SQLite connection for this thread
+        """
+        tid = threading.get_ident()
+
+        with self._conn_lock:
+            if tid not in self._connections:
+                conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
+                conn.row_factory = sqlite3.Row
+                self._connections[tid] = conn
+
+                if self.logger:
+                    self.logger.log_event("sqlite", "new_thread_connection_created", {
+                        "thread_id": tid,
+                        "total_connections": len(self._connections)
+                    })
+
+        return self._connections[tid]
 
     async def connect(self):
         """Connect to SQLite database and create tables"""
@@ -55,13 +85,14 @@ class SQLiteManager:
 
     def _connect_sync(self):
         """Synchronous connection (runs in executor)"""
-        self.conn = sqlite3.connect(str(self.db_path))
-        self.conn.row_factory = sqlite3.Row
+        # Get connection for this thread
+        conn = self._get_connection()
         self._create_tables()
 
     def _create_tables(self):
         """Create schema if it doesn't exist"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         # Recent messages table
         cursor.execute("""
@@ -246,7 +277,7 @@ class SQLiteManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_agent_actions_type ON agent_actions(action_type)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_web_monitor_rules_target ON web_monitor_rules(target)")
 
-        self.conn.commit()
+        conn.commit()
 
     async def drain_queue_loop(self):
         """
@@ -280,33 +311,36 @@ class SQLiteManager:
                     })
 
                 try:
-                    # Execute the appropriate synchronous write operation in executor
-                    # This ensures all writes happen in the same thread
+                    # Execute the appropriate synchronous write operation
+                    # Uses per-thread connections with write lock for serialization
                     loop = asyncio.get_event_loop()
 
-                    if operation_type == "store_message":
-                        await loop.run_in_executor(None, lambda: self._store_message_sync(**payload))
-                        result = None
-                    elif operation_type == "store_reflection":
-                        result = await loop.run_in_executor(None, lambda: self._store_reflection_sync(**payload))
-                    elif operation_type == "store_meta_reflection":
-                        result = await loop.run_in_executor(None, lambda: self._store_meta_reflection_sync(**payload))
-                    elif operation_type == "store_memory":
-                        result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
-                    elif operation_type == "store_skill_run":
-                        result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
-                    elif operation_type == "store_note":
-                        result = await loop.run_in_executor(None, lambda: self._store_note_sync(**payload))
-                    elif operation_type == "store_task":
-                        result = await loop.run_in_executor(None, lambda: self._store_task_sync(**payload))
-                    elif operation_type == "update_task":
-                        await loop.run_in_executor(None, lambda: self._update_task_sync(**payload))
-                        result = None
-                    else:
-                        raise ValueError(f"Unknown operation type: {operation_type}")
+                    def execute_write():
+                        if operation_type == "store_message":
+                            self._store_message_sync(**payload)
+                            return None
+                        elif operation_type == "store_reflection":
+                            return self._store_reflection_sync(**payload)
+                        elif operation_type == "store_meta_reflection":
+                            return self._store_meta_reflection_sync(**payload)
+                        elif operation_type == "store_memory":
+                            return self._store_memory_sync(**payload)
+                        elif operation_type == "store_skill_run":
+                            return self._store_skill_run_sync(**payload)
+                        elif operation_type == "store_note":
+                            return self._store_note_sync(**payload)
+                        elif operation_type == "store_task":
+                            return self._store_task_sync(**payload)
+                        elif operation_type == "update_task":
+                            self._update_task_sync(**payload)
+                            return None
+                        else:
+                            raise ValueError(f"Unknown operation type: {operation_type}")
+
+                    result = await loop.run_in_executor(None, execute_write)
 
                     if self.logger:
-                        self.logger.log_event("sqlite", "write_completed_main_thread", {
+                        self.logger.log_event("sqlite", "write_completed", {
                             "operation": operation_type
                         })
 
@@ -390,16 +424,22 @@ class SQLiteManager:
 
     def _store_message_sync(self, session_id, role, content, embedding, metadata_json, importance):
         """Synchronous message storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO recent_messages
-            (session_id, timestamp, role, content, embedding, metadata, importance)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (session_id, datetime.now().isoformat(), role, content,
-              embedding, metadata_json, importance))
+        with self.write_lock:
+            if self.logger:
+                self.logger.log_event("sqlite", "write_locked", {"operation": "store_message"})
 
-        self.conn.commit()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO recent_messages
+                (session_id, timestamp, role, content, embedding, metadata, importance)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (session_id, datetime.now().isoformat(), role, content,
+                  embedding, metadata_json, importance))
+
+            conn.commit()
 
     async def get_recent_messages(self, session_id: str, limit: int = 20) -> List[Dict[str, Any]]:
         """
@@ -419,7 +459,8 @@ class SQLiteManager:
         """Synchronous message retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, session_id, timestamp, role, content, metadata, importance
             FROM recent_messages
@@ -453,7 +494,8 @@ class SQLiteManager:
 
     def _create_session_sync(self, session_id, metadata_json):
         """Synchronous session creation"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         now = datetime.now().isoformat()
 
         cursor.execute("""
@@ -462,7 +504,7 @@ class SQLiteManager:
             VALUES (?, ?, ?, 0, ?)
         """, (session_id, now, now, metadata_json))
 
-        self.conn.commit()
+        conn.commit()
 
     async def update_session(self, session_id: str, context_summary: Optional[str] = None,
                            mood: Optional[str] = None):
@@ -473,28 +515,31 @@ class SQLiteManager:
 
     def _update_session_sync(self, session_id, context_summary, mood):
         """Synchronous session update"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        updates = ["last_activity = ?"]
-        params = [datetime.now().isoformat()]
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        if context_summary:
-            updates.append("context_summary = ?")
-            params.append(context_summary)
+            updates = ["last_activity = ?"]
+            params = [datetime.now().isoformat()]
 
-        if mood:
-            updates.append("mood = ?")
-            params.append(mood)
+            if context_summary:
+                updates.append("context_summary = ?")
+                params.append(context_summary)
 
-        params.append(session_id)
+            if mood:
+                updates.append("mood = ?")
+                params.append(mood)
 
-        cursor.execute(f"""
-            UPDATE session_summary
-            SET {', '.join(updates)}
-            WHERE session_id = ?
-        """, params)
+            params.append(session_id)
 
-        self.conn.commit()
+            cursor.execute(f"""
+                UPDATE session_summary
+                SET {', '.join(updates)}
+                WHERE session_id = ?
+            """, params)
+
+            conn.commit()
 
     async def clear_old_messages(self, days: int = 7):
         """
@@ -512,9 +557,10 @@ class SQLiteManager:
 
     def _clear_old_messages_sync(self, cutoff):
         """Synchronous message clearing"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("DELETE FROM recent_messages WHERE timestamp < ?", (cutoff,))
-        self.conn.commit()
+        conn.commit()
 
     async def store_reflection(self, session_id: Optional[str], reflection_type: str,
                               summary: str, insights: List[str], patterns: List[str],
@@ -560,19 +606,22 @@ class SQLiteManager:
                                insights_json, patterns_json, improvements_json,
                                sentiment, keywords_json, confidence, embedding, metadata_json):
         """Synchronous reflection storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO reflections
-            (session_id, type, timestamp, summary, insights, patterns, improvements,
-             sentiment, keywords, confidence, embedding, metadata)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (session_id, reflection_type, datetime.now().isoformat(),
-              summary, insights_json, patterns_json, improvements_json,
-              sentiment, keywords_json, confidence, embedding, metadata_json))
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute("""
+                INSERT INTO reflections
+                (session_id, type, timestamp, summary, insights, patterns, improvements,
+                 sentiment, keywords, confidence, embedding, metadata)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (session_id, reflection_type, datetime.now().isoformat(),
+                  summary, insights_json, patterns_json, improvements_json,
+                  sentiment, keywords_json, confidence, embedding, metadata_json))
+
+            conn.commit()
+            return cursor.lastrowid
 
     async def get_recent_reflections(self, reflection_type: Optional[str] = None,
                                      limit: int = 10) -> List[Dict[str, Any]]:
@@ -594,7 +643,8 @@ class SQLiteManager:
         """Synchronous reflection retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         if reflection_type:
             cursor.execute("""
@@ -673,19 +723,22 @@ class SQLiteManager:
                                     improvements_json, reflections_analyzed,
                                     time_window_days, confidence, embedding, metadata_json):
         """Synchronous meta-reflection storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO meta_reflections
-            (created_at, time_window_days, summary, insights, patterns, improvements,
-             reflections_analyzed, confidence, embedding, metadata)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (datetime.now().isoformat(), time_window_days, summary,
-              insights_json, patterns_json, improvements_json,
-              reflections_analyzed, confidence, embedding, metadata_json))
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute("""
+                INSERT INTO meta_reflections
+                (created_at, time_window_days, summary, insights, patterns, improvements,
+                 reflections_analyzed, confidence, embedding, metadata)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (datetime.now().isoformat(), time_window_days, summary,
+                  insights_json, patterns_json, improvements_json,
+                  reflections_analyzed, confidence, embedding, metadata_json))
+
+            conn.commit()
+            return cursor.lastrowid
 
     async def get_latest_meta_reflection(self) -> Optional[Dict[str, Any]]:
         """
@@ -701,7 +754,8 @@ class SQLiteManager:
         """Synchronous latest meta-reflection retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, created_at, time_window_days, summary, insights, patterns,
                    improvements, reflections_analyzed, confidence, metadata
@@ -752,7 +806,8 @@ class SQLiteManager:
 
     def _save_agent_action_sync(self, action_type, details, executed_at, success):
         """Synchronous agent action storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO agent_actions
@@ -760,7 +815,7 @@ class SQLiteManager:
             VALUES (?, ?, ?, ?)
         """, (action_type, details, executed_at, success))
 
-        self.conn.commit()
+        conn.commit()
         return cursor.lastrowid
 
     async def get_agent_actions(self, action_type: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
@@ -779,7 +834,8 @@ class SQLiteManager:
 
     def _get_agent_actions_sync(self, action_type, limit):
         """Synchronous agent action retrieval"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         if action_type:
             cursor.execute("""
@@ -834,7 +890,8 @@ class SQLiteManager:
 
     def _add_monitor_rule_sync(self, target, condition, threshold, created_at):
         """Synchronous monitor rule creation"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO web_monitor_rules
@@ -842,7 +899,7 @@ class SQLiteManager:
             VALUES (?, ?, ?, ?)
         """, (target, condition, threshold, created_at))
 
-        self.conn.commit()
+        conn.commit()
         return cursor.lastrowid
 
     async def get_monitor_rules(self) -> List[Dict[str, Any]]:
@@ -857,7 +914,8 @@ class SQLiteManager:
 
     def _get_monitor_rules_sync(self):
         """Synchronous monitor rules retrieval"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             SELECT id, target, condition, threshold, created_at
@@ -889,14 +947,15 @@ class SQLiteManager:
 
     def _remove_monitor_rule_sync(self, rule_id):
         """Synchronous monitor rule removal"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             DELETE FROM web_monitor_rules
             WHERE id = ?
         """, (rule_id,))
 
-        self.conn.commit()
+        conn.commit()
 
     async def close(self):
         """Close database connection"""
@@ -940,18 +999,21 @@ class SQLiteManager:
     def _store_memory_sync(self, session_id, memory_type, content, embedding,
                            metadata_json, importance_score, is_fact, entity_type):
         """Synchronous memory storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO memories
-            (session_id, timestamp, memory_type, content, embedding, metadata,
-             importance_score, is_fact, entity_type)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (session_id, datetime.now().isoformat(), memory_type, content,
-              embedding, metadata_json, importance_score, is_fact, entity_type))
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute("""
+                INSERT INTO memories
+                (session_id, timestamp, memory_type, content, embedding, metadata,
+                 importance_score, is_fact, entity_type)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (session_id, datetime.now().isoformat(), memory_type, content,
+                  embedding, metadata_json, importance_score, is_fact, entity_type))
+
+            conn.commit()
+            return cursor.lastrowid
 
     async def get_factual_memories(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """
@@ -970,7 +1032,8 @@ class SQLiteManager:
         """Synchronous factual memory retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         if limit:
             cursor.execute("""
@@ -1023,7 +1086,8 @@ class SQLiteManager:
         """Synchronous memory-by-id retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, session_id, timestamp, memory_type, content, embedding,
                    metadata, importance_score, is_fact, entity_type
@@ -1063,9 +1127,10 @@ class SQLiteManager:
 
     def _delete_memory_sync(self, memory_id: int) -> bool:
         """Synchronous memory deletion"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("DELETE FROM memories WHERE id = ?", (memory_id,))
-        self.conn.commit()
+        conn.commit()
         return cursor.rowcount > 0
 
     async def get_all_memories_with_embeddings(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
@@ -1085,7 +1150,8 @@ class SQLiteManager:
         """Synchronous retrieval of memories with embeddings"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         query = """
             SELECT id, session_id, timestamp, memory_type, content, embedding,
@@ -1144,16 +1210,19 @@ class SQLiteManager:
 
     def _store_skill_run_sync(self, name, args, result, executed_at):
         """Synchronous skill run storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO skills
-            (name, args, result, executed_at)
-            VALUES (?, ?, ?, ?)
-        """, (name, args, result, executed_at))
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute("""
+                INSERT INTO skills
+                (name, args, result, executed_at)
+                VALUES (?, ?, ?, ?)
+            """, (name, args, result, executed_at))
+
+            conn.commit()
+            return cursor.lastrowid
 
     async def get_skill_history(self, skill_name: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
         """
@@ -1173,7 +1242,8 @@ class SQLiteManager:
         """Synchronous skill history retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
 
         if skill_name:
             cursor.execute("""
@@ -1227,16 +1297,19 @@ class SQLiteManager:
 
     def _store_note_sync(self, content, created_at, metadata):
         """Synchronous note storage"""
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
 
-        cursor.execute("""
-            INSERT INTO notes
-            (content, created_at, metadata)
-            VALUES (?, ?, ?)
-        """, (content, created_at, metadata))
+        with self.write_lock:
+            cursor = conn.cursor()
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute("""
+                INSERT INTO notes
+                (content, created_at, metadata)
+                VALUES (?, ?, ?)
+            """, (content, created_at, metadata))
+
+            conn.commit()
+            return cursor.lastrowid
 
     async def list_notes(self, limit: int = 10) -> List[Dict[str, Any]]:
         """
@@ -1255,7 +1328,8 @@ class SQLiteManager:
         """Synchronous note listing"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, content, created_at, metadata
             FROM notes
@@ -1291,7 +1365,8 @@ class SQLiteManager:
         """Synchronous note search"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, content, created_at, metadata
             FROM notes
@@ -1327,7 +1402,8 @@ class SQLiteManager:
         """Synchronous note retrieval"""
         import json
 
-        cursor = self.conn.cursor()
+        conn = self._get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             SELECT id, content, created_at, metadata
             FROM notes
