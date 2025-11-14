@@ -313,10 +313,11 @@ Just type naturally to chat with Hugo!
             # Process through cognition engine
             if self.runtime.cognition:
                 if use_streaming:
-                    # Stream response token by token
-                    async for chunk in self.runtime.cognition.process_input_streaming(
+                    # Stream response token by token using generate_reply
+                    async for chunk in await self.runtime.cognition.generate_reply(
                         message,
-                        self.session_id
+                        self.session_id,
+                        streaming=True
                     ):
                         # Check if it's the final ResponsePackage or a string chunk
                         if isinstance(chunk, str):
@@ -328,10 +329,11 @@ Just type naturally to chat with Hugo!
 
                     print()  # Newline after streaming
                 else:
-                    # Non-streaming response
-                    response_package = await self.runtime.cognition.process_input(
+                    # Non-streaming response using generate_reply (includes skill bypass)
+                    response_package = await self.runtime.cognition.generate_reply(
                         message,
-                        self.session_id
+                        self.session_id,
+                        streaming=False
                     )
                     response_text = response_package.content
                     print(response_text)

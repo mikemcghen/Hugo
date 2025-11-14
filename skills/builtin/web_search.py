@@ -33,6 +33,10 @@ class WebSearchSkill(BaseSkill):
         # DuckDuckGo Instant Answer API (no API key required)
         self.api_url = "https://api.duckduckgo.com/"
 
+        # Polling configuration for 202 ACCEPTED responses
+        self.max_poll_attempts = 5
+        self.poll_delay_ms = 500
+
     async def run(self, action: str = "search", **kwargs) -> SkillResult:
         """
         Execute web search skill.
@@ -57,7 +61,7 @@ class WebSearchSkill(BaseSkill):
 
     async def _search(self, query: str = None, **kwargs) -> SkillResult:
         """
-        Perform web search.
+        Perform web search with automatic polling for 202 ACCEPTED responses.
 
         Args:
             query: Search query string
@@ -73,7 +77,7 @@ class WebSearchSkill(BaseSkill):
             )
 
         try:
-            # Call DuckDuckGo Instant Answer API
+            # Call DuckDuckGo Instant Answer API with retry logic for 202
             params = {
                 "q": query,
                 "format": "json",
@@ -82,16 +86,76 @@ class WebSearchSkill(BaseSkill):
             }
 
             timeout = aiohttp.ClientTimeout(total=10)
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(self.api_url, params=params) as response:
-                    if response.status != 200:
-                        return SkillResult(
-                            success=False,
-                            output=None,
-                            message=f"Search API returned status {response.status}"
-                        )
+            attempt = 0
+            data = None
 
-                    data = await response.json()
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                while attempt < self.max_poll_attempts:
+                    attempt += 1
+
+                    async with session.get(self.api_url, params=params) as response:
+                        status = response.status
+
+                        # HTTP 200 OK - Success
+                        if status == 200:
+                            if self.logger:
+                                if attempt > 1:
+                                    self.logger.log_event("web_search", "poll_success", {
+                                        "query": query,
+                                        "attempts": attempt
+                                    })
+                            data = await response.json()
+                            break
+
+                        # HTTP 202 ACCEPTED - Result not ready, poll again
+                        elif status == 202:
+                            if self.logger:
+                                if attempt == 1:
+                                    self.logger.log_event("web_search", "poll_started", {
+                                        "query": query,
+                                        "status": 202
+                                    })
+                                else:
+                                    self.logger.log_event("web_search", "poll_retry", {
+                                        "query": query,
+                                        "attempt": attempt,
+                                        "max_attempts": self.max_poll_attempts
+                                    })
+
+                            # Wait before retrying
+                            if attempt < self.max_poll_attempts:
+                                await asyncio.sleep(self.poll_delay_ms / 1000.0)
+                            continue
+
+                        # Any other status - Error
+                        else:
+                            if self.logger:
+                                self.logger.log_event("web_search", "poll_failed", {
+                                    "query": query,
+                                    "status": status,
+                                    "attempt": attempt
+                                })
+
+                            return SkillResult(
+                                success=False,
+                                output=None,
+                                message=f"Search API returned status {status}"
+                            )
+
+            # If we exhausted all retries without getting 200
+            if data is None:
+                if self.logger:
+                    self.logger.log_event("web_search", "poll_failed", {
+                        "query": query,
+                        "reason": "max_attempts_reached",
+                        "attempts": self.max_poll_attempts
+                    })
+
+                return SkillResult(
+                    success=False,
+                    output=None,
+                    message="Search results not ready (API stuck in 202)."
+                )
 
             # Extract relevant information
             results = {
@@ -120,15 +184,14 @@ class WebSearchSkill(BaseSkill):
             # Fallback: If no useful results, try auto-detecting specialized sources
             if not results["abstract_text"] and not results["answer"] and not results["definition"]:
                 fallback_url = self._detect_specialized_source(query)
-                if fallback_url and self.memory:
-                    # Try fetch_url as fallback
-                    self.logger.log_event("skill", "web_search_fallback_fetch", {
-                        "query": query,
-                        "fallback_url": fallback_url
-                    })
+                if fallback_url:
+                    if self.logger:
+                        self.logger.log_event("web_search", "fallback_detected", {
+                            "query": query,
+                            "fallback_url": fallback_url
+                        })
 
-                    # Note: We don't actually execute fetch here to avoid circular dependency
-                    # Instead, we add the URL to results for the caller to handle
+                    # Add the URL to results for the caller to handle
                     results["fallback_url"] = fallback_url
 
             # Store in memory if available

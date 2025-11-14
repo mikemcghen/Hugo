@@ -13,7 +13,8 @@
       "Bash(test:*)",
       "Bash(python scripts/test_skills.py:*)",
       "Bash(python scripts/test_skill_autorun.py:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(timeout 30 python:*)"
     ],
     "deny": [],
     "ask": []

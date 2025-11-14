@@ -1572,3 +1572,266 @@ AttributeError: 'NoneType' object has no attribute 'store'
 2025-11-14 11:15:56,701 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
 2025-11-14 11:15:56,702 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
 2025-11-14 11:15:56,716 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 11:16:52,143 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_111556"}
+2025-11-14 11:16:52,144 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:16:52,144 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:16:52,145 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_111556"}
+2025-11-14 11:16:52,146 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_111556", "memory_count": 1}
+2025-11-14 11:16:52,307 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 33, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 11:16:52,308 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_111556", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 1, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 851}
+2025-11-14 11:16:52,309 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 11:17:48,230 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 55.92, "status": "success", "response_length": 344}
+2025-11-14 11:17:48,231 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 344, "response_preview": "I'm not certain. As your right-hand man, I don't have any specific information about the release dat...", "async_mode": true, "prompt_tokens": 128, "persona_name": "Hugo"}
+2025-11-14 11:17:48,232 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 11:17:48,232 - hugo - INFO - [user] response: {"content": "I'm not certain. As your right-hand man, I don't have any specific information about the release date of Wicked Part 2. If you're interested in staying updated on the movie's status, I suggest checking reputable entertainment news sources or the official social media channels for the film. Let me know if there's anything else I can help with!", "streaming": false, "session_id": "shell_20251114_111556"}
+2025-11-14 11:17:48,233 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:18:13,825 - hugo - INFO - [user] message: {"content": "stop", "session_id": "shell_20251114_111556"}
+2025-11-14 11:18:13,831 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "stop"}
+2025-11-14 11:18:13,831 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:18:13,832 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_111556"}
+2025-11-14 11:18:13,832 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_111556", "memory_count": 3}
+2025-11-14 11:18:13,845 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 4, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 11:18:13,845 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_111556", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 3, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1194}
+2025-11-14 11:18:13,846 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 11:18:31,541 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 17.7, "status": "success", "response_length": 498}
+2025-11-14 11:18:31,542 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 498, "response_preview": "I'm glad we've concluded our previous conversation about Wicked Part 2. As your trusted right-hand m...", "async_mode": true, "prompt_tokens": 183, "persona_name": "Hugo"}
+2025-11-14 11:18:31,542 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 11:18:31,543 - hugo - INFO - [user] response: {"content": "I'm glad we've concluded our previous conversation about Wicked Part 2. As your trusted right-hand man, my primary focus is on providing informed and accurate assistance. Since we didn't discuss any specific user information or past conversations during that exchange, I don't have any critical memories to draw upon.\n\nHowever, if you'd like to explore other topics or require guidance on a particular issue, please feel free to share your thoughts, and I'll do my best to provide helpful insights.", "streaming": false, "session_id": "shell_20251114_111556"}
+2025-11-14 11:18:31,543 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:18:40,884 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_111556"}
+2025-11-14 11:18:40,894 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "right", "hand", "man", "don"], "total_keywords": 10}
+2025-11-14 11:18:40,894 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
+2025-11-14 11:18:40,895 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 11:19:12,292 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 527}
+2025-11-14 11:19:12,294 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 91, "insights_count": 2, "confidence": 0.8}
+2025-11-14 11:19:12,311 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 20, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 11:19:12,312 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 11:19:12,312 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 549}
+2025-11-14 11:19:12,313 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_111556", "insights_count": 2, "keywords_count": 10, "sentiment": 1.0}
+2025-11-14 11:19:12,314 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_111556", "message_count": 3}
+2025-11-14 11:22:46,857 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:22:46,857 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:22:46,860 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:22:47,022 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:22:47,023 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:22:47,025 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:22:47,029 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:22:47,031 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:22:47,032 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:22:47,042 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:22:47,049 - hugo - INFO - [memory] memory_classified: {"type": "note", "importance": 0.75, "should_persist": true, "embedding_allowed": true, "entity_type": "note", "reasoning": "note_creation_intent", "skill_trigger": "notes", "content_preview": "make a note saying remember to test skill auto-triggering"}
+2025-11-14 11:22:47,179 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "memory_type": "note", "importance": 0.75, "entity_type": null}
+2025-11-14 11:22:47,179 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.75, "entity_type": null}
+2025-11-14 11:22:47,179 - hugo - INFO - [cognition] user_message_saved: {"session_id": "test_autorun_session", "content_length": 57}
+2025-11-14 11:22:47,179 - hugo - INFO - [cognition] skill_trigger_detected: {"skill_name": "notes", "action": "add", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,180 - hugo - INFO - [cognition] skill_autorun_started: {"skill": "notes", "action": "add", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,180 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:22:47,180 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:22:47,184 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 4.001}
+2025-11-14 11:22:47,188 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:22:47,198 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 5, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:22:47,198 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:22:47,198 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:22:47,199 - hugo - INFO - [cognition] skill_autorun_completed: {"skill": "notes", "action": "add", "success": true, "message": "Note 2 created successfully", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,199 - hugo - INFO - [memory] stored: {"type": "skill_execution", "long_term": false, "has_embedding": false, "importance": 0.6, "entity_type": null}
+2025-11-14 11:22:47,703 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.5, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "note_list_query", "skill_trigger": "notes", "content_preview": "what notes do I have?"}
+2025-11-14 11:22:47,703 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 11:22:47,704 - hugo - INFO - [cognition] user_message_saved: {"session_id": "test_autorun_session", "content_length": 21}
+2025-11-14 11:22:47,704 - hugo - INFO - [cognition] skill_trigger_detected: {"skill_name": "notes", "action": "list", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,704 - hugo - INFO - [cognition] skill_autorun_started: {"skill": "notes", "action": "list", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,704 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:22:47,705 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:22:47,705 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.9990000000000001}
+2025-11-14 11:22:47,709 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:22:47,710 - hugo - INFO - [cognition] skill_autorun_completed: {"skill": "notes", "action": "list", "success": true, "message": "Found 2 notes", "session_id": "test_autorun_session"}
+2025-11-14 11:22:47,710 - hugo - INFO - [memory] stored: {"type": "skill_execution", "long_term": false, "has_embedding": false, "importance": 0.6, "entity_type": null}
+2025-11-14 11:22:48,218 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.5, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "note_search_query", "skill_trigger": "notes", "content_preview": "search notes for test"}
+2025-11-14 11:22:48,219 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 11:22:48,219 - hugo - INFO - [cognition] user_message_saved: {"session_id": "test_autorun_session", "content_length": 21}
+2025-11-14 11:22:48,219 - hugo - INFO - [cognition] skill_trigger_detected: {"skill_name": "notes", "action": "search", "session_id": "test_autorun_session"}
+2025-11-14 11:22:48,219 - hugo - INFO - [cognition] skill_autorun_started: {"skill": "notes", "action": "search", "session_id": "test_autorun_session"}
+2025-11-14 11:22:48,220 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:22:48,220 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:22:48,221 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.998}
+2025-11-14 11:22:48,225 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:22:48,225 - hugo - INFO - [cognition] skill_autorun_completed: {"skill": "notes", "action": "search", "success": true, "message": "Found 2 notes matching 'test'", "session_id": "test_autorun_session"}
+2025-11-14 11:22:48,225 - hugo - INFO - [memory] stored: {"type": "skill_execution", "long_term": false, "has_embedding": false, "importance": 0.6, "entity_type": null}
+2025-11-14 11:25:06,209 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:25:06,210 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:25:06,210 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:25:06,366 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:25:06,367 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:25:06,369 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:25:06,373 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:25:06,375 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:25:06,375 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:25:06,385 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:25:06,386 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "test_internet_trigger_session", "streaming": false, "message_length": 50}
+2025-11-14 11:25:06,386 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "test_internet_trigger_session"}
+2025-11-14 11:25:06,387 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "test_internet_trigger_session"}
+2025-11-14 11:25:06,387 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:25:06,387 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:25:06,578 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 190.0}
+2025-11-14 11:25:06,582 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 11:25:06,582 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "test_internet_trigger_session"}
+2025-11-14 11:25:06,709 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:25:06,709 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:25:06,709 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "test_internet_trigger_session", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:26:09,942 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 11:26:11,128 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:26:11,129 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:26:11,130 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:26:11,130 - hugo - INFO - [memory] factual_memories_loaded: {"count": 2, "faiss_added": 2}
+2025-11-14 11:26:11,140 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 11:26:11,144 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:26:11,301 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:26:11,303 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:26:11,304 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:26:11,308 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:26:11,310 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:26:11,310 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:26:11,312 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 11:26:16,753 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:16,753 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:26:16,754 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:26:16,754 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_112611", "streaming": false, "message_length": 33}
+2025-11-14 11:26:16,754 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:16,755 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:16,755 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:26:16,755 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:26:16,957 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 200.99800000000002}
+2025-11-14 11:26:16,961 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 11:26:16,961 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:17,087 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 21, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:26:17,088 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:26:17,088 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_112611", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:26:17,089 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Search API returned status 202", "streaming": false, "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:17,089 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:26:45,589 - hugo - INFO - [user] message: {"content": "Try again", "session_id": "shell_20251114_112611"}
+2025-11-14 11:26:45,595 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Try again"}
+2025-11-14 11:26:45,596 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:26:45,596 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_112611", "streaming": false, "message_length": 9}
+2025-11-14 11:26:45,597 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Try again"}
+2025-11-14 11:26:45,597 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 11:26:45,598 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_112611", "content_length": 9}
+2025-11-14 11:26:45,598 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_112611"}
+2025-11-14 11:26:45,599 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_112611", "memory_count": 5}
+2025-11-14 11:26:45,615 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 9, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 11:26:45,616 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_112611", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1053}
+2025-11-14 11:26:45,616 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 11:27:06,828 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 21.21, "status": "success", "response_length": 300}
+2025-11-14 11:27:06,829 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 300, "response_preview": "It seems like we're still trying to get to the bottom of when Wicked Part 2 will be released. Since ...", "async_mode": true, "prompt_tokens": 161, "persona_name": "Hugo"}
+2025-11-14 11:27:06,830 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 11:27:06,856 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 22, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:27:06,856 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:27:06,857 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_112611", "content_length": 300, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:27:06,857 - hugo - INFO - [user] response: {"content": "It seems like we're still trying to get to the bottom of when Wicked Part 2 will be released. Since our initial attempt was met with a search error, I suggest we try again! We can rephrase the query or even look for alternative sources to find the information you need. Shall we give it another shot?", "streaming": false, "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:06,857 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:27:24,153 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:24,153 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 11:27:24,154 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:27:24,154 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_112611", "streaming": false, "message_length": 33}
+2025-11-14 11:27:24,155 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:24,155 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:24,155 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:27:24,156 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:27:24,358 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 202.00099999999998}
+2025-11-14 11:27:24,362 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 11:27:24,362 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:24,382 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 23, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 11:27:24,383 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 11:27:24,383 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_112611", "content_length": 80, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 11:27:24,383 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Search API returned status 202", "streaming": false, "session_id": "shell_20251114_112611"}
+2025-11-14 11:27:24,384 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 11:28:03,468 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_112611"}
+2025-11-14 11:28:03,474 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "look", "search", "tried", "encountered"], "total_keywords": 10}
+2025-11-14 11:28:03,474 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
+2025-11-14 11:28:03,475 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 11:28:34,129 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 610}
+2025-11-14 11:28:34,131 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 117, "insights_count": 2, "confidence": 0.8}
+2025-11-14 11:28:34,149 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 24, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 11:28:34,149 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 11:28:34,150 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 632}
+2025-11-14 11:28:34,150 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_112611", "insights_count": 2, "keywords_count": 10, "sentiment": 1.0}
+2025-11-14 11:28:34,151 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_112611", "message_count": 4}
+2025-11-14 11:32:19,710 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:32:19,717 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:32:19,718 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:32:19,779 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:32:19,781 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:32:19,785 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:32:19,789 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:32:19,791 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:32:19,792 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:32:19,792 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:32:19,792 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:32:19,797 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 4.002000000000001}
+2025-11-14 11:32:19,801 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:32:19,933 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 1, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:32:19,933 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:32:19,934 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:32:19,934 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:32:19,934 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:32:19,935 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.9990000000000001}
+2025-11-14 11:32:19,938 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:32:19,939 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:32:19,939 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:32:19,940 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.0}
+2025-11-14 11:32:19,943 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:32:39,216 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:32:39,217 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:32:39,217 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:32:39,278 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:32:39,280 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:32:39,288 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:32:39,292 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:32:39,294 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:32:39,295 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:32:39,295 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:32:39,295 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:32:39,300 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 4.0}
+2025-11-14 11:32:39,303 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:32:39,432 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 2, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:32:39,433 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:32:39,433 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:32:39,433 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:32:39,434 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:32:39,434 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.002}
+2025-11-14 11:32:39,438 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:32:39,439 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:32:39,439 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:32:39,440 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.0}
+2025-11-14 11:32:39,443 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:33:25,980 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 11:33:25,980 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 11:33:25,981 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 11:33:26,044 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 11:33:26,045 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 11:33:26,047 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 11:33:26,050 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 11:33:26,053 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 11:33:26,053 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 4, "errors": 1, "total_skills": 4}
+2025-11-14 11:33:26,054 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:33:26,054 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "content"]}
+2025-11-14 11:33:26,059 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 3.999}
+2025-11-14 11:33:26,063 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:33:26,193 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 3, "memory_type": "note", "importance": 0.7, "entity_type": null}
+2025-11-14 11:33:26,193 - hugo - INFO - [memory] stored: {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 11:33:26,194 - hugo - INFO - [skill_manager] result_saved_to_memory: {"skill": "notes"}
+2025-11-14 11:33:26,194 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:33:26,194 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "limit"]}
+2025-11-14 11:33:26,195 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 1.002}
+2025-11-14 11:33:26,199 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:33:26,199 - hugo - INFO - [skill_manager] run_skill: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:33:26,200 - hugo - INFO - [skill] started: {"skill": "notes", "args": ["action", "query"]}
+2025-11-14 11:33:26,200 - hugo - INFO - [skill] completed: {"skill": "notes", "success": true, "execution_time_ms": 0.0}
+2025-11-14 11:33:26,204 - hugo - INFO - [skill_manager] run_stored: {"skill": "notes", "success": true}
+2025-11-14 11:33:26,206 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:33:26,206 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 11:33:26,209 - hugo - INFO - [web_search] poll_started: {"query": "Python programming", "status": 202}
+2025-11-14 11:33:26,710 - hugo - INFO - [web_search] poll_retry: {"query": "Python programming", "attempt": 2, "max_attempts": 5}
+2025-11-14 11:33:27,225 - hugo - INFO - [web_search] poll_success: {"query": "Python programming", "attempts": 3}
+2025-11-14 11:33:27,237 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 4, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}
+2025-11-14 11:33:27,238 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}
+2025-11-14 11:33:27,238 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 1032.01}
+2025-11-14 11:33:27,242 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}

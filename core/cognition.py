@@ -569,6 +569,9 @@ class CognitionEngine:
 
         Includes agent delegation for heavy technical work.
 
+        NOTE: This method is called internally by generate_reply(). For external
+        entry points, prefer generate_reply() which includes skill bypass logic.
+
         Args:
             user_input: Raw user message
             session_id: Current session identifier
@@ -577,6 +580,27 @@ class CognitionEngine:
             ResponsePackage with generated response and metadata
         """
         self.logger.log_event("cognition", "processing_input", {"session_id": session_id})
+
+        # Check for skill triggers BEFORE processing
+        # (This is a safety net in case process_input is called directly)
+        classification = self.memory.classify_memory(user_input)
+        if classification.metadata and "skill_trigger" in classification.metadata:
+            skill_name = classification.metadata["skill_trigger"]
+            skill_action = classification.metadata.get("skill_action", "help")
+            skill_payload = classification.metadata.get("skill_payload", {})
+
+            # Internet queries (web_search, fetch_url) bypass LLM entirely
+            if skill_name in ["web_search", "fetch_url"]:
+                self.logger.log_event("cognition", "internet_query_detected_in_process_input", {
+                    "skill": skill_name,
+                    "action": skill_action,
+                    "session_id": session_id
+                })
+
+                # Execute skill directly and return result
+                return await self._execute_skill_bypass(
+                    skill_name, skill_action, skill_payload, user_input, session_id
+                )
 
         # Check if this requires agent delegation
         if self._detect_heavy_work(user_input):
@@ -734,6 +758,9 @@ class CognitionEngine:
         but yields response chunks as they're generated rather than waiting
         for the full response.
 
+        NOTE: For external entry points, prefer generate_reply(streaming=True)
+        which includes skill bypass logic.
+
         Args:
             user_input: Raw user message
             session_id: Current session identifier
@@ -743,6 +770,33 @@ class CognitionEngine:
             ResponsePackage: Final response package with metadata (last yield)
         """
         self.logger.log_event("cognition", "processing_input_streaming", {"session_id": session_id})
+
+        # Check for skill triggers BEFORE processing
+        # (This is a safety net in case process_input_streaming is called directly)
+        classification = self.memory.classify_memory(user_input)
+        if classification.metadata and "skill_trigger" in classification.metadata:
+            skill_name = classification.metadata["skill_trigger"]
+            skill_action = classification.metadata.get("skill_action", "help")
+            skill_payload = classification.metadata.get("skill_payload", {})
+
+            # Internet queries (web_search, fetch_url) bypass LLM entirely
+            if skill_name in ["web_search", "fetch_url"]:
+                self.logger.log_event("cognition", "internet_query_detected_in_streaming", {
+                    "skill": skill_name,
+                    "action": skill_action,
+                    "session_id": session_id
+                })
+
+                # Execute skill and yield the result as a single chunk
+                response_package = await self._execute_skill_bypass(
+                    skill_name, skill_action, skill_payload, user_input, session_id
+                )
+
+                # Yield the response content as a single chunk
+                yield response_package.content
+                # Yield the final response package
+                yield response_package
+                return
 
         # Step 1: Perception
         perception = await self._perceive(user_input)
