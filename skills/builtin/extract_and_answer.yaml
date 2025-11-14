@@ -1,0 +1,30 @@
+name: extract_and_answer
+description: Extracts content from web pages and synthesizes answers using local LLM
+version: 1.0.0
+author: Hugo Team
+
+entrypoint: skills.builtin.extract_and_answer:ExtractAndAnswerSkill
+
+actions:
+  - name: extract
+    description: Extract and answer from URLs
+    args:
+      - name: query
+        type: string
+        required: true
+        description: Original user question
+      - name: urls
+        type: list
+        required: true
+        description: List of URLs to extract from
+
+permissions:
+  - external_http
+  - internet_access
+  - llm_access
+
+tags:
+  - web
+  - extraction
+  - synthesis
+  - llm

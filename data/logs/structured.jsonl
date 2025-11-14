@@ -1611,3 +1611,99 @@
 {"timestamp": "2025-11-14T11:37:26.239660", "category": "reflection", "event_type": "keywords_extracted", "level": "INFO", "data": {"keywords": ["hugo", "results", "couldn", "extract", "clear"], "total_keywords": 8}}
 {"timestamp": "2025-11-14T11:37:26.239660", "category": "reflection", "event_type": "sentiment_analyzed", "level": "INFO", "data": {"sentiment_score": 0.0, "sentiment_label": "neutral"}}
 {"timestamp": "2025-11-14T11:37:26.239660", "category": "reflection", "event_type": "ollama_attempt", "level": "INFO", "data": {"attempt": 1, "max_retries": 2}}
+{"timestamp": "2025-11-14T11:37:53.820867", "category": "reflection", "event_type": "ollama_success", "level": "INFO", "data": {"attempt": 1, "response_length": 600}}
+{"timestamp": "2025-11-14T11:37:53.821874", "category": "reflection", "event_type": "json_parse_success", "level": "INFO", "data": {"summary_length": 99, "insights_count": 2, "confidence": 0.8}}
+{"timestamp": "2025-11-14T11:37:53.837643", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 29, "memory_type": "reflection", "importance": 0.9, "entity_type": null}}
+{"timestamp": "2025-11-14T11:37:53.838646", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}}
+{"timestamp": "2025-11-14T11:37:53.838646", "category": "reflection", "event_type": "stored", "level": "INFO", "data": {"type": "session", "confidence": 0.8, "content_length": 613}}
+{"timestamp": "2025-11-14T11:37:53.839645", "category": "reflection", "event_type": "session_completed", "level": "INFO", "data": {"session_id": "shell_20251114_113547", "insights_count": 2, "keywords_count": 8, "sentiment": 0.0}}
+{"timestamp": "2025-11-14T11:37:53.840646", "category": "repl", "event_type": "session_ended", "level": "INFO", "data": {"session_id": "shell_20251114_113547", "message_count": 3}}
+{"timestamp": "2025-11-14T11:40:35.038646", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:40:35.046646", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:40:35.046646", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:40:35.112645", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:40:35.113646", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:40:35.115645", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:40:35.119648", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:40:35.122645", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:40:35.125646", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:40:35.125646", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:40:35.126645", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:40:35.126645", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:40:35.130646", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 4.001}}
+{"timestamp": "2025-11-14T11:40:35.133645", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:40:35.260646", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 5, "memory_type": "note", "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:35.261648", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:35.261648", "category": "skill_manager", "event_type": "result_saved_to_memory", "level": "INFO", "data": {"skill": "notes"}}
+{"timestamp": "2025-11-14T11:40:35.261648", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:40:35.262649", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:40:35.262649", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 0.0}}
+{"timestamp": "2025-11-14T11:40:35.266647", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:40:35.266647", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:40:35.266647", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:40:35.267646", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 0.9990000000000001}}
+{"timestamp": "2025-11-14T11:40:35.271646", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:40:35.272646", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:40:35.273647", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:40:35.273647", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8766/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:40:35.277646", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}}
+{"timestamp": "2025-11-14T11:40:35.277646", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 233}}
+{"timestamp": "2025-11-14T11:40:35.277646", "category": "error", "event_type": "exception", "level": "ERROR", "data": {"error_type": "AttributeError", "error_message": "'MemoryManager' object has no attribute 'embedder'", "context": {"phase": "rank_summaries"}}}
+{"timestamp": "2025-11-14T11:40:35.278647", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 233, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:40:35.288647", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 6, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:35.289648", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:35.289648", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 16.001}}
+{"timestamp": "2025-11-14T11:40:35.293647", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:40:35.295646", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:40:35.295646", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:40:35.297646", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "Python programming", "status": 202}}
+{"timestamp": "2025-11-14T11:40:35.811650", "category": "web_search", "event_type": "poll_retry", "level": "INFO", "data": {"query": "Python programming", "attempt": 2, "max_attempts": 5}}
+{"timestamp": "2025-11-14T11:40:36.313653", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "Python programming", "attempts": 3}}
+{"timestamp": "2025-11-14T11:40:36.325655", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 7, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:36.325655", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:40:36.325655", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1030.009}}
+{"timestamp": "2025-11-14T11:40:36.329653", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}
+{"timestamp": "2025-11-14T11:41:16.109949", "category": "memory", "event_type": "embedding_model_loaded", "level": "INFO", "data": {"model": "all-MiniLM-L6-v2"}}
+{"timestamp": "2025-11-14T11:41:16.110949", "category": "memory", "event_type": "faiss_index_loaded", "level": "INFO", "data": {"path": "data\\memory\\faiss_index.bin"}}
+{"timestamp": "2025-11-14T11:41:16.111950", "category": "skill_manager", "event_type": "loading_skills", "level": "INFO", "data": {"skills_dir": "c:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}}
+{"timestamp": "2025-11-14T11:41:16.202950", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}}
+{"timestamp": "2025-11-14T11:41:16.204949", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}}
+{"timestamp": "2025-11-14T11:41:16.205950", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}}
+{"timestamp": "2025-11-14T11:41:16.214952", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}}
+{"timestamp": "2025-11-14T11:41:16.217950", "category": "skill_manager", "event_type": "invalid_definition", "level": "INFO", "data": {"skill": "demo_skill", "error": "missing_entrypoint"}}
+{"timestamp": "2025-11-14T11:41:16.220950", "category": "skill_manager", "event_type": "skill_loaded", "level": "INFO", "data": {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}}
+{"timestamp": "2025-11-14T11:41:16.220950", "category": "skill_manager", "event_type": "skills_loaded", "level": "INFO", "data": {"loaded": 5, "errors": 1, "total_skills": 5}}
+{"timestamp": "2025-11-14T11:41:16.221951", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:41:16.221951", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "content"]}}
+{"timestamp": "2025-11-14T11:41:16.225952", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 4.001}}
+{"timestamp": "2025-11-14T11:41:16.229950", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:41:16.359953", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 8, "memory_type": "note", "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:16.359953", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "note", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:16.359953", "category": "skill_manager", "event_type": "result_saved_to_memory", "level": "INFO", "data": {"skill": "notes"}}
+{"timestamp": "2025-11-14T11:41:16.360952", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:41:16.360952", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "limit"]}}
+{"timestamp": "2025-11-14T11:41:16.360952", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 0.0}}
+{"timestamp": "2025-11-14T11:41:16.364951", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:41:16.364951", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:41:16.365952", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "notes", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:41:16.365952", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "notes", "success": true, "execution_time_ms": 0.0}}
+{"timestamp": "2025-11-14T11:41:16.369951", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "notes", "success": true}}
+{"timestamp": "2025-11-14T11:41:16.371950", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:41:16.371950", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "extract_and_answer", "args": ["action", "query", "urls"]}}
+{"timestamp": "2025-11-14T11:41:16.371950", "category": "extract", "event_type": "fetch_started", "level": "INFO", "data": {"url": "http://localhost:8766/", "query": "What is Python programming language?"}}
+{"timestamp": "2025-11-14T11:41:16.375953", "category": "extract", "event_type": "parse_success", "level": "INFO", "data": {"url": "http://localhost:8766/", "content_length": 389, "title": "Test Article About Python"}}
+{"timestamp": "2025-11-14T11:41:16.375953", "category": "extract", "event_type": "llm_summarized", "level": "INFO", "data": {"url": "http://localhost:8766/", "chunk_index": 0, "summary_length": 233}}
+{"timestamp": "2025-11-14T11:41:16.387951", "category": "extract", "event_type": "final_answer", "level": "INFO", "data": {"query": "What is Python programming language?", "answer_length": 233, "sources_used": 1}}
+{"timestamp": "2025-11-14T11:41:16.397951", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 9, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:16.398952", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:16.398952", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true, "execution_time_ms": 27.002000000000002}}
+{"timestamp": "2025-11-14T11:41:16.401951", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "extract_and_answer", "success": true}}
+{"timestamp": "2025-11-14T11:41:16.403952", "category": "skill_manager", "event_type": "run_skill", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:41:16.403952", "category": "skill", "event_type": "started", "level": "INFO", "data": {"skill": "web_search", "args": ["action", "query"]}}
+{"timestamp": "2025-11-14T11:41:16.405951", "category": "web_search", "event_type": "poll_started", "level": "INFO", "data": {"query": "Python programming", "status": 202}}
+{"timestamp": "2025-11-14T11:41:16.914529", "category": "web_search", "event_type": "poll_retry", "level": "INFO", "data": {"query": "Python programming", "attempt": 2, "max_attempts": 5}}
+{"timestamp": "2025-11-14T11:41:17.416529", "category": "web_search", "event_type": "poll_success", "level": "INFO", "data": {"query": "Python programming", "attempts": 3}}
+{"timestamp": "2025-11-14T11:41:17.429529", "category": "memory", "event_type": "sqlite_persisted", "level": "INFO", "data": {"memory_id": 10, "memory_type": "knowledge", "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:17.429529", "category": "memory", "event_type": "stored", "level": "INFO", "data": {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.6, "entity_type": null}}
+{"timestamp": "2025-11-14T11:41:17.430531", "category": "skill", "event_type": "completed", "level": "INFO", "data": {"skill": "web_search", "success": true, "execution_time_ms": 1026.579}}
+{"timestamp": "2025-11-14T11:41:17.434529", "category": "skill_manager", "event_type": "run_stored", "level": "INFO", "data": {"skill": "web_search", "success": true}}

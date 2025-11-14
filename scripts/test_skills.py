@@ -9,7 +9,9 @@ Tests:
 3. Execute notes skill with list action
 4. Execute notes skill with search action
 5. Verify skill results are stored in SQLite
-6. Test web_search 202 → 200 polling sequence
+6. Get skill stats
+7. Test extract_and_answer skill with mock HTML
+8. Test web_search 202 → 200 polling sequence
 """
 
 import asyncio
@@ -180,8 +182,86 @@ async def main():
     print(f"  Total errors: {stats['total_errors']}")
     print(f"  Success rate: {stats['success_rate']:.2%}")
 
-    # Test 7: Web search 202 → 200 polling
-    print("\n-> Test 7: Testing web_search 202 → 200 polling sequence...")
+    # Test 7: Extract and answer skill
+    print("\n-> Test 7: Testing extract_and_answer skill...")
+
+    # Create mock HTML page
+    mock_html = """
+    <html>
+    <head><title>Test Article About Python</title></head>
+    <body>
+        <nav>Navigation menu</nav>
+        <header>Site Header</header>
+        <main>
+            <article>
+                <h1>Python Programming Language</h1>
+                <p>Python is a high-level, interpreted programming language created by Guido van Rossum.</p>
+                <p>It was first released in 1991 and has become one of the most popular programming languages.</p>
+                <p>Python emphasizes code readability with significant whitespace.</p>
+                <p>The language supports multiple programming paradigms including procedural, object-oriented, and functional programming.</p>
+            </article>
+        </main>
+        <footer>Site Footer</footer>
+        <script>alert('test');</script>
+    </body>
+    </html>
+    """
+
+    # Create mock HTML server
+    class MockHTMLServer:
+        def __init__(self, port=8766):
+            self.port = port
+            self.app = None
+            self.runner = None
+            self.site = None
+
+        async def handle_request(self, request):
+            return web.Response(text=mock_html, content_type='text/html')
+
+        async def start(self):
+            self.app = web.Application()
+            self.app.router.add_get('/', self.handle_request)
+            self.runner = web.AppRunner(self.app)
+            await self.runner.setup()
+            self.site = web.TCPSite(self.runner, 'localhost', self.port)
+            await self.site.start()
+
+        async def stop(self):
+            if self.site:
+                await self.site.stop()
+            if self.runner:
+                await self.runner.cleanup()
+
+    # Start mock HTML server
+    html_server = MockHTMLServer(port=8766)
+    await html_server.start()
+    print("[OK] Mock HTML server started on port 8766")
+
+    try:
+        # Run extract_and_answer skill
+        result = await skill_manager.run_skill(
+            'extract_and_answer',
+            action='extract',
+            query='What is Python programming language?',
+            urls=['http://localhost:8766/']
+        )
+
+        if result.success:
+            print(f"[OK] Extraction succeeded: {result.message}")
+            if result.output and result.output.get('answer'):
+                print(f"  Answer: {result.output['answer'][:80]}...")
+                print(f"  Sources: {len(result.output.get('sources', []))}")
+            else:
+                print("[WARN] No answer in output")
+        else:
+            print(f"[FAIL] Extraction failed: {result.message}")
+
+    finally:
+        await html_server.stop()
+        print("[OK] Mock HTML server stopped")
+
+    # Test 8: Web search 202 → 200 polling
+    print("\n-> Test 8: Testing web_search 202 → 200 polling sequence...")
 
     # Start mock server
     mock_server = Mock202Server(port=8765)

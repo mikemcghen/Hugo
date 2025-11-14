@@ -191,8 +191,52 @@ class WebSearchSkill(BaseSkill):
                             "fallback_url": fallback_url
                         })
 
-                    # Add the URL to results for the caller to handle
-                    results["fallback_url"] = fallback_url
+                    # Chain into ExtractAndAnswerSkill
+                    try:
+                        # Import here to avoid circular dependency
+                        from skills.skill_registry import SkillRegistry
+                        registry = SkillRegistry()
+                        extract_skill = registry.get("extract_and_answer")
+
+                        if extract_skill:
+                            if self.logger:
+                                self.logger.log_event("web_search", "chaining_to_extract", {
+                                    "query": query,
+                                    "fallback_url": fallback_url
+                                })
+
+                            # Run extract and answer skill
+                            extract_result = await extract_skill.run(
+                                action="extract",
+                                query=query,
+                                urls=[fallback_url]
+                            )
+
+                            if extract_result.success:
+                                # Return the extracted answer instead
+                                return SkillResult(
+                                    success=True,
+                                    output=extract_result.output,
+                                    message=f"Answer extracted from {fallback_url}",
+                                    metadata={
+                                        "query": query,
+                                        "fallback_extraction": True,
+                                        "source_url": fallback_url
+                                    }
+                                )
+
+                        # If extraction failed or skill not available, add fallback URL to results
+                        results["fallback_url"] = fallback_url
+
+                    except Exception as e:
+                        if self.logger:
+                            self.logger.log_error(e, {
+                                "phase": "extract_chain",
+                                "query": query,
+                                "fallback_url": fallback_url
+                            })
+                        # Add fallback URL to results as backup
+                        results["fallback_url"] = fallback_url
 
             # Store in memory if available
             if self.memory:
