@@ -25,12 +25,13 @@ class WebSearchSkill(BaseSkill):
     including DuckDuckGo, Wikipedia, IMDb, and optional Google search.
     """
 
-    def __init__(self, logger=None, sqlite_manager=None, memory_manager=None):
+    def __init__(self, logger=None, sqlite_manager=None, memory_manager=None, cognition=None):
         super().__init__(logger, sqlite_manager, memory_manager)
 
         self.name = "web_search"
         self.description = "Agent-based multi-source web search"
-        self.version = "2.0.0"
+        self.version = "2.1.0"
+        self.cognition = cognition
 
         # Initialize search agent
         self.search_agent = None
@@ -88,7 +89,8 @@ class WebSearchSkill(BaseSkill):
 
                 self.search_agent = SearchAgent(
                     logger=self.logger,
-                    extract_skill=extract_skill
+                    extract_skill=extract_skill,
+                    cognition=self.cognition
                 )
 
             if self.logger:
@@ -122,24 +124,25 @@ class WebSearchSkill(BaseSkill):
                     message=f"Investigation found no results for '{query}'"
                 )
 
-            # Format results for consumption
+            # Format results for consumption with synthesized answer
             results = {
                 "query": query,
                 "timestamp": datetime.now().isoformat(),
                 "urls": report["urls_checked"],
                 "sources_used": report["sources_used"],
+                "synthesized_answer": report.get("synthesized_answer", ""),
+                "answer_support": report.get("answer_support", ""),
                 "combined_evidence": report["combined_evidence"],
                 "passages_count": len(report["extracted_passages"]),
                 "extracted_passages": report["extracted_passages"]
             }
 
-            # Store investigation in memory if available
+            # Store synthesized answer in memory if available
             if self.memory:
                 from core.memory import MemoryEntry
 
-                content = f"Web investigation: {query}"
-                if report["combined_evidence"]:
-                    content += f" - {report['combined_evidence'][:200]}"
+                # Store the concise synthesized answer, not raw evidence
+                content = f"Q: {query}\nA: {report.get('synthesized_answer', 'No answer available')}"
 
                 search_entry = MemoryEntry(
                     id=None,
@@ -153,9 +156,10 @@ class WebSearchSkill(BaseSkill):
                         "query": query,
                         "sources": report["sources_used"],
                         "urls_count": len(report["urls_checked"]),
-                        "agent_investigation": True
+                        "agent_investigation": True,
+                        "synthesized": True
                     },
-                    importance_score=0.7,
+                    importance_score=0.8,
                     is_fact=True
                 )
 

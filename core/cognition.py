@@ -583,8 +583,20 @@ class CognitionEngine:
                 agent_error = output.get('agent_error', 'Unknown error')
                 return f"Agent encountered an error: {agent_error}"
 
-            # Check if this is agent-based search (new format)
-            if output.get('combined_evidence'):
+            # Check if this is agent-based search with synthesized answer
+            if output.get('synthesized_answer'):
+                # Return concise, Jarvis-like synthesized answer
+                answer = output.get('synthesized_answer', '')
+                support = output.get('answer_support', '')
+
+                # Format: Direct answer, then optional source info
+                if support:
+                    return f"{answer}\n\n({support})"
+                else:
+                    return answer
+
+            # Fallback to combined evidence if synthesis not available
+            elif output.get('combined_evidence'):
                 response_parts = []
 
                 # Commander-style report

@@ -3065,3 +3065,1375 @@ TypeError: object MagicMock can't be used in 'await' expression
 2025-11-14 12:51:35,170 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.6, "content_length": 406}
 2025-11-14 12:51:35,171 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_125001", "insights_count": 1, "keywords_count": 3, "sentiment": 0.0}
 2025-11-14 12:51:35,171 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_125001", "message_count": 3}
+2025-11-14 15:59:43,100 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 15:59:44,782 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 15:59:44,783 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T15:59:44.782770"}
+2025-11-14 15:59:45,534 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 15:59:45,535 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 15:59:45,535 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&rut=f2d2784f68c3842a2442db6aecd53b4e096cdf38415ac6540ba87b6b8a97d74d"}}
+2025-11-14 15:59:45,535 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:45,562 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.html&rut=7f640b47c41af3b03d85e2e661d9c3128699820386d00425c3a4fe3643970e78"}}
+2025-11-14 15:59:45,562 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:45,563 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F&rut=c8fad04053e423d9afe10c68d4629897bfdaf0394cb2c5c9828dafbabf3e3fe7"}}
+2025-11-14 15:59:45,563 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:45,564 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%2Din%2Dpython%2F&rut=e147abb1dad607532f5ccf8b3e1ade7d83a71b6810d792a3d76c48aa8cad5943"}}
+2025-11-14 15:59:45,564 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:45,564 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%2Din%2Dpython%2Da%2Dcomprehensive%2Dstep%2Dby%2Dstep%2Dguide%2D4fc2cfa49925&rut=a5fcaf101d73dc50b419ca62553ab1e14fa4752277cc5067358e0ca2b4110ada"}}
+2025-11-14 15:59:45,564 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:45,565 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 15:59:45,565 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 15:59:45,565 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T15:59:45.565453"}
+2025-11-14 15:59:46,154 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 15:59:46,539 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 15:59:46,540 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 15:59:46,540 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yahoo.com%2Fentertainment%2Fmovies%2Farticle%2Fwhen%2Dis%2Dwicked%2Dfor%2Dgood%2Dout%2Din%2Dtheaters%2Drelease%2Ddate%2Dcast%2Dtrailers%2Dand%2Deverything%2Dto%2Dknow%2Dabout%2Dpart%2D2%2Dof%2Dthe%2Dmusical%2D202042367.html&rut=c901b1da40c1807ab6f3f2135e6a5a9610a3abbdaa9c13424dfb38188771d4fe"}}
+2025-11-14 15:59:46,540 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:46,541 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fthedirect.com%2Farticle%2Fwicked%2D2%2Dparts%2Drelease&rut=db4bf20f3642337bfbf58a06acb4602a0fe877ed4df71970d1a0d34626842c05"}}
+2025-11-14 15:59:46,541 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:46,542 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcuniversal.com%2Farticle%2Feverything%2Dyou%2Dneed%2Dknow%2Dseeing%2Dwicked%2Dgood&rut=76e616f20d3c8d4fa72835a09c6e99f5498c9090228e1fdc633969ade677c114"}}
+2025-11-14 15:59:46,542 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:46,542 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fpeople.com%2Fall%2Dabout%2Dwicked%2Dfor%2Dgood%2D11845769&rut=efe9b61fef0d8715ad09052016e20066a853366db909f4f94cb5377b3223ed1c"}}
+2025-11-14 15:59:46,542 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:46,543 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "fetch_and_extract_direct", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.amctheatres.com%2Fmovies%2Fwicked%2Dfor%2Dgood%2D69654&rut=a3aac72bceafdd788dfb4dea3b6e43afebaf62d1bdd07c132e778ab1f89c7bcf"}}
+2025-11-14 15:59:46,543 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:46,544 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 15:59:46,544 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 15:59:46,558 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 15:59:46,558 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 15:59:46,559 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T15:59:46.558461"}
+2025-11-14 15:59:46,559 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T15:59:46.558461"}
+2025-11-14 15:59:47,266 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 15:59:47,266 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 15:59:47,267 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 15:59:47,267 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 15:59:47,267 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&rut=f2d2784f68c3842a2442db6aecd53b4e096cdf38415ac6540ba87b6b8a97d74d"}}
+2025-11-14 15:59:47,267 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&rut=f2d2784f68c3842a2442db6aecd53b4e096cdf38415ac6540ba87b6b8a97d74d"}}
+2025-11-14 15:59:47,267 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,267 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,268 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.html&rut=7f640b47c41af3b03d85e2e661d9c3128699820386d00425c3a4fe3643970e78"}}
+2025-11-14 15:59:47,268 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.html&rut=7f640b47c41af3b03d85e2e661d9c3128699820386d00425c3a4fe3643970e78"}}
+2025-11-14 15:59:47,268 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,268 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,269 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F&rut=c8fad04053e423d9afe10c68d4629897bfdaf0394cb2c5c9828dafbabf3e3fe7"}}
+2025-11-14 15:59:47,269 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F&rut=c8fad04053e423d9afe10c68d4629897bfdaf0394cb2c5c9828dafbabf3e3fe7"}}
+2025-11-14 15:59:47,269 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,269 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,270 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%2Din%2Dpython%2F&rut=e147abb1dad607532f5ccf8b3e1ade7d83a71b6810d792a3d76c48aa8cad5943"}}
+2025-11-14 15:59:47,270 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%2Din%2Dpython%2F&rut=e147abb1dad607532f5ccf8b3e1ade7d83a71b6810d792a3d76c48aa8cad5943"}}
+2025-11-14 15:59:47,270 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,270 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,271 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%2Din%2Dpython%2Da%2Dcomprehensive%2Dstep%2Dby%2Dstep%2Dguide%2D4fc2cfa49925&rut=a5fcaf101d73dc50b419ca62553ab1e14fa4752277cc5067358e0ca2b4110ada"}}
+2025-11-14 15:59:47,271 - hugo - ERROR - [error] exception: {"error_type": "AssertionError", "error_message": "", "context": {"phase": "direct_extraction", "url": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%2Din%2Dpython%2Da%2Dcomprehensive%2Dstep%2Dby%2Dstep%2Dguide%2D4fc2cfa49925&rut=a5fcaf101d73dc50b419ca62553ab1e14fa4752277cc5067358e0ca2b4110ada"}}
+2025-11-14 15:59:47,271 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,271 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 397, in _extract_content_direct
+    async with session.get(url_dict["url"], headers=headers) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 725, in _connect_and_send_request
+    conn = await self._connector.connect(
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 642, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1209, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\connector.py", line 1527, in _create_direct_connection
+    assert port is not None
+AssertionError
+2025-11-14 15:59:47,271 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 15:59:47,271 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 15:59:47,272 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 15:59:47,272 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:11,761 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:00:13,546 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 16:00:13,546 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:00:13.546792"}
+2025-11-14 16:00:14,376 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:00:14,377 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:14,817 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:14,818 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:14,818 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:00:14.818177"}
+2025-11-14 16:00:15,840 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:00:15,874 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:00:15,874 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:16,301 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:16,302 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:16,313 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:00:16,313 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:00:16,314 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:00:16.313401"}
+2025-11-14 16:00:16,314 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:00:16.313401"}
+2025-11-14 16:00:17,033 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:00:17,033 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:00:17,033 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:17,033 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:17,455 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:17,455 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:17,455 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:17,455 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:30,241 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:00:30,241 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:00:30.241803"}
+2025-11-14 16:00:30,749 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:00:31,194 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:00:31,194 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:31,629 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:31,629 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:31,629 - hugo - INFO - [web_search] deploying_agent: {"query": "Who directed Dune?"}
+2025-11-14 16:00:31,630 - hugo - INFO - [agent] search_agent_started: {"query": "Who directed Dune?", "timestamp": "2025-11-14T16:00:31.629295"}
+2025-11-14 16:00:32,659 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Who directed Dune?", "urls_found": 5}
+2025-11-14 16:00:32,983 - hugo - INFO - [agent] imdb_search_complete: {"query": "Who directed Dune?", "urls_found": 0}
+2025-11-14 16:00:32,984 - hugo - INFO - [agent] urls_collected: {"query": "Who directed Dune?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:33,630 - hugo - INFO - [agent] extraction_complete: {"query": "Who directed Dune?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:33,630 - hugo - INFO - [agent] report_ready: {"query": "Who directed Dune?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:33,631 - hugo - INFO - [web_search] deploying_agent: {"query": "Marvel Avengers cast"}
+2025-11-14 16:00:33,631 - hugo - INFO - [agent] search_agent_started: {"query": "Marvel Avengers cast", "timestamp": "2025-11-14T16:00:33.631201"}
+2025-11-14 16:00:34,579 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Marvel Avengers cast", "urls_found": 5}
+2025-11-14 16:00:34,870 - hugo - INFO - [agent] imdb_search_complete: {"query": "Marvel Avengers cast", "urls_found": 0}
+2025-11-14 16:00:34,870 - hugo - INFO - [agent] urls_collected: {"query": "Marvel Avengers cast", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:35,310 - hugo - INFO - [agent] extraction_complete: {"query": "Marvel Avengers cast", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:35,310 - hugo - INFO - [agent] report_ready: {"query": "Marvel Avengers cast", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:35,310 - hugo - INFO - [web_search] deploying_agent: {"query": "Who is Elon Musk?"}
+2025-11-14 16:00:35,310 - hugo - INFO - [agent] search_agent_started: {"query": "Who is Elon Musk?", "timestamp": "2025-11-14T16:00:35.310101"}
+2025-11-14 16:00:36,296 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Who is Elon Musk?", "urls_found": 5}
+2025-11-14 16:00:36,296 - hugo - INFO - [agent] urls_collected: {"query": "Who is Elon Musk?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:36,769 - hugo - INFO - [agent] extraction_complete: {"query": "Who is Elon Musk?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:36,770 - hugo - INFO - [agent] report_ready: {"query": "Who is Elon Musk?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:48,359 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:00:48,359 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:00:48.359512"}
+2025-11-14 16:00:48,934 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:00:49,258 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:00:49,259 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:49,653 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:49,653 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:49,653 - hugo - INFO - [web_search] deploying_agent: {"query": "Who directed Dune?"}
+2025-11-14 16:00:49,654 - hugo - INFO - [agent] search_agent_started: {"query": "Who directed Dune?", "timestamp": "2025-11-14T16:00:49.654848"}
+2025-11-14 16:00:50,727 - hugo - INFO - [agent] imdb_search_complete: {"query": "Who directed Dune?", "urls_found": 0}
+2025-11-14 16:00:50,727 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Who directed Dune?", "urls_found": 5}
+2025-11-14 16:00:50,727 - hugo - INFO - [agent] urls_collected: {"query": "Who directed Dune?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:51,170 - hugo - INFO - [agent] extraction_complete: {"query": "Who directed Dune?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:51,170 - hugo - INFO - [agent] report_ready: {"query": "Who directed Dune?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:51,170 - hugo - INFO - [web_search] deploying_agent: {"query": "Marvel Avengers cast"}
+2025-11-14 16:00:51,171 - hugo - INFO - [agent] search_agent_started: {"query": "Marvel Avengers cast", "timestamp": "2025-11-14T16:00:51.171858"}
+2025-11-14 16:00:51,690 - hugo - INFO - [agent] imdb_search_complete: {"query": "Marvel Avengers cast", "urls_found": 0}
+2025-11-14 16:00:52,136 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Marvel Avengers cast", "urls_found": 5}
+2025-11-14 16:00:52,136 - hugo - INFO - [agent] urls_collected: {"query": "Marvel Avengers cast", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:52,573 - hugo - INFO - [agent] extraction_complete: {"query": "Marvel Avengers cast", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:52,573 - hugo - INFO - [agent] report_ready: {"query": "Marvel Avengers cast", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:00:52,573 - hugo - INFO - [web_search] deploying_agent: {"query": "Who is Elon Musk?"}
+2025-11-14 16:00:52,574 - hugo - INFO - [agent] search_agent_started: {"query": "Who is Elon Musk?", "timestamp": "2025-11-14T16:00:52.573147"}
+2025-11-14 16:00:53,371 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Who is Elon Musk?", "urls_found": 5}
+2025-11-14 16:00:53,371 - hugo - INFO - [agent] urls_collected: {"query": "Who is Elon Musk?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:00:53,772 - hugo - INFO - [agent] extraction_complete: {"query": "Who is Elon Musk?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:00:53,772 - hugo - INFO - [agent] report_ready: {"query": "Who is Elon Musk?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:03:07,326 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 16:03:13,046 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 16:03:13,055 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:03:13,062 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:03:13,062 - hugo - INFO - [memory] factual_memories_loaded: {"count": 23, "faiss_added": 23}
+2025-11-14 16:03:13,081 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:03:13,094 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 16:03:13,264 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 16:03:13,281 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 16:03:13,297 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 16:03:13,305 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 16:03:13,316 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 16:03:13,337 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 16:03:13,338 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 16:03:13,347 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 16:03:18,906 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:18,907 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 16:03:18,907 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:03:18,907 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_160313", "streaming": false, "message_length": 33}
+2025-11-14 16:03:18,908 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:18,908 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:18,908 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:03:18,909 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:03:18,909 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:03:18,909 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:03:18.909182"}
+2025-11-14 16:03:19,765 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:03:19,846 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:03:19,847 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:03:20,323 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:03:20,323 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:03:20,323 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1414.007}
+2025-11-14 16:03:20,324 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.", "context": {"phase": "store_skill_run"}}
+2025-11-14 16:03:20,324 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\skill_manager.py", line 286, in _store_skill_run
+    await self.sqlite.store_skill_run(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1011, in store_skill_run
+    return await loop.run_in_executor(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1018, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.
+2025-11-14 16:03:20,326 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:21,832 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 76, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:03:21,833 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:03:21,833 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_160313", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:03:21,834 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When does Wicked Part 2 come out?'", "streaming": false, "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:21,834 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:03:32,352 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:32,353 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 16:03:32,353 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:03:32,354 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_160313", "streaming": false, "message_length": 33}
+2025-11-14 16:03:32,354 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:32,355 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:32,355 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:03:32,356 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:03:32,356 - hugo - INFO - [web_search] deploying_agent: {"query": "When is Pittsburgh light up night"}
+2025-11-14 16:03:32,356 - hugo - INFO - [agent] search_agent_started: {"query": "When is Pittsburgh light up night", "timestamp": "2025-11-14T16:03:32.356458"}
+2025-11-14 16:03:33,259 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When is Pittsburgh light up night", "urls_found": 5}
+2025-11-14 16:03:33,259 - hugo - INFO - [agent] urls_collected: {"query": "When is Pittsburgh light up night", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:03:33,704 - hugo - INFO - [agent] extraction_complete: {"query": "When is Pittsburgh light up night", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:03:33,704 - hugo - INFO - [agent] report_ready: {"query": "When is Pittsburgh light up night", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:03:33,705 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1350.011}
+2025-11-14 16:03:33,706 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 373124.", "context": {"phase": "store_skill_run"}}
+2025-11-14 16:03:33,706 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\skill_manager.py", line 286, in _store_skill_run
+    await self.sqlite.store_skill_run(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1011, in store_skill_run
+    return await loop.run_in_executor(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1018, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 373124.
+2025-11-14 16:03:33,706 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:33,719 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.", "context": {"phase": "sqlite_persistence"}}
+2025-11-14 16:03:33,719 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\memory.py", line 731, in store
+    memory_id = await self.sqlite.store_memory(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 805, in store_memory
+    return await loop.run_in_executor(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 815, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.
+2025-11-14 16:03:33,720 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:03:33,720 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_160313", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:03:33,720 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When is Pittsburgh light up night'", "streaming": false, "session_id": "shell_20251114_160313"}
+2025-11-14 16:03:33,721 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:07:36,600 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_160313"}
+2025-11-14 16:07:36,676 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "tried", "look", "encountered", "issue"], "total_keywords": 10}
+2025-11-14 16:07:36,677 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 16:07:36,677 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 16:08:23,730 - hugo - INFO - [reflection] ollama_timeout: {"attempt": 1, "error": "HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=45)"}
+2025-11-14 16:08:23,730 - hugo - INFO - [reflection] ollama_retry: {"attempt": 1, "delay_seconds": 2}
+2025-11-14 16:08:25,742 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 2, "max_retries": 2}
+2025-11-14 16:08:48,092 - hugo - INFO - [reflection] ollama_success: {"attempt": 2, "response_length": 690}
+2025-11-14 16:08:48,093 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 97, "insights_count": 2, "confidence": 0.7}
+2025-11-14 16:08:48,109 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.", "context": {"phase": "sqlite_persistence"}}
+2025-11-14 16:08:48,109 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\memory.py", line 731, in store
+    memory_id = await self.sqlite.store_memory(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 805, in store_memory
+    return actions
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 815, in _store_memory_sync
+    Args:
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381616 and this is thread id 370860.
+2025-11-14 16:08:48,111 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 16:08:48,111 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 666}
+2025-11-14 16:08:48,111 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_160313", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 16:08:48,112 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_160313", "message_count": 3}
+2025-11-14 16:13:12,636 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:13:12,636 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,636 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,637 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,637 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,638 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,638 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,638 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,639 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,639 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,639 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,639 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,639 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,640 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,640 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,640 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,641 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,641 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,641 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:12,641 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:12,642 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:13:12,642 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 292, in drain_queue_loop
+    result = self._store_memory_sync(**payload)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 940, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 381308 and this is thread id 378084.
+2025-11-14 16:13:56,665 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:13:56,665 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:56,669 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:56,670 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:56,674 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:56,777 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:56,781 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:56,888 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:56,892 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:56,997 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,001 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,001 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,005 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,005 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,009 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,009 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,013 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,013 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,017 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,017 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,021 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,022 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,025 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,025 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,029 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,029 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,033 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,033 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,037 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,037 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,042 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,043 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,047 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,047 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,051 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,051 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,055 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:13:57,055 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:13:57,059 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:14:08,664 - hugo - INFO - [agent] search_agent_started: {"query": "test query", "timestamp": "2025-11-14T16:14:08.664074"}
+2025-11-14 16:14:08,664 - hugo - INFO - [agent] error_detected: {"query": "test query", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:14:08,665 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query"}}
+2025-11-14 16:14:08,665 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:14:08,671 - hugo - INFO - [web_search] deploying_agent: {"query": "test query with error"}
+2025-11-14 16:14:08,671 - hugo - INFO - [agent] search_agent_started: {"query": "test query with error", "timestamp": "2025-11-14T16:14:08.671075"}
+2025-11-14 16:14:08,671 - hugo - INFO - [agent] error_detected: {"query": "test query with error", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:14:08,672 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query with error"}}
+2025-11-14 16:14:08,672 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:14:08,672 - hugo - INFO - [web_search] reporting_agent_error: {"query": "test query with error", "error": "ValueError: Simulated network error"}
+2025-11-14 16:14:08,686 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:14:45,324 - hugo - INFO - [agent] search_agent_started: {"query": "test query", "timestamp": "2025-11-14T16:14:45.323445"}
+2025-11-14 16:14:45,324 - hugo - INFO - [agent] error_detected: {"query": "test query", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:14:45,324 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query"}}
+2025-11-14 16:14:45,324 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:14:45,328 - hugo - INFO - [web_search] deploying_agent: {"query": "test query with error"}
+2025-11-14 16:14:45,328 - hugo - INFO - [agent] search_agent_started: {"query": "test query with error", "timestamp": "2025-11-14T16:14:45.328447"}
+2025-11-14 16:14:45,329 - hugo - INFO - [agent] error_detected: {"query": "test query with error", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:14:45,329 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query with error"}}
+2025-11-14 16:14:45,329 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:14:45,329 - hugo - INFO - [web_search] reporting_agent_error: {"query": "test query with error", "error": "ValueError: Simulated network error"}
+2025-11-14 16:14:45,340 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:14:45,340 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:14:45,340 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:14:45.340444"}
+2025-11-14 16:14:45,341 - hugo - INFO - [agent] error_detected: {"query": "When does Wicked Part 2 come out?", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:14:45,341 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "When does Wicked Part 2 come out?"}}
+2025-11-14 16:14:45,341 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:14:45,341 - hugo - INFO - [web_search] reporting_agent_error: {"query": "When does Wicked Part 2 come out?", "error": "ValueError: Simulated network error"}
+2025-11-14 16:16:58,680 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 16:17:00,376 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 16:17:00,386 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:17:00,386 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:17:00,388 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:17:00,389 - hugo - INFO - [memory] factual_memories_loaded: {"count": 23, "faiss_added": 23}
+2025-11-14 16:17:00,399 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:17:00,402 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 16:17:00,561 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 16:17:00,562 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 16:17:00,564 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 16:17:00,566 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 16:17:00,570 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 16:17:00,572 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 16:17:00,573 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 16:17:00,574 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 16:17:05,131 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:05,132 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 16:17:05,132 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:17:05,133 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_161700", "streaming": false, "message_length": 33}
+2025-11-14 16:17:05,133 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:05,133 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:05,134 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:17:05,134 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:17:05,135 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:17:05,135 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:17:05.135682"}
+2025-11-14 16:17:06,129 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:17:06,158 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:17:06,158 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:17:06,562 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:17:06,562 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:17:06,563 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1428.01}
+2025-11-14 16:17:06,563 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:17:06,564 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "drain_queue_loop", "operation": "store_skill_run"}}
+2025-11-14 16:17:06,564 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1147, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:17:06,565 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "store_skill_run"}}
+2025-11-14 16:17:06,565 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\skill_manager.py", line 286, in _store_skill_run
+    await self.sqlite.store_skill_run(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1138, in store_skill_run
+    return await self._queue_write("store_skill_run", {
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 363, in _queue_write
+    return await future
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1147, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:17:06,566 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:06,689 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:17:07,069 - hugo - INFO - [sqlite] write_completed_main_thread: {"operation": "store_memory"}
+2025-11-14 16:17:07,069 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 77, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:17:07,070 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:17:07,070 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_161700", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:17:07,079 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When does Wicked Part 2 come out?'", "streaming": false, "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:07,080 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:17:18,629 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:18,630 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 16:17:18,630 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:17:18,630 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_161700", "streaming": false, "message_length": 33}
+2025-11-14 16:17:18,631 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:18,631 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:18,631 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:17:18,632 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:17:18,632 - hugo - INFO - [web_search] deploying_agent: {"query": "When is Pittsburgh light up night"}
+2025-11-14 16:17:18,632 - hugo - INFO - [agent] search_agent_started: {"query": "When is Pittsburgh light up night", "timestamp": "2025-11-14T16:17:18.632285"}
+2025-11-14 16:17:19,725 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When is Pittsburgh light up night", "urls_found": 5}
+2025-11-14 16:17:19,725 - hugo - INFO - [agent] urls_collected: {"query": "When is Pittsburgh light up night", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:17:20,156 - hugo - INFO - [agent] extraction_complete: {"query": "When is Pittsburgh light up night", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:17:20,156 - hugo - INFO - [agent] report_ready: {"query": "When is Pittsburgh light up night", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:17:20,157 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1525.567}
+2025-11-14 16:17:20,157 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:17:20,158 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 383680.", "context": {"phase": "drain_queue_loop", "operation": "store_skill_run"}}
+2025-11-14 16:17:20,158 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1147, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 383680.
+2025-11-14 16:17:20,158 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 383680.", "context": {"phase": "store_skill_run"}}
+2025-11-14 16:17:20,159 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\skill_manager.py", line 286, in _store_skill_run
+    await self.sqlite.store_skill_run(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1138, in store_skill_run
+    return await self._queue_write("store_skill_run", {
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 363, in _queue_write
+    return await future
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 297, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_skill_run_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 1147, in _store_skill_run_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 383680.
+2025-11-14 16:17:20,159 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:20,182 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:17:20,183 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:17:20,183 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 943, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:17:20,184 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "sqlite_persistence"}}
+2025-11-14 16:17:20,184 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\memory.py", line 731, in store
+    memory_id = await self.sqlite.store_memory(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 929, in store_memory
+    return await self._queue_write("store_memory", {
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 363, in _queue_write
+    return await future
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 943, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:17:20,185 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:17:20,185 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_161700", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:17:20,185 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When is Pittsburgh light up night'", "streaming": false, "session_id": "shell_20251114_161700"}
+2025-11-14 16:17:20,186 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:17:36,576 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_161700"}
+2025-11-14 16:17:36,581 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "tried", "look", "encountered", "issue"], "total_keywords": 10}
+2025-11-14 16:17:36,582 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 16:17:36,582 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 16:18:12,110 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 798}
+2025-11-14 16:18:12,111 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 116, "insights_count": 2, "confidence": 0.7}
+2025-11-14 16:18:12,124 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:18:12,125 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "drain_queue_loop", "operation": "store_memory"}}
+2025-11-14 16:18:12,125 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 943, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:18:12,126 - hugo - ERROR - [error] exception: {"error_type": "ProgrammingError", "error_message": "SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.", "context": {"phase": "sqlite_persistence"}}
+2025-11-14 16:18:12,126 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\memory.py", line 731, in store
+    memory_id = await self.sqlite.store_memory(
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 929, in store_memory
+    return await self._queue_write("store_memory", {
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 363, in _queue_write
+    return await future
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in drain_queue_loop
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 295, in <lambda>
+    result = await loop.run_in_executor(None, lambda: self._store_memory_sync(**payload))
+  File "C:\Users\hocke\Documents\GitHub\Hugo\data\sqlite_manager.py", line 943, in _store_memory_sync
+    cursor = self.conn.cursor()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 379156 and this is thread id 382024.
+2025-11-14 16:18:12,127 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 16:18:12,127 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.7, "content_length": 774}
+2025-11-14 16:18:12,128 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_161700", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 16:18:12,128 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_161700", "message_count": 3}
+2025-11-14 16:25:24,993 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 384456, "total_connections": 1}
+2025-11-14 16:25:24,996 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:25:24,996 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,001 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,001 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,005 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,110 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,115 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,220 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,224 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,331 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,335 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,335 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,339 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,339 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,345 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,346 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,349 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,349 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,353 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,353 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,357 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,358 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,361 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,361 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,365 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,365 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,369 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,369 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,372 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,373 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,376 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,377 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,380 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,380 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,384 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,384 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,388 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:25,389 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:25:25,392 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:25:39,091 - hugo - INFO - [agent] search_agent_started: {"query": "test query", "timestamp": "2025-11-14T16:25:39.090585"}
+2025-11-14 16:25:39,091 - hugo - INFO - [agent] error_detected: {"query": "test query", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:25:39,091 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query"}}
+2025-11-14 16:25:39,091 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:25:39,095 - hugo - INFO - [web_search] deploying_agent: {"query": "test query with error"}
+2025-11-14 16:25:39,095 - hugo - INFO - [agent] search_agent_started: {"query": "test query with error", "timestamp": "2025-11-14T16:25:39.095584"}
+2025-11-14 16:25:39,096 - hugo - INFO - [agent] error_detected: {"query": "test query with error", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:25:39,096 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "test query with error"}}
+2025-11-14 16:25:39,096 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:25:39,096 - hugo - INFO - [web_search] reporting_agent_error: {"query": "test query with error", "error": "ValueError: Simulated network error"}
+2025-11-14 16:25:39,107 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:25:39,108 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:25:39,108 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:25:39.108082"}
+2025-11-14 16:25:39,108 - hugo - INFO - [agent] error_detected: {"query": "When does Wicked Part 2 come out?", "error": "Simulated network error", "error_type": "ValueError"}
+2025-11-14 16:25:39,109 - hugo - ERROR - [error] exception: {"error_type": "ValueError", "error_message": "Simulated network error", "context": {"phase": "search_agent_investigate", "query": "When does Wicked Part 2 come out?"}}
+2025-11-14 16:25:39,109 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "c:\Users\hocke\Documents\GitHub\Hugo\core\agents\search_agent.py", line 65, in investigate
+    urls = await self._collect_urls(query)
+  File "c:\Users\hocke\Documents\GitHub\Hugo\scripts\test_agent_error_reporting.py", line 38, in mock_collect_urls_error
+    raise ValueError("Simulated network error")
+ValueError: Simulated network error
+2025-11-14 16:25:39,109 - hugo - INFO - [web_search] reporting_agent_error: {"query": "When does Wicked Part 2 come out?", "error": "ValueError: Simulated network error"}
+2025-11-14 16:27:09,195 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 16:27:09,209 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 332140, "total_connections": 1}
+2025-11-14 16:27:10,495 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 16:27:10,503 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:27:10,503 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:27:10,505 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:27:10,506 - hugo - INFO - [memory] factual_memories_loaded: {"count": 23, "faiss_added": 23}
+2025-11-14 16:27:10,516 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:27:10,519 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 16:27:10,677 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 16:27:10,679 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 16:27:10,681 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 16:27:10,683 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 16:27:10,687 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 16:27:10,689 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 16:27:10,690 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 16:27:10,692 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 16:27:17,264 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:17,264 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 16:27:17,265 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:27:17,265 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_162710", "streaming": false, "message_length": 33}
+2025-11-14 16:27:17,266 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:17,266 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:17,266 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:27:17,267 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:27:17,267 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:27:17,267 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:27:17.267184"}
+2025-11-14 16:27:18,137 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:27:18,153 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:27:18,154 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:27:18,608 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:27:18,609 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:27:18,610 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1343.521}
+2025-11-14 16:27:18,610 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:27:18,611 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 384396, "total_connections": 2}
+2025-11-14 16:27:18,616 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:27:18,616 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 16:27:18,617 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:18,771 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:27:18,774 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:27:18,775 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 78, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:27:18,775 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:27:18,776 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_162710", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:27:18,776 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When does Wicked Part 2 come out?'", "streaming": false, "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:18,776 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:27:32,516 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:32,517 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 16:27:32,517 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:27:32,517 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_162710", "streaming": false, "message_length": 33}
+2025-11-14 16:27:32,518 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:32,518 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:32,519 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:27:32,519 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:27:32,519 - hugo - INFO - [web_search] deploying_agent: {"query": "When is Pittsburgh light up night"}
+2025-11-14 16:27:32,520 - hugo - INFO - [agent] search_agent_started: {"query": "When is Pittsburgh light up night", "timestamp": "2025-11-14T16:27:32.519164"}
+2025-11-14 16:27:33,503 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When is Pittsburgh light up night", "urls_found": 5}
+2025-11-14 16:27:33,504 - hugo - INFO - [agent] urls_collected: {"query": "When is Pittsburgh light up night", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:27:33,961 - hugo - INFO - [agent] extraction_complete: {"query": "When is Pittsburgh light up night", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:27:33,962 - hugo - INFO - [agent] report_ready: {"query": "When is Pittsburgh light up night", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:27:33,962 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 1443.77}
+2025-11-14 16:27:33,962 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:27:33,964 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 383660, "total_connections": 3}
+2025-11-14 16:27:33,968 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:27:33,968 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 16:27:33,969 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:33,992 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:27:33,996 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:27:33,996 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 79, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:27:33,997 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:27:33,997 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_162710", "content_length": 120, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:27:33,998 - hugo - INFO - [user] response: {"content": "I tried to look that up but encountered an issue: Investigation found no results for 'When is Pittsburgh light up night'", "streaming": false, "session_id": "shell_20251114_162710"}
+2025-11-14 16:27:33,998 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:27:37,247 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_162710"}
+2025-11-14 16:27:37,253 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "tried", "look", "encountered", "issue"], "total_keywords": 10}
+2025-11-14 16:27:37,253 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 16:27:37,254 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 16:28:13,972 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 773}
+2025-11-14 16:28:13,973 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 100, "insights_count": 2, "confidence": 0.8}
+2025-11-14 16:28:13,985 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:28:13,989 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:28:13,990 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 80, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 16:28:13,990 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 16:28:13,991 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 749}
+2025-11-14 16:28:13,991 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_162710", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 16:28:13,992 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_162710", "message_count": 3}
+2025-11-14 16:33:17,520 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:18,733 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 16:33:18,734 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:18.733643"}
+2025-11-14 16:33:19,423 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:19,423 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:19,868 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:19,868 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:19,868 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:33:19.868888"}
+2025-11-14 16:33:20,485 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:33:20,687 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:33:20,687 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:21,106 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:21,106 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:21,111 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:33:21,111 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:33:21,111 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:21.111376"}
+2025-11-14 16:33:21,111 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:21.111376"}
+2025-11-14 16:33:22,051 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:22,051 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:22,052 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:22,052 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:22,421 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:22,421 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:22,421 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:22,421 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:39,749 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:40,929 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 16:33:40,929 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:40.929876"}
+2025-11-14 16:33:41,653 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:41,653 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:42,036 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:42,037 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:42,037 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:33:42.037994"}
+2025-11-14 16:33:42,784 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:33:43,012 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:33:43,013 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:43,393 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:43,394 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:43,399 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:33:43,399 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:33:43,399 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:43.399933"}
+2025-11-14 16:33:43,399 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:33:43.399933"}
+2025-11-14 16:33:44,090 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:44,090 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:33:44,090 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:44,090 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:33:44,469 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:44,469 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 0, "total_urls": 5}
+2025-11-14 16:33:44,469 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:33:44,469 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 0, "evidence_length": 0, "success": false}
+2025-11-14 16:34:21,944 - hugo - INFO - [extract] fetch_failed: {"url": "https://duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync-io-python%2F", "status": 400}
+2025-11-14 16:38:08,533 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:08,533 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:08,533 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:08,534 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.h", "decoded": "https://docs.python.org/3/library/asyncio.html", "is_redirect": true}
+2025-11-14 16:38:08,534 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:08,535 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:09,251 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 16:38:09,251 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:09.251525"}
+2025-11-14 16:38:10,011 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:10,011 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:10,012 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:10,012 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:10,012 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Fhowto%2Fa%2Dconcept", "decoded": "https://docs.python.org/3/howto/a-conceptual-overview-of-asyncio.html", "is_redirect": true}
+2025-11-14 16:38:10,013 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:10,013 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:10,470 - hugo - INFO - [agent] url_extracted: {"url": "https://realpython.com/async-io-python/", "source": "duckduckgo", "content_length": 49995}
+2025-11-14 16:38:11,513 - hugo - INFO - [agent] url_extracted: {"url": "https://superfastpython.com/python-asyncio/", "source": "duckduckgo", "content_length": 225834}
+2025-11-14 16:38:11,747 - hugo - INFO - [agent] url_extracted: {"url": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "source": "duckduckgo", "content_length": 5074}
+2025-11-14 16:38:12,611 - hugo - INFO - [agent] url_extracted: {"url": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-step-guide-4fc2cfa49925", "source": "duckduckgo", "content_length": 9393}
+2025-11-14 16:38:12,821 - hugo - INFO - [agent] url_extracted: {"url": "https://docs.python.org/3/howto/a-conceptual-overview-of-asyncio.html", "source": "duckduckgo", "content_length": 21411}
+2025-11-14 16:38:12,822 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:12,822 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2889, "success": true}
+2025-11-14 16:38:12,822 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:38:12.822022"}
+2025-11-14 16:38:13,590 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:38:13,605 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yahoo.com%2Fentertainment%2Fmovies%2F", "decoded": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-i", "is_redirect": true}
+2025-11-14 16:38:13,605 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fthedirect.com%2Farticle%2Fwicked%2D2%2Dpa", "decoded": "https://thedirect.com/article/wicked-2-parts-release", "is_redirect": true}
+2025-11-14 16:38:13,606 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fpeople.com%2Fall%2Dabout%2Dwicked%2Dfor%2", "decoded": "https://people.com/all-about-wicked-for-good-11845769", "is_redirect": true}
+2025-11-14 16:38:13,606 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcuniversal.com%2Farticle%2Feverythi", "decoded": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "is_redirect": true}
+2025-11-14 16:38:13,606 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.hollywoodreporter.com%2Fmovies%2Fmovi", "decoded": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-c", "is_redirect": true}
+2025-11-14 16:38:13,607 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:38:13,607 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:14,025 - hugo - INFO - [agent] url_extracted: {"url": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-in-theaters-release-date-cast-trailers-and-everything-to-know-about-part-2-of-the-musical-202042367.html", "source": "duckduckgo", "content_length": 9569}
+2025-11-14 16:38:14,261 - hugo - INFO - [agent] url_extracted: {"url": "https://thedirect.com/article/wicked-2-parts-release", "source": "duckduckgo", "content_length": 6194}
+2025-11-14 16:38:14,587 - hugo - INFO - [agent] url_extracted: {"url": "https://people.com/all-about-wicked-for-good-11845769", "source": "duckduckgo", "content_length": 10206}
+2025-11-14 16:38:14,842 - hugo - INFO - [agent] url_extracted: {"url": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "source": "duckduckgo", "content_length": 6296}
+2025-11-14 16:38:15,121 - hugo - INFO - [agent] url_extracted: {"url": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-cast-plot-1236072654/", "source": "duckduckgo", "content_length": 10489}
+2025-11-14 16:38:15,121 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:15,122 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 5, "evidence_length": 3002, "success": true}
+2025-11-14 16:38:15,126 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:38:15,126 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:38:15,127 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:15.126447"}
+2025-11-14 16:38:15,127 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:15.126447"}
+2025-11-14 16:38:15,885 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:15,885 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.h", "decoded": "https://docs.python.org/3/library/asyncio.html", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.h", "decoded": "https://docs.python.org/3/library/asyncio.html", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:15,886 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:15,887 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:15,887 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:15,888 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:15,888 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:15,888 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:15,888 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:18,010 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:18,010 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:18,011 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2840, "success": true}
+2025-11-14 16:38:18,011 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2840, "success": true}
+2025-11-14 16:38:30,738 - hugo - INFO - [extract] fetch_failed: {"url": "https://duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync-io-python%2F", "status": 400}
+2025-11-14 16:38:46,566 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:46,566 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:46,567 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:46,567 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Fhowto%2Fa%2Dconcept", "decoded": "https://docs.python.org/3/howto/a-conceptual-overview-of-asyncio.html", "is_redirect": true}
+2025-11-14 16:38:46,567 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:46,568 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:47,340 - hugo - INFO - [agent] imdb_search_complete: {"query": "Wicked movie", "urls_found": 0}
+2025-11-14 16:38:47,341 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:47.340873"}
+2025-11-14 16:38:48,158 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:48,158 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Flibrary%2Fasyncio.h", "decoded": "https://docs.python.org/3/library/asyncio.html", "is_redirect": true}
+2025-11-14 16:38:48,159 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:48,159 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:48,159 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:48,160 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:48,160 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:48,583 - hugo - INFO - [agent] url_extracted: {"url": "https://realpython.com/async-io-python/", "source": "duckduckgo", "content_length": 49995}
+2025-11-14 16:38:48,692 - hugo - INFO - [agent] url_extracted: {"url": "https://docs.python.org/3/library/asyncio.html", "source": "duckduckgo", "content_length": 3267}
+2025-11-14 16:38:49,617 - hugo - INFO - [agent] url_extracted: {"url": "https://superfastpython.com/python-asyncio/", "source": "duckduckgo", "content_length": 225834}
+2025-11-14 16:38:49,755 - hugo - INFO - [agent] url_extracted: {"url": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "source": "duckduckgo", "content_length": 5074}
+2025-11-14 16:38:50,297 - hugo - INFO - [agent] url_extracted: {"url": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-step-guide-4fc2cfa49925", "source": "duckduckgo", "content_length": 9393}
+2025-11-14 16:38:50,298 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:50,298 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2883, "success": true}
+2025-11-14 16:38:50,298 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:38:50.298461"}
+2025-11-14 16:38:50,812 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:38:51,108 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yahoo.com%2Fentertainment%2Fmovies%2F", "decoded": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-i", "is_redirect": true}
+2025-11-14 16:38:51,109 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fthedirect.com%2Farticle%2Fwicked%2D2%2Dpa", "decoded": "https://thedirect.com/article/wicked-2-parts-release", "is_redirect": true}
+2025-11-14 16:38:51,109 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fpeople.com%2Fall%2Dabout%2Dwicked%2Dfor%2", "decoded": "https://people.com/all-about-wicked-for-good-11845769", "is_redirect": true}
+2025-11-14 16:38:51,109 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcuniversal.com%2Farticle%2Feverythi", "decoded": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "is_redirect": true}
+2025-11-14 16:38:51,110 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.hollywoodreporter.com%2Fmovies%2Fmovi", "decoded": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-c", "is_redirect": true}
+2025-11-14 16:38:51,110 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:38:51,111 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:51,466 - hugo - INFO - [agent] url_extracted: {"url": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-in-theaters-release-date-cast-trailers-and-everything-to-know-about-part-2-of-the-musical-202042367.html", "source": "duckduckgo", "content_length": 9569}
+2025-11-14 16:38:51,621 - hugo - INFO - [agent] url_extracted: {"url": "https://thedirect.com/article/wicked-2-parts-release", "source": "duckduckgo", "content_length": 6194}
+2025-11-14 16:38:51,944 - hugo - INFO - [agent] url_extracted: {"url": "https://people.com/all-about-wicked-for-good-11845769", "source": "duckduckgo", "content_length": 10224}
+2025-11-14 16:38:52,104 - hugo - INFO - [agent] url_extracted: {"url": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "source": "duckduckgo", "content_length": 6296}
+2025-11-14 16:38:52,323 - hugo - INFO - [agent] url_extracted: {"url": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-cast-plot-1236072654/", "source": "duckduckgo", "content_length": 10489}
+2025-11-14 16:38:52,324 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:52,324 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 5, "evidence_length": 3002, "success": true}
+2025-11-14 16:38:52,328 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:38:52,328 - hugo - INFO - [web_search] deploying_agent: {"query": "Python asyncio tutorial"}
+2025-11-14 16:38:52,329 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:52.328364"}
+2025-11-14 16:38:52,329 - hugo - INFO - [agent] search_agent_started: {"query": "Python asyncio tutorial", "timestamp": "2025-11-14T16:38:52.328364"}
+2025-11-14 16:38:53,133 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:53,133 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Frealpython.com%2Fasync%2Dio%2Dpython%2F&r", "decoded": "https://realpython.com/async-io-python/", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsuperfastpython.com%2Fpython%2Dasyncio%2F", "decoded": "https://superfastpython.com/python-asyncio/", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.geeksforgeeks.org%2Fpython%2Fasyncio%", "decoded": "https://www.geeksforgeeks.org/python/asyncio-in-python/", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:53,134 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmedium.com%2Fpythoniq%2Fmaster%2Dasyncio%", "decoded": "https://medium.com/pythoniq/master-asyncio-in-python-a-comprehensive-step-by-ste", "is_redirect": true}
+2025-11-14 16:38:53,135 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Fhowto%2Fa%2Dconcept", "decoded": "https://docs.python.org/3/howto/a-conceptual-overview-of-asyncio.html", "is_redirect": true}
+2025-11-14 16:38:53,135 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdocs.python.org%2F3%2Fhowto%2Fa%2Dconcept", "decoded": "https://docs.python.org/3/howto/a-conceptual-overview-of-asyncio.html", "is_redirect": true}
+2025-11-14 16:38:53,135 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:53,135 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Python asyncio tutorial", "urls_found": 5}
+2025-11-14 16:38:53,136 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:53,136 - hugo - INFO - [agent] urls_collected: {"query": "Python asyncio tutorial", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:38:55,521 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:55,521 - hugo - INFO - [agent] extraction_complete: {"query": "Python asyncio tutorial", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:38:55,521 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2846, "success": true}
+2025-11-14 16:38:55,521 - hugo - INFO - [agent] report_ready: {"query": "Python asyncio tutorial", "passages_count": 5, "evidence_length": 2846, "success": true}
+2025-11-14 16:40:43,504 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 16:40:43,512 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 385936, "total_connections": 1}
+2025-11-14 16:40:44,719 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 16:40:44,729 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:40:44,729 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:40:44,732 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:40:44,732 - hugo - INFO - [memory] factual_memories_loaded: {"count": 23, "faiss_added": 23}
+2025-11-14 16:40:44,742 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:40:44,746 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 16:40:44,904 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 16:40:44,906 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 16:40:44,907 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 16:40:44,910 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 16:40:44,913 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 16:40:44,916 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 16:40:44,916 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 16:40:44,918 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 16:40:56,995 - hugo - INFO - [user] message: {"content": "When does Wicked Part 2 come out?", "session_id": "shell_20251114_164044"}
+2025-11-14 16:40:56,996 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When does Wicked Part 2 come out?"}
+2025-11-14 16:40:56,997 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:40:56,997 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_164044", "streaming": false, "message_length": 33}
+2025-11-14 16:40:56,997 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164044"}
+2025-11-14 16:40:56,998 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164044"}
+2025-11-14 16:40:56,998 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:40:56,998 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:40:56,999 - hugo - INFO - [web_search] deploying_agent: {"query": "When does Wicked Part 2 come out?"}
+2025-11-14 16:40:56,999 - hugo - INFO - [agent] search_agent_started: {"query": "When does Wicked Part 2 come out?", "timestamp": "2025-11-14T16:40:56.999448"}
+2025-11-14 16:40:57,570 - hugo - INFO - [agent] imdb_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 0}
+2025-11-14 16:40:57,879 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yahoo.com%2Fentertainment%2Fmovies%2F", "decoded": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-i", "is_redirect": true}
+2025-11-14 16:40:57,880 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcuniversal.com%2Farticle%2Feverythi", "decoded": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "is_redirect": true}
+2025-11-14 16:40:57,881 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fpeople.com%2Fall%2Dabout%2Dwicked%2Dfor%2", "decoded": "https://people.com/all-about-wicked-for-good-11845769", "is_redirect": true}
+2025-11-14 16:40:57,881 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.digitalspy.com%2Fmovies%2Fa62960121%2", "decoded": "https://www.digitalspy.com/movies/a62960121/wicked-2/", "is_redirect": true}
+2025-11-14 16:40:57,881 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.hollywoodreporter.com%2Fmovies%2Fmovi", "decoded": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-c", "is_redirect": true}
+2025-11-14 16:40:57,882 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When does Wicked Part 2 come out?", "urls_found": 5}
+2025-11-14 16:40:57,883 - hugo - INFO - [agent] urls_collected: {"query": "When does Wicked Part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:40:58,357 - hugo - INFO - [agent] url_extracted: {"url": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-in-theaters-release-date-cast-trailers-and-everything-to-know-about-part-2-of-the-musical-202042367.html", "source": "duckduckgo", "content_length": 9569}
+2025-11-14 16:40:58,526 - hugo - INFO - [agent] url_extracted: {"url": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "source": "duckduckgo", "content_length": 6296}
+2025-11-14 16:40:58,874 - hugo - INFO - [agent] url_extracted: {"url": "https://people.com/all-about-wicked-for-good-11845769", "source": "duckduckgo", "content_length": 10224}
+2025-11-14 16:40:59,063 - hugo - INFO - [agent] url_extracted: {"url": "https://www.digitalspy.com/movies/a62960121/wicked-2/", "source": "duckduckgo", "content_length": 9534}
+2025-11-14 16:40:59,309 - hugo - INFO - [agent] url_extracted: {"url": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-cast-plot-1236072654/", "source": "duckduckgo", "content_length": 10489}
+2025-11-14 16:40:59,310 - hugo - INFO - [agent] extraction_complete: {"query": "When does Wicked Part 2 come out?", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 16:40:59,310 - hugo - INFO - [agent] report_ready: {"query": "When does Wicked Part 2 come out?", "passages_count": 5, "evidence_length": 2981, "success": true}
+2025-11-14 16:40:59,461 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:40:59,462 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 386892, "total_connections": 2}
+2025-11-14 16:40:59,468 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:40:59,468 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 81, "memory_type": "knowledge", "importance": 0.7, "entity_type": null}
+2025-11-14 16:40:59,468 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 16:40:59,469 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 2471.3729999999996}
+2025-11-14 16:40:59,470 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:40:59,475 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:40:59,476 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 16:40:59,476 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_164044"}
+2025-11-14 16:40:59,502 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:40:59,507 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:40:59,507 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 82, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:40:59,508 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:40:59,508 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_164044", "content_length": 1098, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:40:59,509 - hugo - INFO - [user] response: {"content": "Investigation complete.\nSources checked: DUCKDUCKGO\nEvidence collected from 5 sources.\n\nFindings:\n[DUCKDUCKGO] When is 'Wicked: For Good' out in theaters? Release date, cast, trailers and everything to know about part 2 of the musical\nReturn to Homepage\nEntertainment:\nMan who grabbed Ariana Grande\nMillie Bobby Brown fires back\nMovies to watch this weekend\n'Wuthering Heights' trailer\nBrittany Snow\n'The Beast in Me'\n\u2018A Very Jonas Christmas\u2019\n'CSI' star's off-screen crisis\nBravoCon 2025\nSelena documentary\nFrom left: Ariana Grande (Glinda), Cynthia Erivo (Elphaba), Michelle Yeoh (Madame Morrible) and Jeff Goldblum (the Wizard). (Universal Pictures/Courtesy Everett Collection)\nWicked: For Good\n, the highly anticipated second instal\n\n\n[DUCKDUCKGO] Everything You Need to Know Before Seeing 'Wicked: For Good' | NBCUNIVERSAL MEDIA\nNewsroom\nUniversal Pictures\nStudios\nNBC\nPeacock\nEverything You Need to Know Before Seeing 'Wicked: For Good'\nFrom release date to returning cast with Ariana Grande and Cynthia Erivo, here\u2019s everything fans need to know about 'Wicked: For Good'.\nNovember 12, 2025\nWi", "streaming": false, "session_id": "shell_20251114_164044"}
+2025-11-14 16:40:59,509 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:41:32,332 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_164044"}
+2025-11-14 16:41:32,332 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 16:41:32,333 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:41:32,333 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_164044", "streaming": false, "message_length": 33}
+2025-11-14 16:41:32,334 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164044"}
+2025-11-14 16:41:32,334 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164044"}
+2025-11-14 16:41:32,335 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:41:32,335 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:41:32,335 - hugo - INFO - [web_search] deploying_agent: {"query": "When is Pittsburgh light up night"}
+2025-11-14 16:41:32,336 - hugo - INFO - [agent] search_agent_started: {"query": "When is Pittsburgh light up night", "timestamp": "2025-11-14T16:41:32.335069"}
+2025-11-14 16:41:33,337 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.post%2Dgazette.com%2Flife%2Fholidays%", "decoded": "https://www.post-gazette.com/life/holidays/2025/11/06/pittsburgh-light-up-night-", "is_redirect": true}
+2025-11-14 16:41:33,337 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.visitpittsburgh.com%2Fblog%2Fpittsbur", "decoded": "https://www.visitpittsburgh.com/blog/pittsburgh-celebrates-light-up-night/", "is_redirect": true}
+2025-11-14 16:41:33,338 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fnextpittsburgh.com%2Fkid%2Dfriendly%2Dbus", "decoded": "https://nextpittsburgh.com/kid-friendly-businesses/when-is-light-up-night-2025-p", "is_redirect": true}
+2025-11-14 16:41:33,338 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.wtae.com%2Farticle%2Fpittsburgh%2Dlig", "decoded": "https://www.wtae.com/article/pittsburgh-light-up-night-2025/69239462", "is_redirect": true}
+2025-11-14 16:41:33,339 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdowntownpittsburghholidays.com%2Fevents%2", "decoded": "https://downtownpittsburghholidays.com/events/light-up-night", "is_redirect": true}
+2025-11-14 16:41:33,339 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When is Pittsburgh light up night", "urls_found": 5}
+2025-11-14 16:41:33,340 - hugo - INFO - [agent] urls_collected: {"query": "When is Pittsburgh light up night", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:41:33,995 - hugo - INFO - [agent] url_extracted: {"url": "https://www.visitpittsburgh.com/blog/pittsburgh-celebrates-light-up-night/", "source": "duckduckgo", "content_length": 8556}
+2025-11-14 16:41:34,808 - hugo - INFO - [agent] url_extracted: {"url": "https://nextpittsburgh.com/kid-friendly-businesses/when-is-light-up-night-2025-plus-the-holiday-markets-new-location/", "source": "duckduckgo", "content_length": 3977}
+2025-11-14 16:41:34,974 - hugo - INFO - [agent] url_extracted: {"url": "https://www.wtae.com/article/pittsburgh-light-up-night-2025/69239462", "source": "duckduckgo", "content_length": 8537}
+2025-11-14 16:41:35,402 - hugo - INFO - [agent] url_extracted: {"url": "https://downtownpittsburghholidays.com/events/light-up-night", "source": "duckduckgo", "content_length": 565}
+2025-11-14 16:41:35,403 - hugo - INFO - [agent] extraction_complete: {"query": "When is Pittsburgh light up night", "successful_extractions": 4, "total_urls": 5}
+2025-11-14 16:41:35,403 - hugo - INFO - [agent] report_ready: {"query": "When is Pittsburgh light up night", "passages_count": 4, "evidence_length": 2257, "success": true}
+2025-11-14 16:41:35,415 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:41:35,417 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 386188, "total_connections": 3}
+2025-11-14 16:41:35,422 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:41:35,422 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 83, "memory_type": "knowledge", "importance": 0.7, "entity_type": null}
+2025-11-14 16:41:35,423 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.7, "entity_type": null}
+2025-11-14 16:41:35,423 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 3088.0950000000003}
+2025-11-14 16:41:35,424 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:41:35,428 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:41:35,428 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 16:41:35,429 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_164044"}
+2025-11-14 16:41:35,510 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:41:35,515 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:41:35,515 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 84, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:41:35,516 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:41:35,516 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_164044", "content_length": 1098, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:41:35,517 - hugo - INFO - [user] response: {"content": "Investigation complete.\nSources checked: DUCKDUCKGO\nEvidence collected from 4 sources.\n\nFindings:\n[DUCKDUCKGO] Pittsburgh Light Up Night 2025 | Visit Pittsburgh\nPittsburgh Celebrates Light Up Night 2025\nJoin us as we light up the city and officially kick-off the Pittsburgh holiday season!\nHighmark Light Up Night\nis returning\nSaturday, Nov. 22, 2025\nas a part of a larger 64th Anniversary celebration. Annual festivities combine long-standing traditions and new holiday experiences with a supersized fireworks finale - an evening you won't want to miss!\nTree Lightings, Fireworks & Bridges Aglow\nThe lighting of all the Three Sisters bridges, The Roberto Cleme\n\n\n[DUCKDUCKGO] Pittsburgh Light Up Night 2025: The new location & date\nThe Xfinity Riverfront Stage at Light Up Night 2024. Photo courtesy of the Pittsburgh Downtown Partnership.\nPittsburgh\u2019s holiday season kickoff event is two weeks away.\nCity stakeholders gathered in Heinz Hall this morning, Thursday, Nov. 6, to announce the events and dates for this year\u2019s\nLight Up Night\nand other seasonal festivities. For its its 64th year, the ", "streaming": false, "session_id": "shell_20251114_164044"}
+2025-11-14 16:41:35,517 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:41:48,444 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_164044"}
+2025-11-14 16:41:48,449 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["pittsburgh", "light", "duckduckgo", "night", "wicked"], "total_keywords": 10}
+2025-11-14 16:41:48,450 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
+2025-11-14 16:41:48,450 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}

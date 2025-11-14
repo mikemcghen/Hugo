@@ -27,16 +27,18 @@ class SearchAgent:
     extracts content, and produces structured evidence reports.
     """
 
-    def __init__(self, logger=None, extract_skill=None):
+    def __init__(self, logger=None, extract_skill=None, cognition=None):
         """
         Initialize the search agent.
 
         Args:
             logger: HugoLogger instance for structured logging
             extract_skill: ExtractAndAnswerSkill instance for content extraction
+            cognition: CognitionEngine instance for answer synthesis
         """
         self.logger = logger
         self.extract_skill = extract_skill
+        self.cognition = cognition
 
         # Configuration
         self.max_urls_per_source = 5
@@ -84,12 +86,17 @@ class SearchAgent:
             # Step 3: Combine evidence
             combined_evidence = self._combine_evidence(extracted_passages)
 
-            # Step 4: Generate report
+            # Step 4: Synthesize concise answer
+            synthesized = await self.synthesize_answer(extracted_passages, query)
+
+            # Step 5: Generate report
             report = {
                 "query": query,
                 "urls_checked": [u["url"] for u in urls],
                 "extracted_passages": extracted_passages,
                 "combined_evidence": combined_evidence,
+                "synthesized_answer": synthesized["answer"],
+                "answer_support": synthesized["support"],
                 "sources_used": list(set(u.get("source") for u in urls)),
                 "timestamp": datetime.now().isoformat(),
                 "success": len(extracted_passages) > 0,
@@ -101,6 +108,7 @@ class SearchAgent:
                     "query": query,
                     "passages_count": len(extracted_passages),
                     "evidence_length": len(combined_evidence),
+                    "answer_length": len(synthesized["answer"]),
                     "success": report["success"]
                 })
 
@@ -201,8 +209,29 @@ class SearchAgent:
                     results = soup.find_all('a', class_='result__a')[:self.max_urls_per_source]
 
                     for result in results:
-                        url = result.get('href')
-                        if url:
+                        original_url = result.get('href')
+                        if not original_url:
+                            continue
+
+                        url = original_url
+                        title = result.get_text(strip=True)
+
+                        # Decode DuckDuckGo redirect URLs
+                        if "duckduckgo.com/l/?" in url:
+                            from urllib.parse import urlparse, parse_qs, unquote
+                            parsed = urlparse(url)
+                            params = parse_qs(parsed.query)
+                            if "uddg" in params:
+                                url = unquote(params["uddg"][0])
+
+                                # Log the transformation
+                                if self.logger:
+                                    self.logger.log_event("agent", "url_decoded", {
+                                        "original": original_url[:80],  # Truncate for readability
+                                        "decoded": url[:80],
+                                        "is_redirect": True
+                                    })
+                        else:
                             # Convert protocol-relative URLs to https
                             if url.startswith('//'):
                                 url = 'https:' + url
@@ -210,11 +239,15 @@ class SearchAgent:
                             elif not url.startswith('http'):
                                 url = urljoin("https://duckduckgo.com", url)
 
-                            urls.append({
-                                "url": url,
-                                "source": "duckduckgo",
-                                "title": result.get_text(strip=True)
-                            })
+                        # Skip invalid URLs (mailto:, javascript:, None, etc.)
+                        if not url or not (url.startswith("http://") or url.startswith("https://")):
+                            continue
+
+                        urls.append({
+                            "url": url,
+                            "source": "duckduckgo",
+                            "title": title
+                        })
 
             if self.logger:
                 self.logger.log_event("agent", "duckduckgo_search_complete", {
@@ -484,3 +517,99 @@ class SearchAgent:
             )
 
         return "\n\n".join(evidence_parts)
+
+    async def synthesize_answer(self, passages: List[Dict[str, Any]], query: str) -> Dict[str, str]:
+        """
+        Synthesize a concise, Jarvis-like answer from extracted passages.
+
+        Args:
+            passages: List of extracted content passages
+            query: Original user question
+
+        Returns:
+            Dictionary with 'answer' and 'support' keys
+        """
+        if not passages:
+            return {
+                "answer": "No information found.",
+                "support": "No sources available"
+            }
+
+        # Combine passages into context
+        combined_passages = ""
+        for i, passage in enumerate(passages[:5], 1):
+            source = passage.get('source', 'unknown').upper()
+            title = passage.get('title', 'Untitled')[:50]
+            content = passage.get('content', '')[:400]
+            combined_passages += f"\n[{source}] {title}\n{content}\n"
+
+        # Build synthesis prompt
+        prompt = f"""You are Hugo, a concise Jarvis-like assistant.
+User question: {query}
+
+Extracted evidence:
+{combined_passages}
+
+Task:
+Provide the single best answer in:
+- one concise sentence
+- optional one-sentence context if needed
+- no raw article text
+- no source clutter
+- no lists unless asked
+
+Answer directly and factually."""
+
+        # Use cognition engine for synthesis if available
+        if not self.cognition:
+            # Fallback: return first relevant sentence
+            if passages:
+                first_content = passages[0].get('content', '')
+                sentences = first_content.split('. ')
+                answer = sentences[0] + '.' if sentences else "Information found but synthesis unavailable."
+            else:
+                answer = "No clear answer available."
+
+            return {
+                "answer": answer,
+                "support": f"Based on {len(passages)} source(s)"
+            }
+
+        try:
+            # Use extraction_synthesis mode for clean, direct output
+            response = await self.cognition.generate_reply(
+                message=prompt,
+                session_id="search_agent_synthesis",
+                streaming=False,
+                mode="extraction_synthesis"
+            )
+
+            answer = response.content if hasattr(response, 'content') else str(response)
+
+            # Clean up the answer
+            answer = answer.strip()
+            if not answer or len(answer) < 10:
+                answer = "No clear answer available."
+
+            # Log synthesis
+            if self.logger:
+                self.logger.log_event("agent", "answer_synthesized", {
+                    "query": query,
+                    "answer_length": len(answer),
+                    "sources_used": len(passages)
+                })
+
+            return {
+                "answer": answer,
+                "support": f"Based on {len(passages)} source(s)"
+            }
+
+        except Exception as e:
+            if self.logger:
+                self.logger.log_error(e, {"phase": "synthesize_answer", "query": query})
+
+            # Fallback on error
+            return {
+                "answer": "Unable to synthesize answer from sources.",
+                "support": f"Error during synthesis"
+            }

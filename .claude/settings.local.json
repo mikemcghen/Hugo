@@ -1,21 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git commit:*)",
-      "Bash(python scripts/test_fact_detection.py:*)",
-      "Bash(python scripts/test_facts_integration.py:*)",
-      "Bash(python scripts/test_factual_memory.py:*)",
-      "Bash(git add:*)",
-      "Bash(git push)",
-      "Bash(python scripts/test_mem_console.py:*)",
-      "Bash(python scripts/test_task_system.py:*)",
-      "Bash(python scripts/test_cognition.py:*)",
-      "Bash(test:*)",
-      "Bash(python scripts/test_skills.py:*)",
-      "Bash(python scripts/test_skill_autorun.py:*)",
-      "Bash(python:*)",
-      "Bash(timeout 30 python:*)",
-      "Bash(git mv:*)"
+      "Bash(timeout 60 python:*)"
     ],
     "deny": [],
     "ask": []
