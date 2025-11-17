@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 60 python:*)"
+      "Bash(timeout 60 python:*)",
+      "Bash(cognition_changes.diff)",
+      "Bash(jarvis_personality_layer.patch)",
+      "Bash(jarvis_personality_layer_FINAL.patch)",
+      "Bash(git add:*)",
+      "Bash(phase_5_1_streaming_stability.patch)"
     ],
     "deny": [],
     "ask": []

@@ -309,31 +309,33 @@ Just type naturally to chat with Hugo!
 
             # Process through cognition engine
             if self.runtime.cognition:
-                if use_streaming:
-                    # Stream response token by token using generate_reply
-                    async for chunk in await self.runtime.cognition.generate_reply(
-                        message,
-                        self.session_id,
-                        streaming=True
-                    ):
-                        # Check if it's the final ResponsePackage or a string chunk
-                        if isinstance(chunk, str):
-                            print(chunk, end="", flush=True)
-                            response_text += chunk
-                        else:
-                            # Final response package
-                            response_package = chunk
+                # generate_reply() ALWAYS returns an async iterator now (unified interface)
+                # This ensures we never get 'async for' type errors
+                reply_iterator = await self.runtime.cognition.generate_reply(
+                    message,
+                    self.session_id,
+                    streaming=use_streaming
+                )
 
-                    print()  # Newline after streaming
-                else:
-                    # Non-streaming response using generate_reply (includes skill bypass)
-                    response_package = await self.runtime.cognition.generate_reply(
-                        message,
-                        self.session_id,
-                        streaming=False
-                    )
-                    response_text = response_package.content
-                    print(response_text)
+                # Iterate over response (works for both streaming and non-streaming)
+                async for chunk in reply_iterator:
+                    # Check if it's the final ResponsePackage or a string chunk
+                    if isinstance(chunk, str):
+                        # Streaming: print chunks as they arrive
+                        print(chunk, end="", flush=True)
+                        response_text += chunk
+                    else:
+                        # Final response package (could be from streaming or single-shot)
+                        response_package = chunk
+
+                        # If non-streaming, print the complete response
+                        if not use_streaming:
+                            response_text = chunk.content
+                            print(response_text)
+
+                # Newline after streaming
+                if use_streaming:
+                    print()
             else:
                 response_text = "(Cognition engine not initialized. Please check boot sequence.)"
                 print(response_text)

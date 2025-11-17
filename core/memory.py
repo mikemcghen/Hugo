@@ -884,10 +884,22 @@ Return ONLY valid JSON in this format:
                 priority_boost = self.MEMORY_PRIORITY.get(memory.memory_type, 0) / 100.0
                 score += priority_boost
 
-                # Recency boost (+0.10 for last 30 days)
+                # Enhanced recency boost for Jarvis mode (stronger bias toward recent context)
                 age_days = (datetime.now() - memory.timestamp).days
-                if age_days <= 30:
+                if age_days <= 1:
+                    # Last 24 hours: +0.30 boost
+                    score += 0.30
+                elif age_days <= 7:
+                    # Last week: +0.20 boost
+                    score += 0.20
+                elif age_days <= 30:
+                    # Last 30 days: +0.10 boost
                     score += 0.10
+
+                # Additional boost for very recent user messages (last 10 messages)
+                if memory.memory_type in ["user_message", "assistant_response"]:
+                    if age_days == 0:
+                        score += 0.15
 
                 scored_results.append((score, memory))
 

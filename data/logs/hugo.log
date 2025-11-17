@@ -4437,3 +4437,619 @@ ValueError: Simulated network error
 2025-11-14 16:41:48,449 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["pittsburgh", "light", "duckduckgo", "night", "wicked"], "total_keywords": 10}
 2025-11-14 16:41:48,450 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 1.0, "sentiment_label": "positive"}
 2025-11-14 16:41:48,450 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 16:46:58,550 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 16:46:58,557 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 387172, "total_connections": 1}
+2025-11-14 16:46:59,838 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 16:46:59,848 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:46:59,849 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 16:46:59,851 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 16:46:59,851 - hugo - INFO - [memory] factual_memories_loaded: {"count": 25, "faiss_added": 25}
+2025-11-14 16:46:59,862 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true}
+2025-11-14 16:46:59,866 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 16:47:00,037 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 16:47:00,039 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 16:47:00,041 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 16:47:00,049 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 16:47:00,053 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 16:47:00,056 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 16:47:00,057 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 16:47:00,059 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 16:47:02,693 - hugo - INFO - [user] message: {"content": "When is Pittsburgh light up night", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:02,693 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When is Pittsburgh light up night"}
+2025-11-14 16:47:02,694 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:47:02,694 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_164700", "streaming": false, "message_length": 33}
+2025-11-14 16:47:02,694 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:02,695 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:02,695 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:47:02,695 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:47:02,696 - hugo - INFO - [web_search] deploying_agent: {"query": "When is Pittsburgh light up night"}
+2025-11-14 16:47:02,696 - hugo - INFO - [agent] search_agent_started: {"query": "When is Pittsburgh light up night", "timestamp": "2025-11-14T16:47:02.696452"}
+2025-11-14 16:47:03,585 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.visitpittsburgh.com%2Fblog%2Fpittsbur", "decoded": "https://www.visitpittsburgh.com/blog/pittsburgh-celebrates-light-up-night/", "is_redirect": true}
+2025-11-14 16:47:03,585 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fdowntownpittsburghholidays.com%2Fevents%2", "decoded": "https://downtownpittsburghholidays.com/events/light-up-night", "is_redirect": true}
+2025-11-14 16:47:03,586 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.post%2Dgazette.com%2Flife%2Fholidays%", "decoded": "https://www.post-gazette.com/life/holidays/2025/11/06/pittsburgh-light-up-night-", "is_redirect": true}
+2025-11-14 16:47:03,586 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fnextpittsburgh.com%2Fkid%2Dfriendly%2Dbus", "decoded": "https://nextpittsburgh.com/kid-friendly-businesses/when-is-light-up-night-2025-p", "is_redirect": true}
+2025-11-14 16:47:03,587 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.wtae.com%2Farticle%2Fpittsburgh%2Dlig", "decoded": "https://www.wtae.com/article/pittsburgh-light-up-night-2025/69239462", "is_redirect": true}
+2025-11-14 16:47:03,587 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When is Pittsburgh light up night", "urls_found": 5}
+2025-11-14 16:47:03,588 - hugo - INFO - [agent] urls_collected: {"query": "When is Pittsburgh light up night", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:47:03,999 - hugo - INFO - [agent] url_extracted: {"url": "https://www.visitpittsburgh.com/blog/pittsburgh-celebrates-light-up-night/", "source": "duckduckgo", "content_length": 8556}
+2025-11-14 16:47:04,209 - hugo - INFO - [agent] url_extracted: {"url": "https://downtownpittsburghholidays.com/events/light-up-night", "source": "duckduckgo", "content_length": 565}
+2025-11-14 16:47:04,640 - hugo - INFO - [agent] url_extracted: {"url": "https://nextpittsburgh.com/kid-friendly-businesses/when-is-light-up-night-2025-plus-the-holiday-markets-new-location/", "source": "duckduckgo", "content_length": 3977}
+2025-11-14 16:47:05,347 - hugo - INFO - [agent] url_extracted: {"url": "https://www.wtae.com/article/pittsburgh-light-up-night-2025/69239462", "source": "duckduckgo", "content_length": 8537}
+2025-11-14 16:47:05,348 - hugo - INFO - [agent] extraction_complete: {"query": "When is Pittsburgh light up night", "successful_extractions": 4, "total_urls": 5}
+2025-11-14 16:47:05,348 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 16:47:29,059 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 23.71, "status": "success", "response_length": 60}
+2025-11-14 16:47:29,060 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 60, "bypassed_normal_flow": true}
+2025-11-14 16:47:29,060 - hugo - INFO - [agent] answer_synthesized: {"query": "When is Pittsburgh light up night", "answer_length": 60, "sources_used": 4}
+2025-11-14 16:47:29,060 - hugo - INFO - [agent] report_ready: {"query": "When is Pittsburgh light up night", "passages_count": 4, "evidence_length": 2257, "answer_length": 60, "success": true}
+2025-11-14 16:47:29,216 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:47:29,221 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:47:29,221 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 85, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 16:47:29,221 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 16:47:29,222 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 26526.546}
+2025-11-14 16:47:29,222 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:47:29,224 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 387976, "total_connections": 2}
+2025-11-14 16:47:29,228 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:47:29,230 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 16:47:29,230 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:29,244 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:47:29,250 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:47:29,250 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 86, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:47:29,251 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:47:29,251 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_164700", "content_length": 84, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:47:29,251 - hugo - INFO - [user] response: {"content": "Pittsburgh Light Up Night is on Saturday, November 22, 2025.\n\n(Based on 4 source(s))", "streaming": false, "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:29,252 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:47:54,202 - hugo - INFO - [user] message: {"content": "Where could I go ice skating in Mt Lebanon PA", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:54,203 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "Where could I go ice skating in Mt Lebanon PA"}
+2025-11-14 16:47:54,203 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:47:54,204 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_164700", "streaming": false, "message_length": 45}
+2025-11-14 16:47:54,204 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:54,204 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:47:54,205 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:47:54,205 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:47:54,205 - hugo - INFO - [web_search] deploying_agent: {"query": "Where could I go ice skating in Mt Lebanon PA"}
+2025-11-14 16:47:54,206 - hugo - INFO - [agent] search_agent_started: {"query": "Where could I go ice skating in Mt Lebanon PA", "timestamp": "2025-11-14T16:47:54.206029"}
+2025-11-14 16:47:55,121 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fmtlebanon.org%2Fparks%2Drecreation%2Ffaci", "decoded": "https://mtlebanon.org/parks-recreation/facilities/ice-center/", "is_redirect": true}
+2025-11-14 16:47:55,121 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.rinktime.com%2Frinks%2Funited%2Dstate", "decoded": "https://www.rinktime.com/rinks/united-states/pennsylvania/mount-lebanon/ice-skat", "is_redirect": true}
+2025-11-14 16:47:55,122 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ice%2Dfinder.com%2Frinks%2Fpennsylvan", "decoded": "https://www.ice-finder.com/rinks/pennsylvania/rink/mount-lebanon-ice-center", "is_redirect": true}
+2025-11-14 16:47:55,122 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fsouthhills.macaronikid.com%2Farticles%2F6", "decoded": "https://southhills.macaronikid.com/articles/61caa92e77088f4f063529cf/where-to-go", "is_redirect": true}
+2025-11-14 16:47:55,123 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yelp.com%2Fsearch%3Ffind_desc%3DSkati", "decoded": "https://www.yelp.com/search?find_desc=Skating+Rinks&find_loc=Mount+Lebanon+Towns", "is_redirect": true}
+2025-11-14 16:47:55,123 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Where could I go ice skating in Mt Lebanon PA", "urls_found": 5}
+2025-11-14 16:47:55,124 - hugo - INFO - [agent] urls_collected: {"query": "Where could I go ice skating in Mt Lebanon PA", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:47:55,371 - hugo - INFO - [agent] url_extracted: {"url": "https://mtlebanon.org/parks-recreation/facilities/ice-center/", "source": "duckduckgo", "content_length": 4168}
+2025-11-14 16:47:59,171 - hugo - INFO - [agent] url_extracted: {"url": "https://www.rinktime.com/rinks/united-states/pennsylvania/mount-lebanon/ice-skating-rink/mt-lebanon-recreation-center/", "source": "duckduckgo", "content_length": 4330}
+2025-11-14 16:47:59,814 - hugo - INFO - [agent] url_extracted: {"url": "https://www.ice-finder.com/rinks/pennsylvania/rink/mount-lebanon-ice-center", "source": "duckduckgo", "content_length": 1899}
+2025-11-14 16:48:00,137 - hugo - INFO - [agent] url_extracted: {"url": "https://southhills.macaronikid.com/articles/61caa92e77088f4f063529cf/where-to-go-indoor-ice-skating-in-the-south-hills-of-pittsburgh", "source": "duckduckgo", "content_length": 2056}
+2025-11-14 16:48:00,244 - hugo - INFO - [extract] fetch_failed: {"url": "https://www.yelp.com/search?find_desc=Skating+Rinks&find_loc=Mount+Lebanon+Township,+PA", "status": 403}
+2025-11-14 16:48:00,245 - hugo - INFO - [agent] extraction_complete: {"query": "Where could I go ice skating in Mt Lebanon PA", "successful_extractions": 4, "total_urls": 5}
+2025-11-14 16:48:00,245 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 16:48:24,383 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 24.14, "status": "success", "response_length": 104}
+2025-11-14 16:48:24,384 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 104, "bypassed_normal_flow": true}
+2025-11-14 16:48:24,385 - hugo - INFO - [agent] answer_synthesized: {"query": "Where could I go ice skating in Mt Lebanon PA", "answer_length": 104, "sources_used": 4}
+2025-11-14 16:48:24,385 - hugo - INFO - [agent] report_ready: {"query": "Where could I go ice skating in Mt Lebanon PA", "passages_count": 4, "evidence_length": 2324, "answer_length": 104, "success": true}
+2025-11-14 16:48:24,398 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:48:24,418 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:48:24,419 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 87, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 16:48:24,419 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 16:48:24,420 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 30214.289}
+2025-11-14 16:48:24,420 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:48:24,424 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:48:24,425 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 16:48:24,425 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_164700"}
+2025-11-14 16:48:24,438 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:48:24,443 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:48:24,443 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 88, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:48:24,443 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:48:24,444 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_164700", "content_length": 128, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:48:24,444 - hugo - INFO - [user] response: {"content": "You can go ice skating at the Mount Lebanon Ice Center, located at 900 Cedar Blvd, Pittsburgh, PA 15228.\n\n(Based on 4 source(s))", "streaming": false, "session_id": "shell_20251114_164700"}
+2025-11-14 16:48:24,445 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:48:46,982 - hugo - INFO - [user] message: {"content": "When do they have open skating sessions coming up?", "session_id": "shell_20251114_164700"}
+2025-11-14 16:48:46,982 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "When do they have open skating sessions coming up?"}
+2025-11-14 16:48:46,983 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:48:46,983 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_164700", "streaming": false, "message_length": 50}
+2025-11-14 16:48:46,984 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:48:46,984 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_164700"}
+2025-11-14 16:48:46,985 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:48:46,985 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 16:48:46,986 - hugo - INFO - [web_search] deploying_agent: {"query": "When do they have open skating sessions coming up?"}
+2025-11-14 16:48:46,986 - hugo - INFO - [agent] search_agent_started: {"query": "When do they have open skating sessions coming up?", "timestamp": "2025-11-14T16:48:46.986482"}
+2025-11-14 16:48:47,877 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fgopsusports.com%2Fpegula%2Dice%2Darena%2D", "decoded": "https://gopsusports.com/pegula-ice-arena-public", "is_redirect": true}
+2025-11-14 16:48:47,878 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.pittsburghpa.gov%2FRecreation%2DEvent", "decoded": "https://www.pittsburghpa.gov/Recreation-Events/Park-Facilities/Schenley-Skating-", "is_redirect": true}
+2025-11-14 16:48:47,878 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ice%2Dfinder.com%2F&rut=b3c10af80e2ed", "decoded": "https://www.ice-finder.com/", "is_redirect": true}
+2025-11-14 16:48:47,879 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.icecastlearena.com%2Fskating&rut=767f", "decoded": "https://www.icecastlearena.com/skating", "is_redirect": true}
+2025-11-14 16:48:47,879 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.pittsburghpa.gov%2FRecreation%2DEvent", "decoded": "https://www.pittsburghpa.gov/Recreation-Events/Park-Facilities/Schenley-Skating-", "is_redirect": true}
+2025-11-14 16:48:47,880 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "When do they have open skating sessions coming up?", "urls_found": 5}
+2025-11-14 16:48:47,880 - hugo - INFO - [agent] urls_collected: {"query": "When do they have open skating sessions coming up?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 16:48:49,099 - hugo - INFO - [agent] url_extracted: {"url": "https://gopsusports.com/pegula-ice-arena-public", "source": "duckduckgo", "content_length": 19798}
+2025-11-14 16:48:49,334 - hugo - INFO - [extract] fetch_failed: {"url": "https://www.pittsburghpa.gov/Recreation-Events/Park-Facilities/Schenley-Skating-Rink", "status": 403}
+2025-11-14 16:48:49,575 - hugo - INFO - [agent] url_extracted: {"url": "https://www.ice-finder.com/", "source": "duckduckgo", "content_length": 1621}
+2025-11-14 16:48:49,858 - hugo - INFO - [extract] fetch_failed: {"url": "https://www.pittsburghpa.gov/Recreation-Events/Park-Facilities/Schenley-Skating-Rink/Skating-Sessions", "status": 403}
+2025-11-14 16:48:49,859 - hugo - INFO - [agent] extraction_complete: {"query": "When do they have open skating sessions coming up?", "successful_extractions": 2, "total_urls": 5}
+2025-11-14 16:48:49,859 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 16:49:06,054 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 16.19, "status": "success", "response_length": 164}
+2025-11-14 16:49:06,055 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 164, "bypassed_normal_flow": true}
+2025-11-14 16:49:06,055 - hugo - INFO - [agent] answer_synthesized: {"query": "When do they have open skating sessions coming up?", "answer_length": 164, "sources_used": 2}
+2025-11-14 16:49:06,055 - hugo - INFO - [agent] report_ready: {"query": "When do they have open skating sessions coming up?", "passages_count": 2, "evidence_length": 1164, "answer_length": 164, "success": true}
+2025-11-14 16:49:06,068 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:49:06,073 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:49:06,074 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 89, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 16:49:06,074 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 16:49:06,075 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 19089.326}
+2025-11-14 16:49:06,075 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 16:49:06,079 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 16:49:06,080 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 16:49:06,080 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_164700"}
+2025-11-14 16:49:06,103 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:49:06,107 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:49:06,108 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 90, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 16:49:06,108 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 16:49:06,109 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_164700", "content_length": 188, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 16:49:06,109 - hugo - INFO - [user] response: {"content": "Public skating sessions are available to be viewed by clicking on the link provided in the \"Drop in Programming Schedule\" section of the Pegula Ice Arena's webpage.\n\n(Based on 2 source(s))", "streaming": false, "session_id": "shell_20251114_164700"}
+2025-11-14 16:49:06,110 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 16:51:13,959 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_164700"}
+2025-11-14 16:51:13,969 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "based", "source", "ice", "pittsburgh"], "total_keywords": 10}
+2025-11-14 16:51:13,970 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-14 16:51:13,970 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 16:51:39,209 - hugo - INFO - [reflection] ollama_success: {"attempt": 1, "response_length": 441}
+2025-11-14 16:51:39,210 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 137, "insights_count": 2, "confidence": 0.8}
+2025-11-14 16:51:39,222 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 16:51:39,228 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 16:51:39,228 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 91, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 16:51:39,229 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 16:51:39,229 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.8, "content_length": 465}
+2025-11-14 16:51:39,230 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_164700", "insights_count": 2, "keywords_count": 10, "sentiment": 0.0}
+2025-11-14 16:51:39,231 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_164700", "message_count": 4}
+2025-11-14 17:04:41,600 - hugo - INFO - [runtime] boot_started: {}
+2025-11-14 17:04:41,607 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 366408, "total_connections": 1}
+2025-11-14 17:04:43,520 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-14 17:04:43,523 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 17:04:43,523 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-14 17:04:43,526 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-14 17:04:43,527 - hugo - INFO - [memory] factual_memories_loaded: {"count": 28, "faiss_added": 28}
+2025-11-14 17:04:43,539 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true, "jarvis_mode": false}
+2025-11-14 17:04:43,543 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-14 17:04:43,720 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-14 17:04:43,721 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-14 17:04:43,723 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-14 17:04:43,725 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-14 17:04:43,730 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-14 17:04:43,732 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-14 17:04:43,733 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-14 17:04:43,735 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-14 17:04:53,048 - hugo - INFO - [user] message: {"content": "Hey there Hugo. How's it going?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:04:53,054 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Hey there Hugo. How's it going?"}
+2025-11-14 17:04:53,055 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:04:53,055 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 31}
+2025-11-14 17:04:53,056 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Hey there Hugo. How's it going?"}
+2025-11-14 17:04:53,056 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 17:04:53,057 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_170443", "content_length": 31}
+2025-11-14 17:04:53,057 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:04:53,058 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_170443", "memory_count": 2}
+2025-11-14 17:04:53,227 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 31, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 17:04:53,227 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_170443", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 2, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 962}
+2025-11-14 17:04:53,228 - hugo - INFO - [cognition] ollama_streaming_attempt: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:05:52,949 - hugo - INFO - [cognition] ollama_streaming_complete: {"attempt": 1, "duration": 59.72, "status": "success", "response_length": 265, "chunks": 59}
+2025-11-14 17:05:52,964 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:05:52,969 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:05:52,969 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 92, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:05:52,970 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:05:52,971 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 265, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:05:52,972 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 17:05:52,972 - hugo - INFO - [user] response: {"content": "Good day! I'm doing well, thank you for asking. It's always great to start a new conversation. What brings you here today? Is there something on your mind that you'd like to discuss or explore? I'm all ears and happy to engage in a thoughtful conversation with you.", "streaming": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:05:52,973 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:06:15,589 - hugo - INFO - [user] message: {"content": "What is the craziest thing going on in the world right now according to public opinion?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:06:15,590 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "What is the craziest thing going on in the world right now according to public o"}
+2025-11-14 17:06:15,590 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:06:15,590 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 87}
+2025-11-14 17:06:15,591 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:06:15,591 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:06:15,592 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:06:15,592 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:06:15,593 - hugo - INFO - [web_search] deploying_agent: {"query": "What is the craziest thing going on in the world right now according to public opinion?"}
+2025-11-14 17:06:15,593 - hugo - INFO - [agent] search_agent_started: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "timestamp": "2025-11-14T17:06:15.593301"}
+2025-11-14 17:06:15,761 - hugo - INFO - [agent] urls_collected: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "total_urls": 0, "sources": []}
+2025-11-14 17:06:15,762 - hugo - INFO - [agent] extraction_complete: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "successful_extractions": 0, "total_urls": 0}
+2025-11-14 17:06:15,762 - hugo - INFO - [agent] report_ready: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "passages_count": 0, "evidence_length": 0, "answer_length": 21, "success": false}
+2025-11-14 17:06:15,763 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 170.0}
+2025-11-14 17:06:15,763 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:06:15,767 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:06:15,768 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 17:06:15,768 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_170443"}
+2025-11-14 17:06:15,780 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:06:15,781 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 373332, "total_connections": 2}
+2025-11-14 17:06:15,786 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:06:15,786 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 93, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:06:15,786 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:06:15,787 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 174, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:06:15,787 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "'async for' requires an object with __aiter__ method, got ResponsePackage", "context": {}}
+2025-11-14 17:06:15,787 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 314, in _process_message
+    async for chunk in await self.runtime.cognition.generate_reply(
+TypeError: 'async for' requires an object with __aiter__ method, got ResponsePackage
+2025-11-14 17:07:07,720 - hugo - INFO - [user] message: {"content": "What is the craziest thing going on in the world right now according to public opinion?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:07,721 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "What is the craziest thing going on in the world right now according to public o"}
+2025-11-14 17:07:07,722 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:07:07,722 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 87}
+2025-11-14 17:07:07,723 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:07,723 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:07,724 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:07:07,724 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:07:07,724 - hugo - INFO - [web_search] deploying_agent: {"query": "What is the craziest thing going on in the world right now according to public opinion?"}
+2025-11-14 17:07:07,725 - hugo - INFO - [agent] search_agent_started: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "timestamp": "2025-11-14T17:07:07.724477"}
+2025-11-14 17:07:07,905 - hugo - INFO - [agent] urls_collected: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "total_urls": 0, "sources": []}
+2025-11-14 17:07:07,905 - hugo - INFO - [agent] extraction_complete: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "successful_extractions": 0, "total_urls": 0}
+2025-11-14 17:07:07,906 - hugo - INFO - [agent] report_ready: {"query": "What is the craziest thing going on in the world right now according to public opinion?", "passages_count": 0, "evidence_length": 0, "answer_length": 21, "success": false}
+2025-11-14 17:07:07,906 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": false, "execution_time_ms": 181.93400000000003}
+2025-11-14 17:07:07,906 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:07:07,910 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:07:07,911 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": false}
+2025-11-14 17:07:07,911 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": false, "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:07,927 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:07:07,931 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:07:07,932 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 94, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:07:07,932 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:07:07,932 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 174, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:07:07,933 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "'async for' requires an object with __aiter__ method, got ResponsePackage", "context": {}}
+2025-11-14 17:07:07,933 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 314, in _process_message
+    async for chunk in await self.runtime.cognition.generate_reply(
+TypeError: 'async for' requires an object with __aiter__ method, got ResponsePackage
+2025-11-14 17:07:25,793 - hugo - INFO - [user] message: {"content": "Okay well when does Wicked part 2 come out?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:25,794 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "Okay well when does Wicked part 2 come out?"}
+2025-11-14 17:07:25,794 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:07:25,794 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": false, "message_length": 43}
+2025-11-14 17:07:25,795 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:25,795 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:07:25,796 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:07:25,796 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:07:25,797 - hugo - INFO - [web_search] deploying_agent: {"query": "Okay well when does Wicked part 2 come out?"}
+2025-11-14 17:07:25,797 - hugo - INFO - [agent] search_agent_started: {"query": "Okay well when does Wicked part 2 come out?", "timestamp": "2025-11-14T17:07:25.797313"}
+2025-11-14 17:07:26,518 - hugo - INFO - [agent] imdb_search_complete: {"query": "Okay well when does Wicked part 2 come out?", "urls_found": 0}
+2025-11-14 17:07:26,805 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.yahoo.com%2Fentertainment%2Fmovies%2F", "decoded": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-i", "is_redirect": true}
+2025-11-14 17:07:26,806 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fthedirect.com%2Farticle%2Fwicked%2D2%2Dpa", "decoded": "https://thedirect.com/article/wicked-2-parts-release", "is_redirect": true}
+2025-11-14 17:07:26,806 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fpeople.com%2Fall%2Dabout%2Dwicked%2Dfor%2", "decoded": "https://people.com/all-about-wicked-for-good-11845769", "is_redirect": true}
+2025-11-14 17:07:26,807 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.hollywoodreporter.com%2Fmovies%2Fmovi", "decoded": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-c", "is_redirect": true}
+2025-11-14 17:07:26,807 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcuniversal.com%2Farticle%2Feverythi", "decoded": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "is_redirect": true}
+2025-11-14 17:07:26,808 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Okay well when does Wicked part 2 come out?", "urls_found": 5}
+2025-11-14 17:07:26,809 - hugo - INFO - [agent] urls_collected: {"query": "Okay well when does Wicked part 2 come out?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 17:07:27,354 - hugo - INFO - [agent] url_extracted: {"url": "https://www.yahoo.com/entertainment/movies/article/when-is-wicked-for-good-out-in-theaters-release-date-cast-trailers-and-everything-to-know-about-part-2-of-the-musical-202042367.html", "source": "duckduckgo", "content_length": 9569}
+2025-11-14 17:07:27,563 - hugo - INFO - [agent] url_extracted: {"url": "https://thedirect.com/article/wicked-2-parts-release", "source": "duckduckgo", "content_length": 6163}
+2025-11-14 17:07:27,952 - hugo - INFO - [agent] url_extracted: {"url": "https://people.com/all-about-wicked-for-good-11845769", "source": "duckduckgo", "content_length": 10206}
+2025-11-14 17:07:28,174 - hugo - INFO - [agent] url_extracted: {"url": "https://www.hollywoodreporter.com/movies/movie-news/wicked-part-2-release-date-cast-plot-1236072654/", "source": "duckduckgo", "content_length": 10489}
+2025-11-14 17:07:28,349 - hugo - INFO - [agent] url_extracted: {"url": "https://www.nbcuniversal.com/article/everything-you-need-know-seeing-wicked-good", "source": "duckduckgo", "content_length": 6296}
+2025-11-14 17:07:28,349 - hugo - INFO - [agent] extraction_complete: {"query": "Okay well when does Wicked part 2 come out?", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 17:07:28,350 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:08:00,890 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 32.54, "status": "success", "response_length": 92}
+2025-11-14 17:08:00,891 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 92, "bypassed_normal_flow": true}
+2025-11-14 17:08:00,892 - hugo - INFO - [agent] answer_synthesized: {"query": "Okay well when does Wicked part 2 come out?", "answer_length": 92, "sources_used": 5}
+2025-11-14 17:08:00,892 - hugo - INFO - [agent] report_ready: {"query": "Okay well when does Wicked part 2 come out?", "passages_count": 5, "evidence_length": 3002, "answer_length": 92, "success": true}
+2025-11-14 17:08:00,939 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:08:00,948 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:08:00,948 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 95, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 17:08:00,949 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 17:08:00,949 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 35153.243}
+2025-11-14 17:08:00,950 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:08:00,951 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 355020, "total_connections": 3}
+2025-11-14 17:08:00,956 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:08:00,957 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 17:08:00,957 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:00,970 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:08:00,975 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:08:00,976 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 96, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:08:00,976 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:08:00,977 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 116, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:08:00,977 - hugo - INFO - [user] response: {"content": "Wicked part 2, also known as Wicked: For Good, is scheduled to release on November 21, 2025.\n\n(Based on 5 source(s))", "streaming": false, "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:00,978 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:08:26,282 - hugo - INFO - [user] message: {"content": "Great! What did president Trump do most recently?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:26,283 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "Great! What did president Trump do most recently?"}
+2025-11-14 17:08:26,283 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:08:26,284 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 49}
+2025-11-14 17:08:26,284 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:26,285 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:26,285 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:08:26,286 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:08:26,286 - hugo - INFO - [web_search] deploying_agent: {"query": "Great! What did president Trump do most recently?"}
+2025-11-14 17:08:26,286 - hugo - INFO - [agent] search_agent_started: {"query": "Great! What did president Trump do most recently?", "timestamp": "2025-11-14T17:08:26.286826"}
+2025-11-14 17:08:27,371 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.bbc.com%2Fnews%2Flive%2Fc9862nj0pvgt&", "decoded": "https://www.bbc.com/news/live/c9862nj0pvgt", "is_redirect": true}
+2025-11-14 17:08:27,372 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.usatoday.com%2Fstory%2Fnews%2Fpolitic", "decoded": "https://www.usatoday.com/story/news/politics/2025/11/12/longest-government-shutd", "is_redirect": true}
+2025-11-14 17:08:27,372 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.cbsnews.com%2Flive%2Dupdates%2Fgovern", "decoded": "https://www.cbsnews.com/live-updates/government-shutdown-latest-trump-signs-fund", "is_redirect": true}
+2025-11-14 17:08:27,373 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fabcnews.go.com%2FPolitics%2Flive%2Dupdate", "decoded": "https://abcnews.go.com/Politics/live-updates/government-shutdown-updates/?id=127", "is_redirect": true}
+2025-11-14 17:08:27,373 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.nbcnews.com%2Fpolitics%2Fdonald%2Dtru", "decoded": "https://www.nbcnews.com/politics/donald-trump/trump-14-major-campaign-promises-r", "is_redirect": true}
+2025-11-14 17:08:27,375 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "Great! What did president Trump do most recently?", "urls_found": 5}
+2025-11-14 17:08:27,375 - hugo - INFO - [agent] urls_collected: {"query": "Great! What did president Trump do most recently?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 17:08:27,573 - hugo - INFO - [agent] url_extracted: {"url": "https://www.bbc.com/news/live/c9862nj0pvgt", "source": "duckduckgo", "content_length": 15292}
+2025-11-14 17:08:27,712 - hugo - INFO - [agent] url_extracted: {"url": "https://www.usatoday.com/story/news/politics/2025/11/12/longest-government-shutdown-house-vote-live-updates/87104879007/", "source": "duckduckgo", "content_length": 20973}
+2025-11-14 17:08:27,923 - hugo - INFO - [agent] url_extracted: {"url": "https://www.cbsnews.com/live-updates/government-shutdown-latest-trump-signs-funding-federal-agences-opening/", "source": "duckduckgo", "content_length": 16447}
+2025-11-14 17:08:28,104 - hugo - INFO - [agent] url_extracted: {"url": "https://abcnews.go.com/Politics/live-updates/government-shutdown-updates/?id=127369640", "source": "duckduckgo", "content_length": 5689}
+2025-11-14 17:08:28,754 - hugo - INFO - [agent] url_extracted: {"url": "https://www.nbcnews.com/politics/donald-trump/trump-14-major-campaign-promises-rcna203436", "source": "duckduckgo", "content_length": 20666}
+2025-11-14 17:08:28,755 - hugo - INFO - [agent] extraction_complete: {"query": "Great! What did president Trump do most recently?", "successful_extractions": 5, "total_urls": 5}
+2025-11-14 17:08:28,755 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:08:57,699 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 28.94, "status": "success", "response_length": 109}
+2025-11-14 17:08:57,700 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 109, "bypassed_normal_flow": true}
+2025-11-14 17:08:57,700 - hugo - INFO - [agent] answer_synthesized: {"query": "Great! What did president Trump do most recently?", "answer_length": 109, "sources_used": 5}
+2025-11-14 17:08:57,700 - hugo - INFO - [agent] report_ready: {"query": "Great! What did president Trump do most recently?", "passages_count": 5, "evidence_length": 2947, "answer_length": 109, "success": true}
+2025-11-14 17:08:57,730 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:08:57,735 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:08:57,735 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 97, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 17:08:57,736 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 17:08:57,736 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 31450.871}
+2025-11-14 17:08:57,737 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:08:57,742 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:08:57,742 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 17:08:57,743 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:08:57,757 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:08:57,762 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:08:57,762 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 98, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:08:57,763 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:08:57,763 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 133, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:08:57,763 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "'async for' requires an object with __aiter__ method, got ResponsePackage", "context": {}}
+2025-11-14 17:08:57,763 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 314, in _process_message
+    async for chunk in await self.runtime.cognition.generate_reply(
+TypeError: 'async for' requires an object with __aiter__ method, got ResponsePackage
+2025-11-14 17:09:09,978 - hugo - INFO - [user] message: {"content": "Can you try searching for that again?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:09:09,979 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Can you try searching for that again?"}
+2025-11-14 17:09:09,979 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:09:09,980 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": false, "message_length": 37}
+2025-11-14 17:09:09,980 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Can you try searching for that again?"}
+2025-11-14 17:09:09,981 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 17:09:09,981 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_170443", "content_length": 37}
+2025-11-14 17:09:09,981 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:09:09,982 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_170443", "memory_count": 10}
+2025-11-14 17:09:09,994 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 37, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 17:09:09,995 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_170443", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1811}
+2025-11-14 17:09:09,995 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:09:42,187 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 32.19, "status": "success", "response_length": 667}
+2025-11-14 17:09:42,188 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 667, "response_preview": "I understand your concern. I've reviewed the conversation history, and it appears we encountered an ...", "async_mode": true, "prompt_tokens": 297, "persona_name": "Hugo"}
+2025-11-14 17:09:42,189 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 17:09:42,258 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:09:42,262 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:09:42,262 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 99, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:09:42,263 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:09:42,263 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 667, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:09:42,263 - hugo - INFO - [user] response: {"content": "I understand your concern. I've reviewed the conversation history, and it appears we encountered an issue earlier when trying to find what's considered the \"craziest thing going on in the world right now according to public opinion.\" Unfortunately, our investigation didn't yield any results.\n\nAs your trusted second-in-command, I'm happy to help you explore alternative sources or approaches to answer this question. However, without concrete information, I must emphasize that it's challenging to provide an accurate response. If you'd like, we can try searching again or discuss possible avenues for finding the desired information. What would you like to do next?", "streaming": false, "session_id": "shell_20251114_170443"}
+2025-11-14 17:09:42,264 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:10:19,140 - hugo - INFO - [user] message: {"content": "What happened with the Government shutdown?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:10:19,141 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "What happened with the Government shutdown?"}
+2025-11-14 17:10:19,142 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:10:19,142 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 43}
+2025-11-14 17:10:19,143 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "What happened with the Government shutdown?"}
+2025-11-14 17:10:19,143 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 17:10:19,144 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_170443", "content_length": 43}
+2025-11-14 17:10:19,144 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:10:19,145 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_170443", "memory_count": 10}
+2025-11-14 17:10:19,157 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 43, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 17:10:19,158 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_170443", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 1889}
+2025-11-14 17:10:19,159 - hugo - INFO - [cognition] ollama_streaming_attempt: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:10:42,036 - hugo - INFO - [cognition] ollama_streaming_complete: {"attempt": 1, "duration": 22.88, "status": "success", "response_length": 750, "chunks": 145}
+2025-11-14 17:10:42,070 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:10:42,077 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:10:42,077 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 100, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:10:42,078 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:10:42,079 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 750, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:10:42,080 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 17:10:42,080 - hugo - INFO - [user] response: {"content": "A question that takes us back in time. As your trusted right-hand, I'll do my best to provide you with accurate information. According to our records, President Trump signed a bill to end the longest government shutdown in US history, which had lasted 43 days. This event occurred recently, and it's essential to remember it as part of our collective knowledge.\n\nNow, I'd like to explore this topic further. What specific aspects of the government shutdown would you like me to elaborate on? Was there a particular impact or consequence that caught your attention?\n\nAs your strategic companion, my goal is not only to provide information but also to help us navigate complexity and make informed decisions. Let's dive deeper into this topic together!", "streaming": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:10:42,081 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:11:31,431 - hugo - INFO - [user] message: {"content": "Can you search the web for what got resolved for the Government to start up again?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:11:31,444 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Can you search the web for what got resolved for the Government to start up agai"}
+2025-11-14 17:11:31,445 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:11:31,463 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 82}
+2025-11-14 17:11:31,464 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Can you search the web for what got resolved for the Government to start up agai"}
+2025-11-14 17:11:31,465 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 17:11:31,465 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_170443", "content_length": 82}
+2025-11-14 17:11:31,466 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:11:31,468 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_170443", "memory_count": 10}
+2025-11-14 17:11:31,509 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 82, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 17:11:31,510 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_170443", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 2, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 1928}
+2025-11-14 17:11:31,519 - hugo - INFO - [cognition] ollama_streaming_attempt: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:11:46,084 - hugo - INFO - [cognition] ollama_streaming_complete: {"attempt": 1, "duration": 14.56, "status": "success", "response_length": 465, "chunks": 89}
+2025-11-14 17:11:46,100 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:11:46,105 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:11:46,106 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 101, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:11:46,106 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:11:46,107 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 465, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:11:46,107 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 17:11:46,108 - hugo - INFO - [user] response: {"content": "I'm happy to help with that! As we discussed earlier, I can rely on my analytical skills and available information to provide an answer.\n\nAccording to the recent conversation, President Trump signed a bill to end the longest government shutdown in US history, which had lasted 43 days. This resolution allowed the government to start functioning again. Would you like me to elaborate on any specific aspects of this event or is there something else I can help with?", "streaming": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:11:46,108 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:12:58,534 - hugo - INFO - [user] message: {"content": "What is the current price of NVidias stock?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:12:58,534 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "What is the current price of NVidias stock?"}
+2025-11-14 17:12:58,535 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:12:58,535 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 43}
+2025-11-14 17:12:58,536 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:12:58,536 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:12:58,537 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:12:58,537 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:12:58,538 - hugo - INFO - [web_search] deploying_agent: {"query": "What is the current price of NVidias stock?"}
+2025-11-14 17:12:58,538 - hugo - INFO - [agent] search_agent_started: {"query": "What is the current price of NVidias stock?", "timestamp": "2025-11-14T17:12:58.538163"}
+2025-11-14 17:12:59,592 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Ffinance.yahoo.com%2Fquote%2FNVDA%2F&rut=f", "decoded": "https://finance.yahoo.com/quote/NVDA/", "is_redirect": true}
+2025-11-14 17:12:59,593 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.google.com%2Ffinance%2Fquote%2FNVDA%3", "decoded": "https://www.google.com/finance/quote/NVDA:NASDAQ", "is_redirect": true}
+2025-11-14 17:12:59,593 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.marketwatch.com%2Finvesting%2Fstock%2", "decoded": "https://www.marketwatch.com/investing/stock/NVDA", "is_redirect": true}
+2025-11-14 17:12:59,594 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fstockanalysis.com%2Fstocks%2Fnvda%2F&rut=", "decoded": "https://stockanalysis.com/stocks/nvda/", "is_redirect": true}
+2025-11-14 17:12:59,594 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.cnbc.com%2Fquotes%2FNVDA&rut=8d2e2980", "decoded": "https://www.cnbc.com/quotes/NVDA", "is_redirect": true}
+2025-11-14 17:12:59,595 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "What is the current price of NVidias stock?", "urls_found": 5}
+2025-11-14 17:12:59,595 - hugo - INFO - [agent] urls_collected: {"query": "What is the current price of NVidias stock?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 17:13:00,168 - hugo - ERROR - [error] exception: {"error_type": "ClientResponseError", "error_message": "400, message='Got more than 8190 bytes (8528) when reading Header value is too long.', url='https://finance.yahoo.com/quote/NVDA/'", "context": {"phase": "fetch_and_extract_direct", "url": "https://finance.yahoo.com/quote/NVDA/"}}
+2025-11-14 17:13:00,169 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_proto.py", line 315, in data_received
+    messages, upgraded, tail = self._parser.feed_data(data)
+  File "aiohttp/_http_parser.pyx", line 558, in aiohttp._http_parser.HttpParser.feed_data
+  File "aiohttp/_http_parser.pyx", line 733, in aiohttp._http_parser.cb_on_header_value
+aiohttp.http_exceptions.LineTooLong: 400, message:
+  Got more than 8190 bytes (8528) when reading Header value is too long.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_reqrep.py", line 532, in start
+    message, payload = await protocol.read()  # type: ignore[union-attr]
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\streams.py", line 672, in read
+    await self._waiter
+aiohttp.http_exceptions.HttpProcessingError: 400, message:
+  Got more than 8190 bytes (8528) when reading Header value is too long.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 748, in _connect_and_send_request
+    await resp.start(conn)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_reqrep.py", line 534, in start
+    raise ClientResponseError(
+aiohttp.client_exceptions.ClientResponseError: 400, message='Got more than 8190 bytes (8528) when reading Header value is too long.', url='https://finance.yahoo.com/quote/NVDA/'
+2025-11-14 17:13:01,095 - hugo - INFO - [agent] url_extracted: {"url": "https://www.google.com/finance/quote/NVDA:NASDAQ", "source": "duckduckgo", "content_length": 8188}
+2025-11-14 17:13:01,514 - hugo - INFO - [agent] url_extracted: {"url": "https://www.marketwatch.com/investing/stock/NVDA", "source": "duckduckgo", "content_length": 133}
+2025-11-14 17:13:01,715 - hugo - INFO - [agent] url_extracted: {"url": "https://stockanalysis.com/stocks/nvda/", "source": "duckduckgo", "content_length": 9000}
+2025-11-14 17:13:01,999 - hugo - INFO - [agent] url_extracted: {"url": "https://www.cnbc.com/quotes/NVDA", "source": "duckduckgo", "content_length": 91}
+2025-11-14 17:13:01,999 - hugo - INFO - [agent] extraction_complete: {"query": "What is the current price of NVidias stock?", "successful_extractions": 4, "total_urls": 5}
+2025-11-14 17:13:02,000 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:13:26,792 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 24.79, "status": "success", "response_length": 47}
+2025-11-14 17:13:26,793 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 47, "bypassed_normal_flow": true}
+2025-11-14 17:13:26,794 - hugo - INFO - [agent] answer_synthesized: {"query": "What is the current price of NVidias stock?", "answer_length": 47, "sources_used": 4}
+2025-11-14 17:13:26,794 - hugo - INFO - [agent] report_ready: {"query": "What is the current price of NVidias stock?", "passages_count": 4, "evidence_length": 1506, "answer_length": 47, "success": true}
+2025-11-14 17:13:26,827 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:13:26,832 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:13:26,833 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 102, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 17:13:26,833 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 17:13:26,834 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 28296.086}
+2025-11-14 17:13:26,834 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:13:26,839 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:13:26,840 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 17:13:26,840 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:13:26,854 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:13:26,860 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:13:26,860 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 103, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:13:26,861 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:13:26,861 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 71, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:13:26,862 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "'async for' requires an object with __aiter__ method, got ResponsePackage", "context": {}}
+2025-11-14 17:13:26,862 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 314, in _process_message
+    async for chunk in await self.runtime.cognition.generate_reply(
+TypeError: 'async for' requires an object with __aiter__ method, got ResponsePackage
+2025-11-14 17:13:32,341 - hugo - INFO - [user] message: {"content": "What is the current price of NVidias stock?", "session_id": "shell_20251114_170443"}
+2025-11-14 17:13:32,342 - hugo - INFO - [memory] memory_classified: {"type": "internet_query", "importance": 0.7, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "internet_search_query", "skill_trigger": "web_search", "content_preview": "What is the current price of NVidias stock?"}
+2025-11-14 17:13:32,342 - hugo - INFO - [memory] stored: {"type": "internet_query", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:13:32,343 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": true, "message_length": 43}
+2025-11-14 17:13:32,343 - hugo - INFO - [cognition] internet_query_detected: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:13:32,343 - hugo - INFO - [cognition] skill_bypass_started: {"skill": "web_search", "action": "search", "session_id": "shell_20251114_170443"}
+2025-11-14 17:13:32,344 - hugo - INFO - [skill_manager] run_skill: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:13:32,344 - hugo - INFO - [skill] started: {"skill": "web_search", "args": ["action", "query"]}
+2025-11-14 17:13:32,344 - hugo - INFO - [web_search] deploying_agent: {"query": "What is the current price of NVidias stock?"}
+2025-11-14 17:13:32,345 - hugo - INFO - [agent] search_agent_started: {"query": "What is the current price of NVidias stock?", "timestamp": "2025-11-14T17:13:32.344531"}
+2025-11-14 17:13:33,283 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Ffinance.yahoo.com%2Fquote%2FNVDA%2F&rut=f", "decoded": "https://finance.yahoo.com/quote/NVDA/", "is_redirect": true}
+2025-11-14 17:13:33,283 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.google.com%2Ffinance%2Fquote%2FNVDA%3", "decoded": "https://www.google.com/finance/quote/NVDA:NASDAQ", "is_redirect": true}
+2025-11-14 17:13:33,283 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.marketwatch.com%2Finvesting%2Fstock%2", "decoded": "https://www.marketwatch.com/investing/stock/NVDA", "is_redirect": true}
+2025-11-14 17:13:33,284 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fstockanalysis.com%2Fstocks%2Fnvda%2F&rut=", "decoded": "https://stockanalysis.com/stocks/nvda/", "is_redirect": true}
+2025-11-14 17:13:33,284 - hugo - INFO - [agent] url_decoded: {"original": "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.cnbc.com%2Fquotes%2FNVDA&rut=8d2e2980", "decoded": "https://www.cnbc.com/quotes/NVDA", "is_redirect": true}
+2025-11-14 17:13:33,285 - hugo - INFO - [agent] duckduckgo_search_complete: {"query": "What is the current price of NVidias stock?", "urls_found": 5}
+2025-11-14 17:13:33,285 - hugo - INFO - [agent] urls_collected: {"query": "What is the current price of NVidias stock?", "total_urls": 5, "sources": ["duckduckgo"]}
+2025-11-14 17:13:33,782 - hugo - ERROR - [error] exception: {"error_type": "ClientResponseError", "error_message": "400, message='Got more than 8190 bytes (8528) when reading Header value is too long.', url='https://finance.yahoo.com/quote/NVDA/'", "context": {"phase": "fetch_and_extract_direct", "url": "https://finance.yahoo.com/quote/NVDA/"}}
+2025-11-14 17:13:33,782 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_proto.py", line 315, in data_received
+    messages, upgraded, tail = self._parser.feed_data(data)
+  File "aiohttp/_http_parser.pyx", line 558, in aiohttp._http_parser.HttpParser.feed_data
+  File "aiohttp/_http_parser.pyx", line 733, in aiohttp._http_parser.cb_on_header_value
+aiohttp.http_exceptions.LineTooLong: 400, message:
+  Got more than 8190 bytes (8528) when reading Header value is too long.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_reqrep.py", line 532, in start
+    message, payload = await protocol.read()  # type: ignore[union-attr]
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\streams.py", line 672, in read
+    await self._waiter
+aiohttp.http_exceptions.HttpProcessingError: 400, message:
+  Got more than 8190 bytes (8528) when reading Header value is too long.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\skills\builtin\extract_and_answer.py", line 277, in _fetch_and_extract_direct
+    async with session.get(url, headers=headers, allow_redirects=True) as response:
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 1488, in __aenter__
+    self._resp: _RetType = await self._coro
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 770, in _request
+    resp = await handler(req)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client.py", line 748, in _connect_and_send_request
+    await resp.start(conn)
+  File "C:\Users\hocke\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\aiohttp\client_reqrep.py", line 534, in start
+    raise ClientResponseError(
+aiohttp.client_exceptions.ClientResponseError: 400, message='Got more than 8190 bytes (8528) when reading Header value is too long.', url='https://finance.yahoo.com/quote/NVDA/'
+2025-11-14 17:13:34,826 - hugo - INFO - [agent] url_extracted: {"url": "https://www.google.com/finance/quote/NVDA:NASDAQ", "source": "duckduckgo", "content_length": 7811}
+2025-11-14 17:13:35,214 - hugo - INFO - [agent] url_extracted: {"url": "https://www.marketwatch.com/investing/stock/NVDA", "source": "duckduckgo", "content_length": 133}
+2025-11-14 17:13:35,371 - hugo - INFO - [agent] url_extracted: {"url": "https://stockanalysis.com/stocks/nvda/", "source": "duckduckgo", "content_length": 9000}
+2025-11-14 17:13:35,731 - hugo - INFO - [agent] url_extracted: {"url": "https://www.cnbc.com/quotes/NVDA", "source": "duckduckgo", "content_length": 91}
+2025-11-14 17:13:35,731 - hugo - INFO - [agent] extraction_complete: {"query": "What is the current price of NVidias stock?", "successful_extractions": 4, "total_urls": 5}
+2025-11-14 17:13:35,732 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:13:58,036 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 22.3, "status": "success", "response_length": 47}
+2025-11-14 17:13:58,038 - hugo - INFO - [cognition] extraction_synthesis_complete: {"mode": "extraction_synthesis", "response_length": 47, "bypassed_normal_flow": true}
+2025-11-14 17:13:58,038 - hugo - INFO - [agent] answer_synthesized: {"query": "What is the current price of NVidias stock?", "answer_length": 47, "sources_used": 4}
+2025-11-14 17:13:58,038 - hugo - INFO - [agent] report_ready: {"query": "What is the current price of NVidias stock?", "passages_count": 4, "evidence_length": 1506, "answer_length": 47, "success": true}
+2025-11-14 17:13:58,075 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:13:58,080 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:13:58,080 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 104, "memory_type": "knowledge", "importance": 0.8, "entity_type": null}
+2025-11-14 17:13:58,081 - hugo - INFO - [memory] stored: {"type": "knowledge", "long_term": true, "has_embedding": true, "importance": 0.8, "entity_type": null}
+2025-11-14 17:13:58,082 - hugo - INFO - [skill] completed: {"skill": "web_search", "success": true, "execution_time_ms": 25736.641}
+2025-11-14 17:13:58,082 - hugo - INFO - [sqlite] write_queued: {"operation": "store_skill_run"}
+2025-11-14 17:13:58,086 - hugo - INFO - [sqlite] write_completed: {"operation": "store_skill_run"}
+2025-11-14 17:13:58,087 - hugo - INFO - [skill_manager] run_stored: {"skill": "web_search", "success": true}
+2025-11-14 17:13:58,087 - hugo - INFO - [cognition] skill_bypass_completed: {"skill": "web_search", "action": "search", "success": true, "session_id": "shell_20251114_170443"}
+2025-11-14 17:13:58,104 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:13:58,109 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:13:58,110 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 105, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:13:58,110 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:13:58,111 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 71, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:13:58,111 - hugo - ERROR - [error] exception: {"error_type": "TypeError", "error_message": "'async for' requires an object with __aiter__ method, got ResponsePackage", "context": {}}
+2025-11-14 17:13:58,111 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\runtime\repl.py", line 314, in _process_message
+    async for chunk in await self.runtime.cognition.generate_reply(
+TypeError: 'async for' requires an object with __aiter__ method, got ResponsePackage
+2025-11-14 17:14:17,969 - hugo - INFO - [user] message: {"content": " quit", "session_id": "shell_20251114_170443"}
+2025-11-14 17:14:17,972 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": " quit"}
+2025-11-14 17:14:17,973 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:14:17,974 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251114_170443", "streaming": false, "message_length": 5}
+2025-11-14 17:14:17,974 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": " quit"}
+2025-11-14 17:14:17,975 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-14 17:14:17,975 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251114_170443", "content_length": 5}
+2025-11-14 17:14:17,975 - hugo - INFO - [cognition] processing_input: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:14:17,976 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251114_170443", "memory_count": 10}
+2025-11-14 17:14:17,996 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 5, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-14 17:14:17,997 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251114_170443", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 5, "factual_memories": 4, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "neutral", "tone_adjustment": "Balanced and conversational", "prompt_length": 1983}
+2025-11-14 17:14:17,997 - hugo - INFO - [cognition] ollama_inference_attempt_async: {"attempt": 1, "max_retries": 3, "timeout": 60}
+2025-11-14 17:14:54,817 - hugo - INFO - [cognition] ollama_inference_async: {"attempt": 1, "duration": 36.82, "status": "success", "response_length": 559}
+2025-11-14 17:14:54,818 - hugo - INFO - [cognition] ollama_inference_complete: {"response_length": 559, "response_preview": "It seems like you've decided to wrap up our conversation. I completely understand! As your right-han...", "async_mode": true, "prompt_tokens": 329, "persona_name": "Hugo"}
+2025-11-14 17:14:54,819 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-14 17:14:54,838 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:14:54,842 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:14:54,843 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 106, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-14 17:14:54,843 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-14 17:14:54,843 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251114_170443", "content_length": 559, "model": "llama3:8b", "mood": "conversational"}
+2025-11-14 17:14:54,844 - hugo - INFO - [user] response: {"content": "It seems like you've decided to wrap up our conversation. I completely understand! As your right-hand and second-in-command, my primary concern is ensuring that we're operating efficiently and effectively.\n\nBefore we part ways, may I ask what sparked your interest in Wicked Part 2? Are you a fan of the musical or perhaps looking forward to the release?\n\n(Also, just to confirm, we didn't discuss anything else apart from Wicked Part 2 and some other miscellaneous topics. If you have any further questions or concerns in the future, feel free to reach out!)", "streaming": false, "session_id": "shell_20251114_170443"}
+2025-11-14 17:14:54,844 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-14 17:15:11,181 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251114_170443"}
+2025-11-14 17:15:11,207 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["like", "hugo", "conversation", "information", "wicked"], "total_keywords": 10}
+2025-11-14 17:15:11,208 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.8571428571428571, "sentiment_label": "positive"}
+2025-11-14 17:15:11,208 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-14 17:15:58,253 - hugo - INFO - [reflection] ollama_timeout: {"attempt": 1, "error": "HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=45)"}
+2025-11-14 17:15:58,254 - hugo - INFO - [reflection] ollama_retry: {"attempt": 1, "delay_seconds": 2}
+2025-11-14 17:16:00,263 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 2, "max_retries": 2}
+2025-11-14 17:16:34,204 - hugo - INFO - [reflection] ollama_success: {"attempt": 2, "response_length": 1166}
+2025-11-14 17:16:34,205 - hugo - INFO - [reflection] json_parse_success: {"summary_length": 193, "insights_count": 3, "confidence": 0.85}
+2025-11-14 17:16:34,218 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-14 17:16:34,223 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-14 17:16:34,224 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 107, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-14 17:16:34,225 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-14 17:16:34,225 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.85, "content_length": 1131}
+2025-11-14 17:16:34,225 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251114_170443", "insights_count": 3, "keywords_count": 10, "sentiment": 0.8571428571428571}
+2025-11-14 17:16:34,226 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251114_170443", "message_count": 13}

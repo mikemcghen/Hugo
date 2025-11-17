@@ -126,11 +126,17 @@ class CognitionEngine:
 
         # Load Hugo's personality manifest
         self.persona = self._load_persona()
+
+        # Load Jarvis mode configuration
+        self.jarvis_mode_enabled = self.persona.get("jarvis_mode", {}).get("enabled", False)
+        self.jarvis_config = self.persona.get("jarvis_mode", {})
+
         self.logger.log_event("cognition", "persona_loaded", {
             "name": self.persona.get("name", "Hugo"),
             "role": self.persona.get("identity", {}).get("role", "Unknown"),
             "mood": self.current_mood.value,
-            "agent_delegation": self.agent_delegation_enabled
+            "agent_delegation": self.agent_delegation_enabled,
+            "jarvis_mode": self.jarvis_mode_enabled
         })
 
     def _load_persona(self) -> Dict[str, Any]:
@@ -201,21 +207,26 @@ class CognitionEngine:
         Main public API for generating replies.
 
         This is the primary entry point for the REPL and other clients.
-        Handles both streaming and non-streaming modes.
+        ALWAYS returns an async iterator for uniform interface.
 
         Args:
             message: User message
             session_id: Current session identifier
-            streaming: If True, yield chunks; if False, return complete response
+            streaming: If True, yield chunks; if False, yield single response
             mode: Optional processing mode override (e.g., "extraction_synthesis")
 
         Returns:
-            If streaming=False: ResponsePackage
-            If streaming=True: Generator yielding chunks, then ResponsePackage
+            AsyncIterator that yields:
+            - If streaming=True: string chunks, then final ResponsePackage
+            - If streaming=False: single ResponsePackage
         """
+        # Import async helper
+        from runtime.utils.async_helpers import stream_single
+
         # Early bypass for extraction synthesis mode
         if mode == "extraction_synthesis":
-            return await self._generate_extraction_synthesis(message)
+            result = await self._generate_extraction_synthesis(message)
+            return stream_single(result)
 
         self.logger.log_event("cognition", "generate_reply_started", {
             "session_id": session_id,
@@ -240,7 +251,7 @@ class CognitionEngine:
                     "session_id": session_id
                 })
 
-                # Execute skill directly and return result
+                # Execute skill directly
                 response_package = await self._execute_skill_bypass(
                     skill_name, skill_action, skill_payload, message, session_id
                 )
@@ -248,7 +259,12 @@ class CognitionEngine:
                 # Save assistant response to memory
                 await self.post_process(response_package.content, session_id)
 
-                return response_package
+                # Wrap in async iterator for uniform interface
+                self.logger.log_event("cognition", "skill_bypass_wrapped_in_stream", {
+                    "skill": skill_name,
+                    "streaming": False
+                })
+                return stream_single(response_package)
 
         # Save user message to memory (with skill trigger metadata if present)
         await self._save_user_message(message, session_id)
@@ -257,13 +273,16 @@ class CognitionEngine:
             # Return streaming generator
             return self.process_input_streaming(message, session_id)
         else:
-            # Return complete response
+            # Return complete response wrapped in async iterator
             response_package = await self.process_input(message, session_id)
 
             # Post-process: Save assistant response to memory
             await self.post_process(response_package.content, session_id)
 
-            return response_package
+            self.logger.log_event("cognition", "non_streaming_wrapped_in_stream", {
+                "response_length": len(response_package.content)
+            })
+            return stream_single(response_package)
 
     async def _generate_extraction_synthesis(self, message: str):
         """
@@ -715,8 +734,41 @@ class CognitionEngine:
         # Step 2: Context Assembly
         context = await self._assemble_context(perception, session_id)
 
+        # Step 2.5: Jarvis Mode - Contextual Anticipation
+        anticipation = None
+        if self.jarvis_mode_enabled:
+            anticipation = await self._contextual_anticipation(user_input, context)
+
+            # If we have a direct template response, return it immediately
+            template_response = self._apply_jarvis_template(user_input, anticipation)
+            if template_response:
+                # Create simplified response package for template responses
+                simple_reasoning = ReasoningChain(
+                    steps=["Jarvis template applied"],
+                    assumptions=[f"Pattern detected: {anticipation.get('pattern')}"],
+                    alternatives_considered=[],
+                    selected_approach="jarvis_template",
+                    confidence_score=0.95
+                )
+                return ResponsePackage(
+                    content=template_response,
+                    tone=perception.detected_mood,
+                    reasoning_chain=simple_reasoning,
+                    directive_checks=[],
+                    metadata={
+                        "timestamp": __import__('datetime').datetime.now().isoformat(),
+                        "jarvis_mode": True,
+                        "template_applied": True,
+                        "anticipation_pattern": anticipation.get("pattern")
+                    }
+                )
+
         # Step 3: Synthesis
         reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id, user_input)
+
+        # Step 3.5: Jarvis Mode - Response Compression
+        if self.jarvis_mode_enabled:
+            generated_text = self._compress_response(generated_text)
 
         # Step 4: Output Construction
         response = await self._construct_output(reasoning, perception, generated_text, prompt_metadata)
@@ -906,6 +958,40 @@ class CognitionEngine:
         # Step 2: Context Assembly
         context = await self._assemble_context(perception, session_id)
 
+        # Step 2.5: Jarvis Mode - Contextual Anticipation
+        anticipation = None
+        if self.jarvis_mode_enabled:
+            anticipation = await self._contextual_anticipation(user_input, context)
+
+            # If we have a direct template response, return it immediately
+            template_response = self._apply_jarvis_template(user_input, anticipation)
+            if template_response:
+                # Yield template response
+                yield template_response
+
+                # Create simplified response package
+                simple_reasoning = ReasoningChain(
+                    steps=["Jarvis template applied"],
+                    assumptions=[f"Pattern detected: {anticipation.get('pattern')}"],
+                    alternatives_considered=[],
+                    selected_approach="jarvis_template",
+                    confidence_score=0.95
+                )
+                response_package = ResponsePackage(
+                    content=template_response,
+                    tone=perception.detected_mood,
+                    reasoning_chain=simple_reasoning,
+                    directive_checks=[],
+                    metadata={
+                        "timestamp": __import__('datetime').datetime.now().isoformat(),
+                        "jarvis_mode": True,
+                        "template_applied": True,
+                        "anticipation_pattern": anticipation.get("pattern")
+                    }
+                )
+                yield response_package
+                return
+
         # Step 3: Assemble prompt
         user_message = perception.corrected_input if perception.corrected_input else user_input
         prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
@@ -921,6 +1007,10 @@ class CognitionEngine:
 
         # Combine full response
         generated_response = "".join(generated_chunks)
+
+        # Step 4.5: Jarvis Mode - Response Compression
+        if self.jarvis_mode_enabled:
+            generated_response = self._compress_response(generated_response)
 
         # Build reasoning chain
         reasoning_steps = [
@@ -1068,6 +1158,207 @@ class CognitionEngine:
             "is_neutral": len(detected) == 0
         }
 
+    async def _contextual_anticipation(self, user_input: str, context: ContextAssembly) -> Optional[Dict[str, Any]]:
+        """
+        Jarvis-style contextual anticipation for ambiguous commands.
+
+        Analyzes recent context to infer likely meaning of vague commands like:
+        - "Fix that"
+        - "Continue"
+        - "Next"
+        - "Run it again"
+        - "Help me with the Metix widget"
+
+        Returns:
+            Dictionary with inferred context or None if no anticipation possible
+        """
+        if not self.jarvis_mode_enabled:
+            return None
+
+        user_lower = user_input.lower().strip()
+
+        # Pattern matching for ambiguous commands
+        ambiguous_patterns = {
+            "fix_that": ["fix that", "fix this", "fix it"],
+            "continue": ["continue", "keep going", "go on", "next"],
+            "run_again": ["run it", "run again", "try again", "do it again"],
+            "help_with": ["help me with", "help with", "work on"],
+            "phase": ["phase", "start phase"],
+            "patch": ["generate patch", "create patch", "make patch"],
+            "next_step": ["next step", "move forward", "what's next"]
+        }
+
+        detected_pattern = None
+        for pattern_name, patterns in ambiguous_patterns.items():
+            if any(p in user_lower for p in patterns):
+                detected_pattern = pattern_name
+                break
+
+        if not detected_pattern:
+            return None
+
+        # Extract recent context (last 3-5 messages)
+        recent_context = []
+        recency_depth = self.jarvis_config.get("anticipation", {}).get("context_depth", 5)
+
+        if context.short_term_memory:
+            for mem in context.short_term_memory[-recency_depth:]:
+                content = mem.get('content', '').lower()
+                recent_context.append(content)
+
+        # Infer context based on pattern and recent messages
+        inferred = {
+            "pattern": detected_pattern,
+            "possibilities": [],
+            "suggested_disambiguation": None
+        }
+
+        # Pattern-specific inference
+        if detected_pattern == "fix_that":
+            # Look for error mentions, SQL, bugs in recent context
+            possibilities = []
+            if any("error" in ctx or "bug" in ctx for ctx in recent_context):
+                possibilities.append("the recent error")
+            if any("sql" in ctx or "query" in ctx for ctx in recent_context):
+                possibilities.append("the SQL query")
+            if any("refactor" in ctx for ctx in recent_context):
+                possibilities.append("the refactoring")
+
+            if len(possibilities) > 1:
+                inferred["possibilities"] = possibilities
+                inferred["suggested_disambiguation"] = f"Two possibilities: {possibilities[0]} or {possibilities[1]} — which one?"
+            elif len(possibilities) == 1:
+                inferred["possibilities"] = possibilities
+                inferred["suggested_disambiguation"] = None  # Clear intent
+
+        elif detected_pattern == "continue":
+            # Look for ongoing tasks
+            if any("phase" in ctx for ctx in recent_context):
+                inferred["possibilities"] = ["next phase step"]
+                inferred["suggested_disambiguation"] = "Next stage: synthesis. Running now."
+            elif any("refactor" in ctx or "implement" in ctx for ctx in recent_context):
+                inferred["possibilities"] = ["continue implementation"]
+
+        elif detected_pattern == "help_with":
+            # Extract widget/component references
+            if "metix" in user_lower:
+                # Common Metix widget IDs
+                inferred["possibilities"] = ["widget 41", "widget 48", "widget 45", "widget 50"]
+                inferred["suggested_disambiguation"] = "Which one — 41, 48, 45, or 50?"
+            elif "hugo" in user_lower:
+                if "phase" in user_lower:
+                    inferred["possibilities"] = ["Phase 4.1", "Phase 4.2", "Phase 5"]
+                    inferred["suggested_disambiguation"] = "Which phase — 4.1, 4.2, or 5?"
+
+        elif detected_pattern == "phase":
+            # Extract phase number if present
+            import re
+            phase_match = re.search(r'phase\s*(\d+\.?\d*)', user_lower)
+            if phase_match:
+                phase_num = phase_match.group(1)
+                inferred["possibilities"] = [f"Phase {phase_num}"]
+                inferred["suggested_disambiguation"] = f"Ready. Phase {phase_num} initialized."
+            else:
+                inferred["possibilities"] = ["Phase 4.1", "Phase 4.2", "Phase 5"]
+                inferred["suggested_disambiguation"] = "Which phase — 4.1, 4.2, or 5?"
+
+        elif detected_pattern == "patch":
+            inferred["possibilities"] = ["generate code patch"]
+            inferred["suggested_disambiguation"] = "On it."
+
+        elif detected_pattern == "next_step":
+            inferred["suggested_disambiguation"] = "Running now."
+
+        return inferred if inferred["possibilities"] or inferred["suggested_disambiguation"] else None
+
+    def _compress_response(self, response: str) -> str:
+        """
+        Compress response to Jarvis-style concise format.
+
+        Removes:
+        - Hedging ("maybe", "possibly", "I think")
+        - Filler phrases
+        - Excessive pleasantries
+        - Redundancy
+
+        Args:
+            response: Generated response text
+
+        Returns:
+            Compressed response
+        """
+        if not self.jarvis_mode_enabled:
+            return response
+
+        # Remove hedging phrases
+        hedging_patterns = [
+            r'\b(maybe|possibly|perhaps|might|could be|I think|I believe)\b',
+            r'\b(it seems|it appears|probably|likely)\b',
+            r'\bsort of\b',
+            r'\bkind of\b'
+        ]
+
+        compressed = response
+        for pattern in hedging_patterns:
+            compressed = re.sub(pattern, '', compressed, flags=re.IGNORECASE)
+
+        # Remove filler prefaces
+        filler_patterns = [
+            r'^(Sure,?\s*)',
+            r'^(Okay,?\s*)',
+            r'^(Alright,?\s*)',
+            r'^(Here (it is|you go):?\s*)',
+            r'^(Let me\s+)',
+            r'^(I\'ll\s+)',
+            r'^(I can\s+)'
+        ]
+
+        for pattern in filler_patterns:
+            compressed = re.sub(pattern, '', compressed, flags=re.IGNORECASE)
+
+        # Clean up extra whitespace
+        compressed = re.sub(r'\s+', ' ', compressed).strip()
+
+        # If response is too long, truncate to key points (unless it's code or data)
+        max_sentences = 3
+        if not any(indicator in compressed for indicator in ['```', 'SELECT', 'FROM', 'def ', 'class ']):
+            sentences = re.split(r'[.!?]\s+', compressed)
+            if len(sentences) > max_sentences:
+                compressed = '. '.join(sentences[:max_sentences]) + '.'
+
+        return compressed
+
+    def _apply_jarvis_template(self, user_input: str, anticipation: Optional[Dict[str, Any]]) -> Optional[str]:
+        """
+        Apply Jarvis-style response templates for common patterns.
+
+        Args:
+            user_input: User input
+            anticipation: Contextual anticipation result
+
+        Returns:
+            Template response or None if no template applies
+        """
+        if not self.jarvis_mode_enabled or not anticipation:
+            return None
+
+        templates = self.jarvis_config.get("templates", {})
+
+        if anticipation.get("suggested_disambiguation"):
+            return anticipation["suggested_disambiguation"]
+
+        # Pattern-specific templates
+        pattern = anticipation.get("pattern")
+
+        if pattern == "patch":
+            return templates.get("on_it", "On it.")
+        elif pattern == "next_step":
+            return templates.get("running", "Running now.")
+        elif pattern == "continue":
+            return templates.get("confirmed", "Confirmed.")
+
+        return None
+
     async def assemble_prompt(self, user_message: str, perception: PerceptionResult,
                              context: ContextAssembly, session_id: str) -> Dict[str, Any]:
         """
@@ -1158,7 +1449,24 @@ class CognitionEngine:
             f"[Current Mood: {self.current_mood.value.title()} - {current_mood_desc}]",
             "",
             f"{persona_desc}",
-            "",
+            ""
+        ]
+
+        # Add Jarvis mode instructions if enabled
+        if self.jarvis_mode_enabled:
+            prompt_parts.extend([
+                "[Jarvis Mode: ACTIVE]",
+                "Response Style:",
+                "- Default length: 1-3 sentences (expand only if user explicitly asks for detail)",
+                "- NEVER hedge with 'maybe', 'possibly', 'I think'",
+                "- Give direct recommendations, no filler",
+                "- When unsure: ask tight disambiguation question",
+                "- Prefer action over analysis",
+                "- No prefaces like 'Sure, here it is:' — just deliver",
+                ""
+            ])
+
+        prompt_parts.extend([
             "[Memory Policy]",
             "CRITICAL: When responding about user information or past conversations:",
             "- If a memory exists, use it EXACTLY as written",
@@ -1166,7 +1474,7 @@ class CognitionEngine:
             "- NEVER fabricate or invent facts about the user",
             "- Only reference information from the sections below",
             ""
-        ]
+        ])
 
         # Add factual memories about the user
         if factual_memories:
