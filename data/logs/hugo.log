@@ -5195,3 +5195,80 @@ Exception: Ollama inference failed after 2 attempts: 500 Server Error: Internal 
 2025-11-15 13:43:04,779 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.5, "content_length": 141}
 2025-11-15 13:43:04,779 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251115_134021", "insights_count": 0, "keywords_count": 10, "sentiment": 0.0}
 2025-11-15 13:43:04,780 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251115_134021", "message_count": 3}
+2025-11-17 09:17:33,400 - hugo - INFO - [runtime] boot_started: {}
+2025-11-17 09:17:33,446 - hugo - INFO - [sqlite] new_thread_connection_created: {"thread_id": 902224, "total_connections": 1}
+2025-11-17 09:17:37,927 - hugo - INFO - [memory] embedding_model_loaded: {"model": "all-MiniLM-L6-v2"}
+2025-11-17 09:17:37,935 - hugo - INFO - [memory] faiss_index_loaded: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-17 09:17:37,936 - hugo - INFO - [sqlite] drain_queue_started: {"thread_safe": true}
+2025-11-17 09:17:37,939 - hugo - INFO - [memory] faiss_index_saved: {"path": "data\\memory\\faiss_index.bin"}
+2025-11-17 09:17:37,940 - hugo - INFO - [memory] factual_memories_loaded: {"count": 33, "faiss_added": 33}
+2025-11-17 09:17:37,962 - hugo - INFO - [cognition] persona_loaded: {"name": "Hugo", "role": "Right Hand / Second in Command", "mood": "conversational", "agent_delegation": true, "jarvis_mode": false, "ollama_stability": true}
+2025-11-17 09:17:38,000 - hugo - INFO - [skill_manager] loading_skills: {"skills_dir": "C:\\Users\\hocke\\Documents\\GitHub\\Hugo\\skills"}
+2025-11-17 09:17:38,324 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "extract_and_answer", "entrypoint": "skills.builtin.extract_and_answer:ExtractAndAnswerSkill"}
+2025-11-17 09:17:38,343 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "fetch_url", "entrypoint": "skills.builtin.fetch_url:FetchUrlSkill"}
+2025-11-17 09:17:38,358 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_monitor", "entrypoint": "skills.builtin.web_monitor:WebMonitorSkill"}
+2025-11-17 09:17:38,387 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "web_search", "entrypoint": "skills.builtin.web_search:WebSearchSkill"}
+2025-11-17 09:17:38,397 - hugo - INFO - [skill_manager] invalid_definition: {"skill": "demo_skill", "error": "missing_entrypoint"}
+2025-11-17 09:17:38,418 - hugo - INFO - [skill_manager] skill_loaded: {"skill": "notes", "entrypoint": "skills.example.notes_skill:NotesSkill"}
+2025-11-17 09:17:38,419 - hugo - INFO - [skill_manager] skills_loaded: {"loaded": 5, "errors": 1, "total_skills": 5}
+2025-11-17 09:17:38,427 - hugo - INFO - [runtime] boot_completed: {"mode": "interactive"}
+2025-11-17 09:17:54,185 - hugo - INFO - [user] message: {"content": "Hey there Hugo. How's it going?", "session_id": "shell_20251117_091738"}
+2025-11-17 09:17:54,353 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Hey there Hugo. How's it going?"}
+2025-11-17 09:17:54,353 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-17 09:17:54,740 - hugo - INFO - [cognition] generate_reply_started: {"session_id": "shell_20251117_091738", "streaming": true, "message_length": 31}
+2025-11-17 09:17:54,741 - hugo - INFO - [memory] memory_classified: {"type": "conversation", "importance": 0.3, "should_persist": false, "embedding_allowed": false, "entity_type": null, "reasoning": "general_conversation", "skill_trigger": null, "content_preview": "Hey there Hugo. How's it going?"}
+2025-11-17 09:17:54,741 - hugo - INFO - [memory] stored: {"type": "conversation", "long_term": false, "has_embedding": false, "importance": 0.5, "entity_type": null}
+2025-11-17 09:17:54,741 - hugo - INFO - [cognition] user_message_saved: {"session_id": "shell_20251117_091738", "content_length": 31}
+2025-11-17 09:17:54,742 - hugo - INFO - [cognition] processing_input_streaming: {"session_id": "shell_20251117_091738"}
+2025-11-17 09:17:54,742 - hugo - INFO - [cognition] context_assembled: {"session_id": "shell_20251117_091738", "memory_count": 2}
+2025-11-17 09:17:56,754 - hugo - INFO - [memory] semantic_search_completed: {"query_length": 31, "results": 0, "memory_types": null, "type_distribution": {}}
+2025-11-17 09:17:56,754 - hugo - INFO - [cognition] prompt_assembled: {"session_id": "shell_20251117_091738", "persona_name": "Hugo", "mood": "conversational", "conversation_turns": 2, "factual_memories": 0, "reflection_insights": 0, "semantic_memories": 0, "user_sentiment": "curious", "tone_adjustment": "Thoughtful and exploratory", "prompt_length": 962}
+2025-11-17 09:17:56,755 - hugo - INFO - [ollama] ollama_request_payload: {"attempt": 1, "prompt_length": 962, "temperature": 0.7, "stream": true, "context_reduced": false}
+2025-11-17 09:18:01,830 - hugo - INFO - [ollama] ollama_response_headers: {"status_code": 500, "headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:01 GMT", "Content-Length": "99"}, "attempt": 1}
+2025-11-17 09:18:01,831 - hugo - INFO - [ollama] 500_error_analysis: {"attempt": 1, "error_message": "llama runner process has terminated: error loading model: unable to allocate CPU buffer", "response_headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:01 GMT", "Content-Length": "99"}}
+2025-11-17 09:18:01,831 - hugo - INFO - [ollama] context_reduction: {"original_length": 962, "reduced_length": 673, "reduction_factor": 0.7}
+2025-11-17 09:18:01,832 - hugo - INFO - [ollama] ollama_server_recovering: {"action": "context_reduction", "attempt": 1, "retry": true}
+2025-11-17 09:18:03,841 - hugo - INFO - [ollama] ollama_request_payload: {"attempt": 2, "prompt_length": 673, "temperature": 0.7, "stream": true, "context_reduced": true}
+2025-11-17 09:18:08,262 - hugo - INFO - [ollama] ollama_response_headers: {"status_code": 500, "headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:08 GMT", "Content-Length": "99"}, "attempt": 2}
+2025-11-17 09:18:08,263 - hugo - INFO - [ollama] 500_error_analysis: {"attempt": 2, "error_message": "llama runner process has terminated: error loading model: unable to allocate CPU buffer", "response_headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:08 GMT", "Content-Length": "99"}}
+2025-11-17 09:18:08,263 - hugo - INFO - [ollama] ollama_server_recovering: {"action": "retry_with_backoff", "attempt": 2, "backoff": 4}
+2025-11-17 09:18:12,272 - hugo - INFO - [ollama] ollama_request_payload: {"attempt": 3, "prompt_length": 673, "temperature": 0.7, "stream": true, "context_reduced": true}
+2025-11-17 09:18:16,644 - hugo - INFO - [ollama] ollama_response_headers: {"status_code": 500, "headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:16 GMT", "Content-Length": "99"}, "attempt": 3}
+2025-11-17 09:18:16,644 - hugo - INFO - [ollama] 500_error_analysis: {"attempt": 3, "error_message": "llama runner process has terminated: error loading model: unable to allocate CPU buffer", "response_headers": {"Content-Type": "application/json; charset=utf-8", "Date": "Mon, 17 Nov 2025 14:18:16 GMT", "Content-Length": "99"}}
+2025-11-17 09:18:16,645 - hugo - INFO - [ollama] ollama_streaming_http_error: {"attempt": 3, "status_code": null, "duration": 4.37, "error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:18:16,645 - hugo - INFO - [ollama] fallback_to_nonstreaming: {"reason": "streaming_failed_all_attempts", "last_error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:18:16,645 - hugo - INFO - [ollama] nonstreaming_fallback_attempt: {"prompt_length": 673}
+2025-11-17 09:18:20,912 - hugo - INFO - [ollama] nonstreaming_fallback_failed: {"error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:18:20,924 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-17 09:18:20,937 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-17 09:18:20,938 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 112, "memory_type": "assistant_response", "importance": 0.5, "entity_type": null}
+2025-11-17 09:18:20,938 - hugo - INFO - [memory] stored: {"type": "assistant_response", "long_term": true, "has_embedding": true, "importance": 0.5, "entity_type": null}
+2025-11-17 09:18:20,939 - hugo - INFO - [cognition] response_saved_to_memory: {"session_id": "shell_20251117_091738", "content_length": 50, "model": "llama3:8b", "mood": "conversational"}
+2025-11-17 09:18:20,939 - hugo - INFO - [reflection] generated: {"perception_confidence": 0.85, "reasoning_confidence": 0.85, "mood": "conversational"}
+2025-11-17 09:18:20,939 - hugo - INFO - [user] response: {"content": "(Adjusting my reasoning parameters\u2026 trying again.)", "streaming": true, "session_id": "shell_20251117_091738"}
+2025-11-17 09:18:20,940 - hugo - INFO - [memory] stored: {"type": "assistant_message", "long_term": false, "has_embedding": false, "importance": 0.7, "entity_type": null}
+2025-11-17 09:19:39,739 - hugo - INFO - [reflection] session_started: {"session_id": "shell_20251117_091738"}
+2025-11-17 09:19:40,032 - hugo - INFO - [reflection] keywords_extracted: {"keywords": ["hugo", "adjusting", "reasoning", "parameters", "trying"], "total_keywords": 5}
+2025-11-17 09:19:40,032 - hugo - INFO - [reflection] sentiment_analyzed: {"sentiment_score": 0.0, "sentiment_label": "neutral"}
+2025-11-17 09:19:40,033 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 1, "max_retries": 2}
+2025-11-17 09:19:52,534 - hugo - INFO - [reflection] ollama_error: {"attempt": 1, "error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:19:52,534 - hugo - INFO - [reflection] ollama_retry: {"attempt": 1, "delay_seconds": 2}
+2025-11-17 09:19:54,690 - hugo - INFO - [reflection] ollama_attempt: {"attempt": 2, "max_retries": 2}
+2025-11-17 09:20:00,356 - hugo - INFO - [reflection] ollama_error: {"attempt": 2, "error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:20:00,357 - hugo - INFO - [reflection] ollama_all_retries_failed: {"total_attempts": 2, "last_error": "500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate"}
+2025-11-17 09:20:00,357 - hugo - ERROR - [error] exception: {"error_type": "Exception", "error_message": "Ollama inference failed after 2 attempts: 500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate", "context": {"phase": "json_parsing"}}
+2025-11-17 09:20:00,396 - hugo - ERROR - Exception occurred
+Traceback (most recent call last):
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\reflection.py", line 300, in _parse_reflection_json
+    generated = await self._infer_with_retry(prompt, temperature)
+  File "C:\Users\hocke\Documents\GitHub\Hugo\core\reflection.py", line 282, in _infer_with_retry
+    raise Exception(f"Ollama inference failed after {self.reflection_max_retries} attempts: {last_error}")
+Exception: Ollama inference failed after 2 attempts: 500 Server Error: Internal Server Error for url: http://localhost:11434/api/generate
+2025-11-17 09:20:00,938 - hugo - INFO - [reflection] json_fallback_used: {}
+2025-11-17 09:20:03,764 - hugo - INFO - [sqlite] write_queued: {"operation": "store_memory"}
+2025-11-17 09:20:03,798 - hugo - INFO - [sqlite] write_completed: {"operation": "store_memory"}
+2025-11-17 09:20:03,799 - hugo - INFO - [memory] sqlite_persisted: {"memory_id": 113, "memory_type": "reflection", "importance": 0.9, "entity_type": null}
+2025-11-17 09:20:03,799 - hugo - INFO - [memory] stored: {"type": "reflection", "long_term": true, "has_embedding": true, "importance": 0.9, "entity_type": null}
+2025-11-17 09:20:03,799 - hugo - INFO - [reflection] stored: {"type": "session", "confidence": 0.5, "content_length": 141}
+2025-11-17 09:20:03,800 - hugo - INFO - [reflection] session_completed: {"session_id": "shell_20251117_091738", "insights_count": 0, "keywords_count": 5, "sentiment": 0.0}
+2025-11-17 09:20:03,801 - hugo - INFO - [repl] session_ended: {"session_id": "shell_20251117_091738", "message_count": 2}

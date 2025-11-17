@@ -31,6 +31,9 @@ except ImportError:
 # Ollama stability module
 from core.ollama_stability import OllamaStabilityManager
 
+# Persona engine
+from core.persona_engine import HugoPersonaEngine, PersonaContext, Domain
+
 # Load environment variables
 load_dotenv()
 
@@ -142,13 +145,17 @@ class CognitionEngine:
             max_retries=self.ollama_max_retries
         )
 
+        # Initialize Persona Engine
+        self.persona_engine = HugoPersonaEngine(jarvis_mode=self.jarvis_mode_enabled)
+
         self.logger.log_event("cognition", "persona_loaded", {
             "name": self.persona.get("name", "Hugo"),
             "role": self.persona.get("identity", {}).get("role", "Unknown"),
             "mood": self.current_mood.value,
             "agent_delegation": self.agent_delegation_enabled,
             "jarvis_mode": self.jarvis_mode_enabled,
-            "ollama_stability": True
+            "ollama_stability": True,
+            "persona_engine": True
         })
 
     def _load_persona(self) -> Dict[str, Any]:
@@ -2173,6 +2180,31 @@ class CognitionEngine:
                 "async_mode": self.ollama_async_mode,
                 "prompt_tokens": prompt_metadata.get("prompt_tokens", 0),
                 "persona_name": prompt_metadata.get("persona_name", "Unknown")
+            })
+
+            # Apply persona transformation (Hugo's Right Hand style)
+            original_length = len(generated_response)
+
+            # Build persona context from memory
+            persona_context = PersonaContext(
+                recent_turns=[m for m in context.short_term_memory[-5:] if m],
+                last_domain=None,  # Will be detected from user_input
+                ongoing_task=None,  # TODO: Extract from context
+                user_preferences={}  # TODO: Extract from factual memories
+            )
+
+            # Transform response through persona engine
+            generated_response = self.persona_engine.detect_and_transform(
+                response_text=generated_response,
+                user_input=user_input,
+                persona_context=persona_context
+            )
+
+            self.logger.log_event("cognition", "persona_transform_applied", {
+                "original_length": original_length,
+                "transformed_length": len(generated_response),
+                "compression_ratio": round(len(generated_response) / original_length, 2) if original_length > 0 else 1.0,
+                "jarvis_mode": self.jarvis_mode_enabled
             })
         else:
             generated_response = "Model engine not configured. Please set MODEL_ENGINE=ollama in .env"
