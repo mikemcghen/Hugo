@@ -6,7 +6,8 @@
       "Bash(jarvis_personality_layer.patch)",
       "Bash(jarvis_personality_layer_FINAL.patch)",
       "Bash(git add:*)",
-      "Bash(phase_5_1_streaming_stability.patch)"
+      "Bash(phase_5_1_streaming_stability.patch)",
+      "Bash(phase_5_2_ollama_stability.patch)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,1557 @@
+diff --git a/core/cognition.py b/core/cognition.py
+index eb28d23..03b8ff8 100644
+--- a/core/cognition.py
++++ b/core/cognition.py
+@@ -126,11 +126,17 @@ class CognitionEngine:
+ 
+         # Load Hugo's personality manifest
+         self.persona = self._load_persona()
++
++        # Load Jarvis mode configuration
++        self.jarvis_mode_enabled = self.persona.get("jarvis_mode", {}).get("enabled", False)
++        self.jarvis_config = self.persona.get("jarvis_mode", {})
++
+         self.logger.log_event("cognition", "persona_loaded", {
+             "name": self.persona.get("name", "Hugo"),
+             "role": self.persona.get("identity", {}).get("role", "Unknown"),
+             "mood": self.current_mood.value,
+-            "agent_delegation": self.agent_delegation_enabled
++            "agent_delegation": self.agent_delegation_enabled,
++            "jarvis_mode": self.jarvis_mode_enabled
+         })
+ 
+     def _load_persona(self) -> Dict[str, Any]:
+@@ -201,21 +207,26 @@ class CognitionEngine:
+         Main public API for generating replies.
+ 
+         This is the primary entry point for the REPL and other clients.
+-        Handles both streaming and non-streaming modes.
++        ALWAYS returns an async iterator for uniform interface.
+ 
+         Args:
+             message: User message
+             session_id: Current session identifier
+-            streaming: If True, yield chunks; if False, return complete response
++            streaming: If True, yield chunks; if False, yield single response
+             mode: Optional processing mode override (e.g., "extraction_synthesis")
+ 
+         Returns:
+-            If streaming=False: ResponsePackage
+-            If streaming=True: Generator yielding chunks, then ResponsePackage
++            AsyncIterator that yields:
++            - If streaming=True: string chunks, then final ResponsePackage
++            - If streaming=False: single ResponsePackage
+         """
++        # Import async helper
++        from runtime.utils.async_helpers import stream_single
++
+         # Early bypass for extraction synthesis mode
+         if mode == "extraction_synthesis":
+-            return await self._generate_extraction_synthesis(message)
++            result = await self._generate_extraction_synthesis(message)
++            return stream_single(result)
+ 
+         self.logger.log_event("cognition", "generate_reply_started", {
+             "session_id": session_id,
+@@ -240,7 +251,7 @@ class CognitionEngine:
+                     "session_id": session_id
+                 })
+ 
+-                # Execute skill directly and return result
++                # Execute skill directly
+                 response_package = await self._execute_skill_bypass(
+                     skill_name, skill_action, skill_payload, message, session_id
+                 )
+@@ -248,7 +259,12 @@ class CognitionEngine:
+                 # Save assistant response to memory
+                 await self.post_process(response_package.content, session_id)
+ 
+-                return response_package
++                # Wrap in async iterator for uniform interface
++                self.logger.log_event("cognition", "skill_bypass_wrapped_in_stream", {
++                    "skill": skill_name,
++                    "streaming": False
++                })
++                return stream_single(response_package)
+ 
+         # Save user message to memory (with skill trigger metadata if present)
+         await self._save_user_message(message, session_id)
+@@ -257,13 +273,16 @@ class CognitionEngine:
+             # Return streaming generator
+             return self.process_input_streaming(message, session_id)
+         else:
+-            # Return complete response
++            # Return complete response wrapped in async iterator
+             response_package = await self.process_input(message, session_id)
+ 
+             # Post-process: Save assistant response to memory
+             await self.post_process(response_package.content, session_id)
+ 
+-            return response_package
++            self.logger.log_event("cognition", "non_streaming_wrapped_in_stream", {
++                "response_length": len(response_package.content)
++            })
++            return stream_single(response_package)
+ 
+     async def _generate_extraction_synthesis(self, message: str):
+         """
+@@ -715,9 +734,42 @@ class CognitionEngine:
+         # Step 2: Context Assembly
+         context = await self._assemble_context(perception, session_id)
+ 
++        # Step 2.5: Jarvis Mode - Contextual Anticipation
++        anticipation = None
++        if self.jarvis_mode_enabled:
++            anticipation = await self._contextual_anticipation(user_input, context)
++
++            # If we have a direct template response, return it immediately
++            template_response = self._apply_jarvis_template(user_input, anticipation)
++            if template_response:
++                # Create simplified response package for template responses
++                simple_reasoning = ReasoningChain(
++                    steps=["Jarvis template applied"],
++                    assumptions=[f"Pattern detected: {anticipation.get('pattern')}"],
++                    alternatives_considered=[],
++                    selected_approach="jarvis_template",
++                    confidence_score=0.95
++                )
++                return ResponsePackage(
++                    content=template_response,
++                    tone=perception.detected_mood,
++                    reasoning_chain=simple_reasoning,
++                    directive_checks=[],
++                    metadata={
++                        "timestamp": __import__('datetime').datetime.now().isoformat(),
++                        "jarvis_mode": True,
++                        "template_applied": True,
++                        "anticipation_pattern": anticipation.get("pattern")
++                    }
++                )
++
+         # Step 3: Synthesis
+         reasoning, generated_text, prompt_metadata = await self._synthesize(perception, context, session_id, user_input)
+ 
++        # Step 3.5: Jarvis Mode - Response Compression
++        if self.jarvis_mode_enabled:
++            generated_text = self._compress_response(generated_text)
++
+         # Step 4: Output Construction
+         response = await self._construct_output(reasoning, perception, generated_text, prompt_metadata)
+ 
+@@ -906,6 +958,40 @@ class CognitionEngine:
+         # Step 2: Context Assembly
+         context = await self._assemble_context(perception, session_id)
+ 
++        # Step 2.5: Jarvis Mode - Contextual Anticipation
++        anticipation = None
++        if self.jarvis_mode_enabled:
++            anticipation = await self._contextual_anticipation(user_input, context)
++
++            # If we have a direct template response, return it immediately
++            template_response = self._apply_jarvis_template(user_input, anticipation)
++            if template_response:
++                # Yield template response
++                yield template_response
++
++                # Create simplified response package
++                simple_reasoning = ReasoningChain(
++                    steps=["Jarvis template applied"],
++                    assumptions=[f"Pattern detected: {anticipation.get('pattern')}"],
++                    alternatives_considered=[],
++                    selected_approach="jarvis_template",
++                    confidence_score=0.95
++                )
++                response_package = ResponsePackage(
++                    content=template_response,
++                    tone=perception.detected_mood,
++                    reasoning_chain=simple_reasoning,
++                    directive_checks=[],
++                    metadata={
++                        "timestamp": __import__('datetime').datetime.now().isoformat(),
++                        "jarvis_mode": True,
++                        "template_applied": True,
++                        "anticipation_pattern": anticipation.get("pattern")
++                    }
++                )
++                yield response_package
++                return
++
+         # Step 3: Assemble prompt
+         user_message = perception.corrected_input if perception.corrected_input else user_input
+         prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
+@@ -922,6 +1008,10 @@ class CognitionEngine:
+         # Combine full response
+         generated_response = "".join(generated_chunks)
+ 
++        # Step 4.5: Jarvis Mode - Response Compression
++        if self.jarvis_mode_enabled:
++            generated_response = self._compress_response(generated_response)
++
+         # Build reasoning chain
+         reasoning_steps = [
+             f"Detected user sentiment: {prompt_metadata.get('user_sentiment', {}).get('primary_sentiment', 'neutral')}",
+@@ -1068,6 +1158,207 @@ class CognitionEngine:
+             "is_neutral": len(detected) == 0
+         }
+ 
++    async def _contextual_anticipation(self, user_input: str, context: ContextAssembly) -> Optional[Dict[str, Any]]:
++        """
++        Jarvis-style contextual anticipation for ambiguous commands.
++
++        Analyzes recent context to infer likely meaning of vague commands like:
++        - "Fix that"
++        - "Continue"
++        - "Next"
++        - "Run it again"
++        - "Help me with the Metix widget"
++
++        Returns:
++            Dictionary with inferred context or None if no anticipation possible
++        """
++        if not self.jarvis_mode_enabled:
++            return None
++
++        user_lower = user_input.lower().strip()
++
++        # Pattern matching for ambiguous commands
++        ambiguous_patterns = {
++            "fix_that": ["fix that", "fix this", "fix it"],
++            "continue": ["continue", "keep going", "go on", "next"],
++            "run_again": ["run it", "run again", "try again", "do it again"],
++            "help_with": ["help me with", "help with", "work on"],
++            "phase": ["phase", "start phase"],
++            "patch": ["generate patch", "create patch", "make patch"],
++            "next_step": ["next step", "move forward", "what's next"]
++        }
++
++        detected_pattern = None
++        for pattern_name, patterns in ambiguous_patterns.items():
++            if any(p in user_lower for p in patterns):
++                detected_pattern = pattern_name
++                break
++
++        if not detected_pattern:
++            return None
++
++        # Extract recent context (last 3-5 messages)
++        recent_context = []
++        recency_depth = self.jarvis_config.get("anticipation", {}).get("context_depth", 5)
++
++        if context.short_term_memory:
++            for mem in context.short_term_memory[-recency_depth:]:
++                content = mem.get('content', '').lower()
++                recent_context.append(content)
++
++        # Infer context based on pattern and recent messages
++        inferred = {
++            "pattern": detected_pattern,
++            "possibilities": [],
++            "suggested_disambiguation": None
++        }
++
++        # Pattern-specific inference
++        if detected_pattern == "fix_that":
++            # Look for error mentions, SQL, bugs in recent context
++            possibilities = []
++            if any("error" in ctx or "bug" in ctx for ctx in recent_context):
++                possibilities.append("the recent error")
++            if any("sql" in ctx or "query" in ctx for ctx in recent_context):
++                possibilities.append("the SQL query")
++            if any("refactor" in ctx for ctx in recent_context):
++                possibilities.append("the refactoring")
++
++            if len(possibilities) > 1:
++                inferred["possibilities"] = possibilities
++                inferred["suggested_disambiguation"] = f"Two possibilities: {possibilities[0]} or {possibilities[1]} — which one?"
++            elif len(possibilities) == 1:
++                inferred["possibilities"] = possibilities
++                inferred["suggested_disambiguation"] = None  # Clear intent
++
++        elif detected_pattern == "continue":
++            # Look for ongoing tasks
++            if any("phase" in ctx for ctx in recent_context):
++                inferred["possibilities"] = ["next phase step"]
++                inferred["suggested_disambiguation"] = "Next stage: synthesis. Running now."
++            elif any("refactor" in ctx or "implement" in ctx for ctx in recent_context):
++                inferred["possibilities"] = ["continue implementation"]
++
++        elif detected_pattern == "help_with":
++            # Extract widget/component references
++            if "metix" in user_lower:
++                # Common Metix widget IDs
++                inferred["possibilities"] = ["widget 41", "widget 48", "widget 45", "widget 50"]
++                inferred["suggested_disambiguation"] = "Which one — 41, 48, 45, or 50?"
++            elif "hugo" in user_lower:
++                if "phase" in user_lower:
++                    inferred["possibilities"] = ["Phase 4.1", "Phase 4.2", "Phase 5"]
++                    inferred["suggested_disambiguation"] = "Which phase — 4.1, 4.2, or 5?"
++
++        elif detected_pattern == "phase":
++            # Extract phase number if present
++            import re
++            phase_match = re.search(r'phase\s*(\d+\.?\d*)', user_lower)
++            if phase_match:
++                phase_num = phase_match.group(1)
++                inferred["possibilities"] = [f"Phase {phase_num}"]
++                inferred["suggested_disambiguation"] = f"Ready. Phase {phase_num} initialized."
++            else:
++                inferred["possibilities"] = ["Phase 4.1", "Phase 4.2", "Phase 5"]
++                inferred["suggested_disambiguation"] = "Which phase — 4.1, 4.2, or 5?"
++
++        elif detected_pattern == "patch":
++            inferred["possibilities"] = ["generate code patch"]
++            inferred["suggested_disambiguation"] = "On it."
++
++        elif detected_pattern == "next_step":
++            inferred["suggested_disambiguation"] = "Running now."
++
++        return inferred if inferred["possibilities"] or inferred["suggested_disambiguation"] else None
++
++    def _compress_response(self, response: str) -> str:
++        """
++        Compress response to Jarvis-style concise format.
++
++        Removes:
++        - Hedging ("maybe", "possibly", "I think")
++        - Filler phrases
++        - Excessive pleasantries
++        - Redundancy
++
++        Args:
++            response: Generated response text
++
++        Returns:
++            Compressed response
++        """
++        if not self.jarvis_mode_enabled:
++            return response
++
++        # Remove hedging phrases
++        hedging_patterns = [
++            r'\b(maybe|possibly|perhaps|might|could be|I think|I believe)\b',
++            r'\b(it seems|it appears|probably|likely)\b',
++            r'\bsort of\b',
++            r'\bkind of\b'
++        ]
++
++        compressed = response
++        for pattern in hedging_patterns:
++            compressed = re.sub(pattern, '', compressed, flags=re.IGNORECASE)
++
++        # Remove filler prefaces
++        filler_patterns = [
++            r'^(Sure,?\s*)',
++            r'^(Okay,?\s*)',
++            r'^(Alright,?\s*)',
++            r'^(Here (it is|you go):?\s*)',
++            r'^(Let me\s+)',
++            r'^(I\'ll\s+)',
++            r'^(I can\s+)'
++        ]
++
++        for pattern in filler_patterns:
++            compressed = re.sub(pattern, '', compressed, flags=re.IGNORECASE)
++
++        # Clean up extra whitespace
++        compressed = re.sub(r'\s+', ' ', compressed).strip()
++
++        # If response is too long, truncate to key points (unless it's code or data)
++        max_sentences = 3
++        if not any(indicator in compressed for indicator in ['```', 'SELECT', 'FROM', 'def ', 'class ']):
++            sentences = re.split(r'[.!?]\s+', compressed)
++            if len(sentences) > max_sentences:
++                compressed = '. '.join(sentences[:max_sentences]) + '.'
++
++        return compressed
++
++    def _apply_jarvis_template(self, user_input: str, anticipation: Optional[Dict[str, Any]]) -> Optional[str]:
++        """
++        Apply Jarvis-style response templates for common patterns.
++
++        Args:
++            user_input: User input
++            anticipation: Contextual anticipation result
++
++        Returns:
++            Template response or None if no template applies
++        """
++        if not self.jarvis_mode_enabled or not anticipation:
++            return None
++
++        templates = self.jarvis_config.get("templates", {})
++
++        if anticipation.get("suggested_disambiguation"):
++            return anticipation["suggested_disambiguation"]
++
++        # Pattern-specific templates
++        pattern = anticipation.get("pattern")
++
++        if pattern == "patch":
++            return templates.get("on_it", "On it.")
++        elif pattern == "next_step":
++            return templates.get("running", "Running now.")
++        elif pattern == "continue":
++            return templates.get("confirmed", "Confirmed.")
++
++        return None
++
+     async def assemble_prompt(self, user_message: str, perception: PerceptionResult,
+                              context: ContextAssembly, session_id: str) -> Dict[str, Any]:
+         """
+@@ -1158,7 +1449,24 @@ class CognitionEngine:
+             f"[Current Mood: {self.current_mood.value.title()} - {current_mood_desc}]",
+             "",
+             f"{persona_desc}",
+-            "",
++            ""
++        ]
++
++        # Add Jarvis mode instructions if enabled
++        if self.jarvis_mode_enabled:
++            prompt_parts.extend([
++                "[Jarvis Mode: ACTIVE]",
++                "Response Style:",
++                "- Default length: 1-3 sentences (expand only if user explicitly asks for detail)",
++                "- NEVER hedge with 'maybe', 'possibly', 'I think'",
++                "- Give direct recommendations, no filler",
++                "- When unsure: ask tight disambiguation question",
++                "- Prefer action over analysis",
++                "- No prefaces like 'Sure, here it is:' — just deliver",
++                ""
++            ])
++
++        prompt_parts.extend([
+             "[Memory Policy]",
+             "CRITICAL: When responding about user information or past conversations:",
+             "- If a memory exists, use it EXACTLY as written",
+@@ -1166,7 +1474,7 @@ class CognitionEngine:
+             "- NEVER fabricate or invent facts about the user",
+             "- Only reference information from the sections below",
+             ""
+-        ]
++        ])
+ 
+         # Add factual memories about the user
+         if factual_memories:
+diff --git a/core/ollama_stability.py b/core/ollama_stability.py
+new file mode 100644
+index 0000000..87957fe
+--- /dev/null
++++ b/core/ollama_stability.py
+@@ -0,0 +1,524 @@
++"""
++Ollama Stability Module
++-----------------------
++Enhanced error handling, recovery, and defensive guards for Ollama integration.
++
++Features:
++- Automatic retry with reduced context
++- Streaming to non-streaming fallback
++- Server health detection
++- Payload validation
++- Comprehensive error recovery
++"""
++
++import requests
++import json
++import time
++from typing import Dict, Any, Optional, Generator
++from dataclasses import dataclass
++
++
++@dataclass
++class OllamaResponse:
++    """Structured Ollama response"""
++    success: bool
++    content: str
++    error: Optional[str] = None
++    fallback_used: bool = False
++    attempts: int = 1
++    duration: float = 0.0
++    recovery_action: Optional[str] = None
++
++
++class OllamaStabilityManager:
++    """
++    Manages Ollama stability with advanced error recovery.
++
++    Recovery strategies:
++    1. Retry with exponential backoff
++    2. Reduce context size on 500 errors
++    3. Fall back from streaming to non-streaming
++    4. Detect server down vs model crash
++    5. Automatic model reload detection
++    """
++
++    def __init__(self, api_url: str, model_name: str, logger, max_retries: int = 3):
++        self.api_url = api_url
++        self.model_name = model_name
++        self.logger = logger
++        self.max_retries = max_retries
++        self.retry_backoff = 2
++        self.timeout = 120
++
++        # Health tracking
++        self.server_available = True
++        self.model_loaded = True
++        self.consecutive_failures = 0
++        self.last_successful_request = time.time()
++
++        # Context reduction on errors
++        self.context_reduction_factor = 0.7  # Reduce to 70% on 500 error
++
++    def validate_payload(self, payload: Dict[str, Any]) -> tuple[bool, Optional[str]]:
++        """
++        Validate Ollama API payload before sending.
++
++        Args:
++            payload: Request payload
++
++        Returns:
++            (is_valid, error_message)
++        """
++        # Required fields
++        if "model" not in payload:
++            return False, "Missing 'model' field"
++
++        if "prompt" not in payload:
++            return False, "Missing 'prompt' field"
++
++        # Prompt validation
++        prompt = payload["prompt"]
++        if not isinstance(prompt, str):
++            return False, "Prompt must be string"
++
++        if len(prompt) == 0:
++            return False, "Prompt cannot be empty"
++
++        # Warn on very large prompts (may cause 500)
++        if len(prompt) > 100000:
++            self.logger.log_event("ollama", "large_prompt_warning", {
++                "prompt_length": len(prompt),
++                "recommendation": "Consider context reduction"
++            })
++
++        # Temperature validation
++        if "options" in payload and "temperature" in payload["options"]:
++            temp = payload["options"]["temperature"]
++            if not (0.0 <= temp <= 2.0):
++                return False, f"Temperature {temp} out of range [0.0, 2.0]"
++
++        return True, None
++
++    def check_server_health(self) -> bool:
++        """
++        Check if Ollama server is responsive.
++
++        Returns:
++            True if server is healthy
++        """
++        try:
++            # Try to list models (lightweight health check)
++            response = requests.get(
++                f"{self.api_url.replace('/api/generate', '/api/tags')}",
++                timeout=5
++            )
++
++            if response.status_code == 200:
++                self.server_available = True
++                self.logger.log_event("ollama", "server_health_check", {
++                    "status": "healthy",
++                    "status_code": 200
++                })
++                return True
++            else:
++                self.server_available = False
++                self.logger.log_event("ollama", "server_health_check", {
++                    "status": "unhealthy",
++                    "status_code": response.status_code
++                })
++                return False
++
++        except Exception as e:
++            self.server_available = False
++            self.logger.log_event("ollama", "server_health_check", {
++                "status": "unreachable",
++                "error": str(e)
++            })
++            return False
++
++    def reduce_context(self, prompt: str, reduction_factor: float = 0.7) -> str:
++        """
++        Reduce prompt context size to recover from 500 errors.
++
++        Args:
++            prompt: Original prompt
++            reduction_factor: Factor to reduce by (0.7 = keep 70%)
++
++        Returns:
++            Reduced prompt
++        """
++        target_length = int(len(prompt) * reduction_factor)
++
++        # Try to find a natural break point (paragraph, sentence)
++        if target_length < len(prompt):
++            # Look for last paragraph break
++            reduced = prompt[:target_length]
++            last_para = reduced.rfind('\n\n')
++
++            if last_para > target_length * 0.8:  # Within 80% of target
++                reduced = prompt[:last_para]
++            else:
++                # Look for last sentence break
++                last_sentence = max(
++                    reduced.rfind('. '),
++                    reduced.rfind('! '),
++                    reduced.rfind('? ')
++                )
++                if last_sentence > target_length * 0.8:
++                    reduced = prompt[:last_sentence + 1]
++
++            self.logger.log_event("ollama", "context_reduction", {
++                "original_length": len(prompt),
++                "reduced_length": len(reduced),
++                "reduction_factor": reduction_factor
++            })
++
++            return reduced
++
++        return prompt
++
++    def handle_500_error(self, response: requests.Response, attempt: int) -> Optional[str]:
++        """
++        Handle 500 Server Error from Ollama.
++
++        Common causes:
++        - Model overloaded (too much context)
++        - Model unloaded mid-generation
++        - CUDA out of memory
++
++        Args:
++            response: Failed response
++            attempt: Current attempt number
++
++        Returns:
++            Recovery action suggestion or None
++        """
++        try:
++            error_body = response.json()
++            error_msg = error_body.get("error", str(response.text))
++        except:
++            error_msg = str(response.text)
++
++        self.logger.log_event("ollama", "500_error_analysis", {
++            "attempt": attempt,
++            "error_message": error_msg,
++            "response_headers": dict(response.headers)
++        })
++
++        # Detect specific error types
++        if "out of memory" in error_msg.lower() or "cuda" in error_msg.lower():
++            return "reduce_context"
++        elif "model" in error_msg.lower() and "not found" in error_msg.lower():
++            return "model_reload"
++        elif "overloaded" in error_msg.lower() or "busy" in error_msg.lower():
++            return "retry_with_backoff"
++        else:
++            return "reduce_context"  # Default recovery
++
++    def soft_fallback_message(self, error_type: str = "general") -> str:
++        """
++        Generate user-friendly soft fallback message.
++
++        Args:
++            error_type: Type of error encountered
++
++        Returns:
++            Soft fallback message
++        """
++        messages = {
++            "general": "(My reasoning engine is warming up… let me try that again.)",
++            "server_down": "(My reasoning core is restarting… one moment please.)",
++            "model_reload": "(Reloading my neural model… just a moment.)",
++            "context_too_large": "(That's a lot to process — let me simplify and try again.)",
++            "timeout": "(Still thinking… let me approach this differently.)",
++            "500_error": "(Adjusting my reasoning parameters… trying again.)"
++        }
++
++        return messages.get(error_type, messages["general"])
++
++    def stream_with_recovery(
++        self,
++        prompt: str,
++        temperature: float = 0.7,
++        enable_context_reduction: bool = True
++    ) -> Generator[str, None, None]:
++        """
++        Stream with automatic recovery and fallback.
++
++        Strategy:
++        1. Try streaming
++        2. On 500: reduce context and retry streaming
++        3. On persistent failure: fall back to non-streaming
++        4. On total failure: yield soft fallback message
++
++        Args:
++            prompt: Input prompt
++            temperature: Sampling temperature
++            enable_context_reduction: Whether to reduce context on 500
++
++        Yields:
++            Text chunks
++        """
++        attempt = 0
++        current_prompt = prompt
++        last_error = None
++        used_context_reduction = False
++
++        while attempt < self.max_retries:
++            attempt += 1
++            start_time = time.time()
++
++            # Build payload
++            payload = {
++                "model": self.model_name,
++                "prompt": current_prompt,
++                "stream": True,
++                "options": {
++                    "temperature": temperature
++                }
++            }
++
++            # Validate payload
++            is_valid, validation_error = self.validate_payload(payload)
++            if not is_valid:
++                self.logger.log_event("ollama", "payload_validation_failed", {
++                    "error": validation_error,
++                    "attempt": attempt
++                })
++                yield self.soft_fallback_message("general")
++                return
++
++            # Log request
++            self.logger.log_event("ollama", "ollama_request_payload", {
++                "attempt": attempt,
++                "prompt_length": len(current_prompt),
++                "temperature": temperature,
++                "stream": True,
++                "context_reduced": used_context_reduction
++            })
++
++            try:
++                response = requests.post(
++                    self.api_url,
++                    json=payload,
++                    stream=True,
++                    timeout=self.timeout
++                )
++
++                # Log response headers
++                self.logger.log_event("ollama", "ollama_response_headers", {
++                    "status_code": response.status_code,
++                    "headers": dict(response.headers),
++                    "attempt": attempt
++                })
++
++                # Handle 500 error
++                if response.status_code == 500:
++                    recovery_action = self.handle_500_error(response, attempt)
++
++                    if recovery_action == "reduce_context" and enable_context_reduction and not used_context_reduction:
++                        # Try again with reduced context
++                        current_prompt = self.reduce_context(current_prompt)
++                        used_context_reduction = True
++
++                        self.logger.log_event("ollama", "ollama_server_recovering", {
++                            "action": "context_reduction",
++                            "attempt": attempt,
++                            "retry": True
++                        })
++
++                        time.sleep(self.retry_backoff ** attempt)
++                        continue
++
++                    elif attempt < self.max_retries:
++                        # Retry with backoff
++                        self.logger.log_event("ollama", "ollama_server_recovering", {
++                            "action": "retry_with_backoff",
++                            "attempt": attempt,
++                            "backoff": self.retry_backoff ** attempt
++                        })
++
++                        time.sleep(self.retry_backoff ** attempt)
++                        continue
++
++                response.raise_for_status()
++
++                # Stream chunks
++                total_generated = []
++                chunk_count = 0
++
++                for line in response.iter_lines():
++                    if line:
++                        try:
++                            chunk_data = json.loads(line.decode('utf-8'))
++
++                            # Log chunk received
++                            chunk_count += 1
++                            if chunk_count % 50 == 0:  # Log every 50 chunks
++                                self.logger.log_event("ollama", "ollama_response_stream_chunk", {
++                                    "chunk_number": chunk_count,
++                                    "total_length": len("".join(total_generated))
++                                })
++
++                            chunk_text = chunk_data.get("response", "")
++                            if chunk_text:
++                                total_generated.append(chunk_text)
++                                yield chunk_text
++
++                            if chunk_data.get("done", False):
++                                break
++
++                        except json.JSONDecodeError as e:
++                            self.logger.log_event("ollama", "ollama_stream_decode_error", {
++                                "error": str(e),
++                                "line": line.decode('utf-8', errors='replace')[:100]
++                            })
++                            continue
++
++                # Success
++                duration = time.time() - start_time
++                self.logger.log_event("ollama", "ollama_streaming_complete", {
++                    "attempt": attempt,
++                    "duration": round(duration, 2),
++                    "chunks": chunk_count,
++                    "response_length": len("".join(total_generated)),
++                    "context_reduced": used_context_reduction
++                })
++
++                self.consecutive_failures = 0
++                self.last_successful_request = time.time()
++                return
++
++            except requests.exceptions.HTTPError as e:
++                last_error = e
++                duration = time.time() - start_time
++
++                self.logger.log_event("ollama", "ollama_streaming_http_error", {
++                    "attempt": attempt,
++                    "status_code": e.response.status_code if e.response else None,
++                    "duration": round(duration, 2),
++                    "error": str(e)
++                })
++
++                if attempt < self.max_retries:
++                    time.sleep(self.retry_backoff ** attempt)
++
++            except requests.exceptions.Timeout as e:
++                last_error = e
++                duration = time.time() - start_time
++
++                self.logger.log_event("ollama", "ollama_streaming_timeout", {
++                    "attempt": attempt,
++                    "duration": round(duration, 2),
++                    "timeout_limit": self.timeout
++                })
++
++                if attempt < self.max_retries:
++                    time.sleep(self.retry_backoff ** attempt)
++
++            except requests.exceptions.ConnectionError as e:
++                last_error = e
++                duration = time.time() - start_time
++
++                # Check if server is down
++                server_healthy = self.check_server_health()
++
++                self.logger.log_event("ollama", "ollama_connection_error", {
++                    "attempt": attempt,
++                    "duration": round(duration, 2),
++                    "server_healthy": server_healthy,
++                    "error": str(e)
++                })
++
++                if not server_healthy:
++                    # Server is down - yield soft fallback immediately
++                    yield self.soft_fallback_message("server_down")
++                    return
++
++                if attempt < self.max_retries:
++                    time.sleep(self.retry_backoff ** attempt)
++
++            except Exception as e:
++                last_error = e
++                duration = time.time() - start_time
++
++                self.logger.log_event("ollama", "ollama_streaming_unexpected_error", {
++                    "attempt": attempt,
++                    "duration": round(duration, 2),
++                    "error_type": type(e).__name__,
++                    "error": str(e)
++                })
++
++                if attempt < self.max_retries:
++                    time.sleep(self.retry_backoff ** attempt)
++
++        # All retries exhausted - try non-streaming fallback
++        self.logger.log_event("ollama", "fallback_to_nonstreaming", {
++            "reason": "streaming_failed_all_attempts",
++            "last_error": str(last_error)
++        })
++
++        nonstream_result = self.non_stream_fallback(current_prompt, temperature)
++        if nonstream_result.success:
++            yield nonstream_result.content
++        else:
++            # Total failure - soft fallback
++            self.consecutive_failures += 1
++            yield self.soft_fallback_message("500_error")
++
++    def non_stream_fallback(self, prompt: str, temperature: float = 0.7) -> OllamaResponse:
++        """
++        Non-streaming fallback when streaming fails.
++
++        Args:
++            prompt: Input prompt
++            temperature: Sampling temperature
++
++        Returns:
++            OllamaResponse object
++        """
++        self.logger.log_event("ollama", "nonstreaming_fallback_attempt", {
++            "prompt_length": len(prompt)
++        })
++
++        payload = {
++            "model": self.model_name,
++            "prompt": prompt,
++            "stream": False,
++            "options": {
++                "temperature": temperature
++            }
++        }
++
++        try:
++            response = requests.post(
++                self.api_url,
++                json=payload,
++                timeout=self.timeout
++            )
++            response.raise_for_status()
++
++            result = response.json()
++            content = result.get("response", "").strip()
++
++            self.logger.log_event("ollama", "nonstreaming_fallback_success", {
++                "response_length": len(content)
++            })
++
++            return OllamaResponse(
++                success=True,
++                content=content,
++                recovery_action="nonstreaming_fallback"
++            )
++
++        except Exception as e:
++            self.logger.log_event("ollama", "nonstreaming_fallback_failed", {
++                "error": str(e)
++            })
++
++            return OllamaResponse(
++                success=False,
++                content="",
++                error=str(e),
++                fallback_used=True
++            )
+diff --git a/tests/test_ollama_recovery.py b/tests/test_ollama_recovery.py
+new file mode 100644
+index 0000000..471f538
+--- /dev/null
++++ b/tests/test_ollama_recovery.py
+@@ -0,0 +1,385 @@
++"""
++Tests for Ollama Recovery and Stability
++----------------------------------------
++Comprehensive test suite for Ollama error handling, recovery strategies,
++and defensive guards.
++
++Tests:
++- 500 error recovery with context reduction
++- Streaming to non-streaming fallback
++- Server down detection and recovery
++- Model reload handling
++- Payload validation
++- Soft fallback messages
++"""
++
++import pytest
++import requests
++from unittest.mock import Mock, patch, MagicMock
++from core.ollama_stability import OllamaStabilityManager, OllamaResponse
++
++
++class MockLogger:
++    """Mock logger for testing"""
++    def log_event(self, category, event_type, data):
++        pass
++
++
++@pytest.fixture
++def stability_manager():
++    """Create OllamaStabilityManager for testing"""
++    logger = MockLogger()
++    return OllamaStabilityManager(
++        api_url="http://localhost:11434/api/generate",
++        model_name="llama3:8b",
++        logger=logger,
++        max_retries=3
++    )
++
++
++def test_payload_validation_success(stability_manager):
++    """Test valid payload passes validation"""
++    payload = {
++        "model": "llama3:8b",
++        "prompt": "Hello world",
++        "stream": True,
++        "options": {
++            "temperature": 0.7
++        }
++    }
++
++    is_valid, error = stability_manager.validate_payload(payload)
++
++    assert is_valid is True
++    assert error is None
++
++
++def test_payload_validation_missing_model(stability_manager):
++    """Test payload validation fails without model"""
++    payload = {
++        "prompt": "Hello world"
++    }
++
++    is_valid, error = stability_manager.validate_payload(payload)
++
++    assert is_valid is False
++    assert "model" in error
++
++
++def test_payload_validation_missing_prompt(stability_manager):
++    """Test payload validation fails without prompt"""
++    payload = {
++        "model": "llama3:8b"
++    }
++
++    is_valid, error = stability_manager.validate_payload(payload)
++
++    assert is_valid is False
++    assert "prompt" in error
++
++
++def test_payload_validation_invalid_temperature(stability_manager):
++    """Test payload validation fails with invalid temperature"""
++    payload = {
++        "model": "llama3:8b",
++        "prompt": "Hello",
++        "options": {
++            "temperature": 5.0  # Invalid: > 2.0
++        }
++    }
++
++    is_valid, error = stability_manager.validate_payload(payload)
++
++    assert is_valid is False
++    assert "Temperature" in error
++
++
++def test_context_reduction(stability_manager):
++    """Test context reduction reduces prompt size"""
++    original_prompt = "A" * 1000
++    reduced = stability_manager.reduce_context(original_prompt, reduction_factor=0.7)
++
++    assert len(reduced) < len(original_prompt)
++    assert len(reduced) <= int(len(original_prompt) * 0.7)
++
++
++def test_context_reduction_preserves_content(stability_manager):
++    """Test context reduction keeps beginning of prompt"""
++    original_prompt = "Important start. " + ("B" * 1000)
++    reduced = stability_manager.reduce_context(original_prompt, reduction_factor=0.5)
++
++    assert reduced.startswith("Important start")
++
++
++def test_soft_fallback_messages(stability_manager):
++    """Test soft fallback messages are user-friendly"""
++    msg_general = stability_manager.soft_fallback_message("general")
++    msg_server_down = stability_manager.soft_fallback_message("server_down")
++    msg_500 = stability_manager.soft_fallback_message("500_error")
++
++    # Should be friendly, not technical
++    assert "reasoning" in msg_general.lower() or "warming up" in msg_general.lower()
++    assert "restart" in msg_server_down.lower() or "moment" in msg_server_down.lower()
++    assert "try" in msg_500.lower() or "adjust" in msg_500.lower()
++
++    # Should not expose technical errors
++    assert "500" not in msg_500
++    assert "error" not in msg_general.lower() or "warming up" in msg_general.lower()
++
++
++@patch('requests.get')
++def test_server_health_check_healthy(mock_get, stability_manager):
++    """Test server health check when server is healthy"""
++    mock_response = Mock()
++    mock_response.status_code = 200
++    mock_get.return_value = mock_response
++
++    is_healthy = stability_manager.check_server_health()
++
++    assert is_healthy is True
++    assert stability_manager.server_available is True
++
++
++@patch('requests.get')
++def test_server_health_check_unhealthy(mock_get, stability_manager):
++    """Test server health check when server returns error"""
++    mock_response = Mock()
++    mock_response.status_code = 500
++    mock_get.return_value = mock_response
++
++    is_healthy = stability_manager.check_server_health()
++
++    assert is_healthy is False
++    assert stability_manager.server_available is False
++
++
++@patch('requests.get')
++def test_server_health_check_unreachable(mock_get, stability_manager):
++    """Test server health check when server is unreachable"""
++    mock_get.side_effect = requests.exceptions.ConnectionError()
++
++    is_healthy = stability_manager.check_server_health()
++
++    assert is_healthy is False
++    assert stability_manager.server_available is False
++
++
++@patch('requests.post')
++def test_stream_ollama_500_recovery(mock_post, stability_manager):
++    """Test streaming recovers from 500 error with context reduction"""
++    # First attempt: 500 error
++    mock_response_500 = Mock()
++    mock_response_500.status_code = 500
++    mock_response_500.json.return_value = {"error": "out of memory"}
++    mock_response_500.headers = {}
++    mock_response_500.text = "out of memory"
++
++    # Second attempt: success
++    mock_response_success = Mock()
++    mock_response_success.status_code = 200
++    mock_response_success.iter_lines.return_value = [
++        b'{"response": "Hello", "done": false}',
++        b'{"response": " world", "done": true}'
++    ]
++    mock_response_success.headers = {}
++
++    mock_post.side_effect = [mock_response_500, mock_response_success]
++
++    # Run streaming with recovery
++    chunks = list(stability_manager.stream_with_recovery("A" * 10000, temperature=0.7))
++
++    # Should get successful response
++    assert len(chunks) > 0
++    full_response = "".join(chunks)
++    assert "Hello world" in full_response or "warming up" in full_response
++
++
++@patch('requests.post')
++def test_nonstream_retry_on_stream_fail(mock_post, stability_manager):
++    """Test falls back to non-streaming when streaming fails"""
++    # All streaming attempts fail
++    mock_post.side_effect = requests.exceptions.Timeout()
++
++    chunks = list(stability_manager.stream_with_recovery("Test prompt", temperature=0.7))
++
++    # Should get soft fallback
++    assert len(chunks) > 0
++    assert any("warming up" in chunk or "moment" in chunk for chunk in chunks)
++
++
++@patch('requests.post')
++def test_context_shrink_on_500(mock_post, stability_manager):
++    """Test context shrinks on 500 error"""
++    call_count = [0]
++    original_length = [0]
++
++    def side_effect_500(*args, **kwargs):
++        call_count[0] += 1
++
++        # Capture original prompt length on first call
++        if call_count[0] == 1:
++            original_length[0] = len(kwargs['json']['prompt'])
++
++        # First call: 500 error
++        if call_count[0] == 1:
++            mock_response = Mock()
++            mock_response.status_code = 500
++            mock_response.json.return_value = {"error": "context too large"}
++            mock_response.headers = {}
++            mock_response.text = "context too large"
++            return mock_response
++
++        # Second call: should have reduced context
++        assert len(kwargs['json']['prompt']) < original_length[0], \
++            "Context should be reduced on retry"
++
++        # Success
++        mock_response = Mock()
++        mock_response.status_code = 200
++        mock_response.iter_lines.return_value = [
++            b'{"response": "OK", "done": true}'
++        ]
++        mock_response.headers = {}
++        return mock_response
++
++    mock_post.side_effect = side_effect_500
++
++    chunks = list(stability_manager.stream_with_recovery("A" * 10000, temperature=0.7))
++
++    assert call_count[0] >= 2  # Should retry with reduced context
++    assert len(chunks) > 0
++
++
++@patch('requests.get')
++@patch('requests.post')
++def test_server_down_recovery(mock_post, mock_get, stability_manager):
++    """Test handles server down gracefully"""
++    # POST fails with connection error
++    mock_post.side_effect = requests.exceptions.ConnectionError()
++
++    # Health check also fails
++    mock_get.side_effect = requests.exceptions.ConnectionError()
++
++    chunks = list(stability_manager.stream_with_recovery("Test", temperature=0.7))
++
++    # Should return soft fallback about server down
++    assert len(chunks) > 0
++    fallback_msg = "".join(chunks)
++    assert "restart" in fallback_msg.lower() or "moment" in fallback_msg.lower()
++
++
++@patch('requests.post')
++def test_model_reload_after_crash(mock_post, stability_manager):
++    """Test detects and handles model reload"""
++    # First attempt: model not found (unloaded)
++    mock_response_404 = Mock()
++    mock_response_404.status_code = 500
++    mock_response_404.json.return_value = {"error": "model not found"}
++    mock_response_404.headers = {}
++    mock_response_404.text = "model not found"
++
++    # Second attempt: success (model reloaded)
++    mock_response_success = Mock()
++    mock_response_success.status_code = 200
++    mock_response_success.iter_lines.return_value = [
++        b'{"response": "Reloaded", "done": true}'
++    ]
++    mock_response_success.headers = {}
++
++    mock_post.side_effect = [mock_response_404, mock_response_success]
++
++    chunks = list(stability_manager.stream_with_recovery("Test", temperature=0.7))
++
++    assert len(chunks) > 0
++    # Should either succeed after retry or give soft fallback
++    full_response = "".join(chunks)
++    assert "Reloaded" in full_response or "model" in full_response.lower()
++
++
++@patch('requests.post')
++def test_nonstream_fallback_success(mock_post, stability_manager):
++    """Test non-streaming fallback works"""
++    mock_response = Mock()
++    mock_response.status_code = 200
++    mock_response.json.return_value = {"response": "Fallback success"}
++    mock_post.return_value = mock_response
++
++    result = stability_manager.non_stream_fallback("Test prompt", temperature=0.7)
++
++    assert result.success is True
++    assert result.content == "Fallback success"
++    assert result.recovery_action == "nonstreaming_fallback"
++
++
++@patch('requests.post')
++def test_nonstream_fallback_failure(mock_post, stability_manager):
++    """Test non-streaming fallback handles errors"""
++    mock_post.side_effect = requests.exceptions.Timeout()
++
++    result = stability_manager.non_stream_fallback("Test prompt", temperature=0.7)
++
++    assert result.success is False
++    assert result.fallback_used is True
++
++
++@patch('requests.post')
++def test_consecutive_failure_tracking(mock_post, stability_manager):
++    """Test tracks consecutive failures"""
++    mock_post.side_effect = requests.exceptions.Timeout()
++
++    # First failure
++    list(stability_manager.stream_with_recovery("Test 1"))
++    failures_1 = stability_manager.consecutive_failures
++
++    # Second failure
++    list(stability_manager.stream_with_recovery("Test 2"))
++    failures_2 = stability_manager.consecutive_failures
++
++    assert failures_2 > failures_1
++
++
++@patch('requests.post')
++def test_handle_500_with_cuda_error(mock_post, stability_manager):
++    """Test handles CUDA out of memory error"""
++    mock_response = Mock()
++    mock_response.status_code = 500
++    mock_response.json.return_value = {"error": "CUDA out of memory"}
++    mock_response.headers = {}
++
++    recovery_action = stability_manager.handle_500_error(mock_response, attempt=1)
++
++    assert recovery_action == "reduce_context"
++
++
++@patch('requests.post')
++def test_validate_before_send(mock_post, stability_manager):
++    """Test validates payload before sending"""
++    # This should fail validation (empty prompt)
++    chunks = list(stability_manager.stream_with_recovery("", temperature=0.7))
++
++    # Should not call POST if validation fails
++    assert mock_post.call_count == 0
++
++    # Should return soft fallback
++    assert len(chunks) > 0
++
++
++def test_ollama_response_dataclass():
++    """Test OllamaResponse dataclass"""
++    response = OllamaResponse(
++        success=True,
++        content="Test response",
++        fallback_used=False,
++        attempts=2,
++        duration=1.5,
++        recovery_action="retry"
++    )
++
++    assert response.success is True
++    assert response.content == "Test response"
++    assert response.attempts == 2
++    assert response.recovery_action == "retry"
++
++
++if __name__ == "__main__":
++    pytest.main([__file__, "-v"])
+diff --git a/core/cognition.py b/core/cognition.py
+index 03b8ff8..f1b5ef5 100644
+--- a/core/cognition.py
++++ b/core/cognition.py
+@@ -28,6 +28,9 @@ try:
+ except ImportError:
+     AIOHTTP_AVAILABLE = False
+ 
++# Ollama stability module
++from core.ollama_stability import OllamaStabilityManager
++
+ # Load environment variables
+ load_dotenv()
+ 
+@@ -131,12 +134,21 @@ class CognitionEngine:
+         self.jarvis_mode_enabled = self.persona.get("jarvis_mode", {}).get("enabled", False)
+         self.jarvis_config = self.persona.get("jarvis_mode", {})
+ 
++        # Initialize Ollama stability manager
++        self.ollama_stability = OllamaStabilityManager(
++            api_url=self.ollama_api,
++            model_name=self.model_name,
++            logger=self.logger,
++            max_retries=self.ollama_max_retries
++        )
++
+         self.logger.log_event("cognition", "persona_loaded", {
+             "name": self.persona.get("name", "Hugo"),
+             "role": self.persona.get("identity", {}).get("role", "Unknown"),
+             "mood": self.current_mood.value,
+             "agent_delegation": self.agent_delegation_enabled,
+-            "jarvis_mode": self.jarvis_mode_enabled
++            "jarvis_mode": self.jarvis_mode_enabled,
++            "ollama_stability": True
+         })
+ 
+     def _load_persona(self) -> Dict[str, Any]:
+@@ -2104,150 +2116,29 @@ class CognitionEngine:
+ 
+     def stream_local_infer(self, prompt: str, temperature: float = 0.7):
+         """
+-        Perform streaming local inference using Ollama API.
++        Perform streaming local inference using Ollama API with enhanced stability.
+ 
+         This generator yields text chunks as they arrive from the model,
+-        enabling real-time token-by-token display in the REPL.
++        with automatic error recovery, context reduction, and fallback handling.
+ 
+-        Features:
+-        - Yields chunks as they arrive from Ollama
+-        - Maintains retry logic for connection failures
+-        - Logs streaming start/completion events
+-        - Falls back gracefully if streaming fails
++        NEW in Phase 5.2:
++        - Automatic 500 error recovery with context reduction
++        - Streaming to non-streaming fallback
++        - Server health detection
++        - Payload validation
++        - Soft fallback messages
++        - Enhanced logging
+ 
+         Args:
+             prompt: Input prompt for the model
+             temperature: Sampling temperature (0.0-1.0)
+ 
+         Yields:
+-            str: Text chunks as they arrive from Ollama
++            str: Text chunks as they arrive from Ollama (or fallback message)
+         """
+-        attempt = 0
+-        last_error = None
+-
+-        while attempt < self.ollama_max_retries:
+-            attempt += 1
+-            start_time = time.time()
+-
+-            try:
+-                payload = {
+-                    "model": self.model_name,
+-                    "prompt": prompt,
+-                    "stream": True,  # Enable streaming
+-                    "options": {
+-                        "temperature": temperature
+-                    }
+-                }
+-
+-                self.logger.log_event("cognition", "ollama_streaming_attempt", {
+-                    "attempt": attempt,
+-                    "max_retries": self.ollama_max_retries,
+-                    "timeout": self.ollama_timeout
+-                })
+-
+-                response = requests.post(
+-                    self.ollama_api,
+-                    json=payload,
+-                    stream=True,
+-                    timeout=self.ollama_timeout
+-                )
+-                response.raise_for_status()
+-
+-                # Track total generated text
+-                total_generated = []
+-
+-                # Stream chunks line by line
+-                for line in response.iter_lines():
+-                    if line:
+-                        try:
+-                            import json
+-                            chunk_data = json.loads(line.decode('utf-8'))
+-
+-                            # Extract response chunk
+-                            chunk_text = chunk_data.get("response", "")
+-                            if chunk_text:
+-                                total_generated.append(chunk_text)
+-                                yield chunk_text
+-
+-                            # Check if done
+-                            if chunk_data.get("done", False):
+-                                break
+-
+-                        except json.JSONDecodeError:
+-                            continue
+-
+-                duration = time.time() - start_time
+-                full_response = "".join(total_generated)
+-
+-                self.logger.log_event("cognition", "ollama_streaming_complete", {
+-                    "attempt": attempt,
+-                    "duration": round(duration, 2),
+-                    "status": "success",
+-                    "response_length": len(full_response),
+-                    "chunks": len(total_generated)
+-                })
+-
+-                # Mark Ollama as available
+-                self.ollama_available = True
+-                self.last_connection_attempt = time.time()
+-
+-                return  # Successful completion
+-
+-            except requests.exceptions.ReadTimeout as e:
+-                duration = time.time() - start_time
+-                last_error = e
+-                self.logger.log_event("cognition", "ollama_streaming", {
+-                    "attempt": attempt,
+-                    "duration": round(duration, 2),
+-                    "status": "timeout",
+-                    "error": str(e)
+-                })
+-
+-                if attempt < self.ollama_max_retries:
+-                    backoff_time = self.ollama_retry_backoff ** attempt
+-                    self.logger.log_event("cognition", "ollama_retry", {
+-                        "attempt": attempt,
+-                        "backoff_seconds": backoff_time
+-                    })
+-                    time.sleep(backoff_time)
+-
+-            except requests.exceptions.ConnectionError as e:
+-                duration = time.time() - start_time
+-                last_error = e
+-                self.logger.log_event("cognition", "ollama_streaming", {
+-                    "attempt": attempt,
+-                    "duration": round(duration, 2),
+-                    "status": "connection_error",
+-                    "error": str(e)
+-                })
+-
+-                if attempt < self.ollama_max_retries:
+-                    backoff_time = self.ollama_retry_backoff ** attempt
+-                    time.sleep(backoff_time)
+-
+-            except Exception as e:
+-                duration = time.time() - start_time
+-                last_error = e
+-                self.logger.log_error(e, {
+-                    "phase": "ollama_streaming",
+-                    "attempt": attempt,
+-                    "duration": round(duration, 2)
+-                })
+-
+-                if attempt < self.ollama_max_retries:
+-                    backoff_time = self.ollama_retry_backoff ** attempt
+-                    time.sleep(backoff_time)
+-
+-        # All retries exhausted - yield fallback
+-        self.ollama_available = False
+-        self.last_connection_attempt = time.time()
+-
+-        self.logger.log_event("cognition", "ollama_streaming_fallback", {
+-            "total_attempts": attempt,
+-            "last_error": str(last_error) if last_error else "Unknown"
+-        })
+-
+-        yield self._fallback_response(prompt)
++        # Delegate to stability manager
++        for chunk in self.ollama_stability.stream_with_recovery(prompt, temperature):
++            yield chunk
+ 
+     async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str, user_input: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
+         """

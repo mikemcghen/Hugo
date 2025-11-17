@@ -28,6 +28,9 @@ try:
 except ImportError:
     AIOHTTP_AVAILABLE = False
 
+# Ollama stability module
+from core.ollama_stability import OllamaStabilityManager
+
 # Load environment variables
 load_dotenv()
 
@@ -131,12 +134,21 @@ class CognitionEngine:
         self.jarvis_mode_enabled = self.persona.get("jarvis_mode", {}).get("enabled", False)
         self.jarvis_config = self.persona.get("jarvis_mode", {})
 
+        # Initialize Ollama stability manager
+        self.ollama_stability = OllamaStabilityManager(
+            api_url=self.ollama_api,
+            model_name=self.model_name,
+            logger=self.logger,
+            max_retries=self.ollama_max_retries
+        )
+
         self.logger.log_event("cognition", "persona_loaded", {
             "name": self.persona.get("name", "Hugo"),
             "role": self.persona.get("identity", {}).get("role", "Unknown"),
             "mood": self.current_mood.value,
             "agent_delegation": self.agent_delegation_enabled,
-            "jarvis_mode": self.jarvis_mode_enabled
+            "jarvis_mode": self.jarvis_mode_enabled,
+            "ollama_stability": True
         })
 
     def _load_persona(self) -> Dict[str, Any]:
@@ -2104,150 +2116,29 @@ class CognitionEngine:
 
     def stream_local_infer(self, prompt: str, temperature: float = 0.7):
         """
-        Perform streaming local inference using Ollama API.
+        Perform streaming local inference using Ollama API with enhanced stability.
 
         This generator yields text chunks as they arrive from the model,
-        enabling real-time token-by-token display in the REPL.
+        with automatic error recovery, context reduction, and fallback handling.
 
-        Features:
-        - Yields chunks as they arrive from Ollama
-        - Maintains retry logic for connection failures
-        - Logs streaming start/completion events
-        - Falls back gracefully if streaming fails
+        NEW in Phase 5.2:
+        - Automatic 500 error recovery with context reduction
+        - Streaming to non-streaming fallback
+        - Server health detection
+        - Payload validation
+        - Soft fallback messages
+        - Enhanced logging
 
         Args:
             prompt: Input prompt for the model
             temperature: Sampling temperature (0.0-1.0)
 
         Yields:
-            str: Text chunks as they arrive from Ollama
+            str: Text chunks as they arrive from Ollama (or fallback message)
         """
-        attempt = 0
-        last_error = None
-
-        while attempt < self.ollama_max_retries:
-            attempt += 1
-            start_time = time.time()
-
-            try:
-                payload = {
-                    "model": self.model_name,
-                    "prompt": prompt,
-                    "stream": True,  # Enable streaming
-                    "options": {
-                        "temperature": temperature
-                    }
-                }
-
-                self.logger.log_event("cognition", "ollama_streaming_attempt", {
-                    "attempt": attempt,
-                    "max_retries": self.ollama_max_retries,
-                    "timeout": self.ollama_timeout
-                })
-
-                response = requests.post(
-                    self.ollama_api,
-                    json=payload,
-                    stream=True,
-                    timeout=self.ollama_timeout
-                )
-                response.raise_for_status()
-
-                # Track total generated text
-                total_generated = []
-
-                # Stream chunks line by line
-                for line in response.iter_lines():
-                    if line:
-                        try:
-                            import json
-                            chunk_data = json.loads(line.decode('utf-8'))
-
-                            # Extract response chunk
-                            chunk_text = chunk_data.get("response", "")
-                            if chunk_text:
-                                total_generated.append(chunk_text)
-                                yield chunk_text
-
-                            # Check if done
-                            if chunk_data.get("done", False):
-                                break
-
-                        except json.JSONDecodeError:
-                            continue
-
-                duration = time.time() - start_time
-                full_response = "".join(total_generated)
-
-                self.logger.log_event("cognition", "ollama_streaming_complete", {
-                    "attempt": attempt,
-                    "duration": round(duration, 2),
-                    "status": "success",
-                    "response_length": len(full_response),
-                    "chunks": len(total_generated)
-                })
-
-                # Mark Ollama as available
-                self.ollama_available = True
-                self.last_connection_attempt = time.time()
-
-                return  # Successful completion
-
-            except requests.exceptions.ReadTimeout as e:
-                duration = time.time() - start_time
-                last_error = e
-                self.logger.log_event("cognition", "ollama_streaming", {
-                    "attempt": attempt,
-                    "duration": round(duration, 2),
-                    "status": "timeout",
-                    "error": str(e)
-                })
-
-                if attempt < self.ollama_max_retries:
-                    backoff_time = self.ollama_retry_backoff ** attempt
-                    self.logger.log_event("cognition", "ollama_retry", {
-                        "attempt": attempt,
-                        "backoff_seconds": backoff_time
-                    })
-                    time.sleep(backoff_time)
-
-            except requests.exceptions.ConnectionError as e:
-                duration = time.time() - start_time
-                last_error = e
-                self.logger.log_event("cognition", "ollama_streaming", {
-                    "attempt": attempt,
-                    "duration": round(duration, 2),
-                    "status": "connection_error",
-                    "error": str(e)
-                })
-
-                if attempt < self.ollama_max_retries:
-                    backoff_time = self.ollama_retry_backoff ** attempt
-                    time.sleep(backoff_time)
-
-            except Exception as e:
-                duration = time.time() - start_time
-                last_error = e
-                self.logger.log_error(e, {
-                    "phase": "ollama_streaming",
-                    "attempt": attempt,
-                    "duration": round(duration, 2)
-                })
-
-                if attempt < self.ollama_max_retries:
-                    backoff_time = self.ollama_retry_backoff ** attempt
-                    time.sleep(backoff_time)
-
-        # All retries exhausted - yield fallback
-        self.ollama_available = False
-        self.last_connection_attempt = time.time()
-
-        self.logger.log_event("cognition", "ollama_streaming_fallback", {
-            "total_attempts": attempt,
-            "last_error": str(last_error) if last_error else "Unknown"
-        })
-
-        yield self._fallback_response(prompt)
+        # Delegate to stability manager
+        for chunk in self.ollama_stability.stream_with_recovery(prompt, temperature):
+            yield chunk
 
     async def _synthesize(self, perception: PerceptionResult, context: ContextAssembly, session_id: str, user_input: str) -> tuple[ReasoningChain, str, Dict[str, Any]]:
         """
