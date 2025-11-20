@@ -34,6 +34,9 @@ from core.ollama_stability import OllamaStabilityManager
 # Persona engine
 from core.persona_engine import HugoPersonaEngine, PersonaContext, Domain
 
+# Configuration helper
+from core.config import is_core_mode, is_full_mode, get_hugo_mode, HugoMode
+
 # Load environment variables
 load_dotenv()
 
@@ -246,6 +249,46 @@ class CognitionEngine:
         if mode == "extraction_synthesis":
             result = await self._generate_extraction_synthesis(message)
             return stream_single(result)
+
+        # Core mode delegation: minimal, stable pipeline
+        if is_core_mode():
+            self.logger.log_event("cognition", "core_mode_delegation", {
+                "session_id": session_id,
+                "streaming": streaming
+            })
+
+            # Save user message to memory first
+            await self._save_user_message(message, session_id)
+
+            if streaming:
+                # Return streaming generator directly
+                return self._generate_core_reply_streaming(message, session_id)
+            else:
+                # Get complete response and wrap in async iterator
+                response_text = await self._generate_core_reply_nonstreaming(message, session_id)
+
+                # Save assistant response to memory
+                await self.post_process(response_text, session_id)
+
+                # Wrap in ResponsePackage and stream
+                response_package = ResponsePackage(
+                    content=response_text,
+                    tone=MoodSpectrum.CONVERSATIONAL,
+                    reasoning_chain=ReasoningChain(
+                        steps=["Core mode response"],
+                        assumptions=[],
+                        alternatives_considered=[],
+                        selected_approach="direct_response",
+                        confidence_score=0.9
+                    ),
+                    directive_checks=[],
+                    metadata={
+                        "mode": "core",
+                        "session_id": session_id,
+                        "streaming": False
+                    }
+                )
+                return stream_single(response_package)
 
         self.logger.log_event("cognition", "generate_reply_started", {
             "session_id": session_id,
@@ -1013,6 +1056,11 @@ class CognitionEngine:
 
         # Step 3: Assemble prompt
         user_message = perception.corrected_input if perception.corrected_input else user_input
+
+        # FULL mode only: Apply skill routing if enabled
+        if is_full_mode():
+            user_message = await self._apply_full_mode_skill_routing(user_message)
+
         prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
         prompt = prompt_data["prompt"]
         prompt_metadata = prompt_data["metadata"]
@@ -1136,6 +1184,288 @@ class CognitionEngine:
                 "phase": "post_process",
                 "session_id": session_id
             })
+
+    # ============================================================================
+    # FULL MODE: Skill Routing (CORE-2 Integration)
+    # ============================================================================
+
+    async def _apply_full_mode_skill_routing(self, user_text: str) -> str:
+        """
+        FULL-mode only: Apply skill routing if a skill trigger is detected.
+
+        If the user_text starts with a valid skill trigger (e.g. /search),
+        run the CORE-2 skill router and inject the resulting block before
+        the user text. Otherwise, return the original user_text unchanged.
+
+        This is FULL-mode only and MUST NOT be called from CORE mode.
+
+        Args:
+            user_text: User input text
+
+        Returns:
+            Original text or skill block + text if skill was triggered
+
+        Example:
+            Input: "/search python asyncio"
+            Output: "[SkillResult]\nskill: search\n...\n\n/search python asyncio"
+        """
+        from core.skills.trigger_detector import detect_skill
+        from core.skills.router import route_skill
+        from core.skills.prompt_injection import inject_skill_block
+
+        # Detect skill trigger
+        trigger = detect_skill(user_text)
+        if not trigger:
+            # No skill detected, return original text
+            return user_text
+
+        self.logger.log_event("cognition", "skill_trigger_detected_full_mode", {
+            "skill_name": trigger.skill_name,
+            "args": trigger.args
+        })
+
+        # Route skill to handler
+        skill_block = await route_skill(trigger)
+
+        # Inject skill block before user text
+        augmented_text = inject_skill_block(skill_block.block, user_text)
+
+        self.logger.log_event("cognition", "skill_routing_complete_full_mode", {
+            "skill_name": trigger.skill_name,
+            "block_length": len(skill_block.block),
+            "augmented_length": len(augmented_text)
+        })
+
+        return augmented_text
+
+    # ============================================================================
+    # CORE MODE: Minimal, Clean, Stable Pipeline
+    # ============================================================================
+
+    def _build_core_prompt(self, user_message: str, session_id: str, context: Optional[Any] = None) -> str:
+        """
+        Build a clean, minimal prompt for core mode.
+
+        Core mode prompt structure:
+        1. System block: persona description + core rules
+        2. Context block: recent conversation (if any)
+        3. User block: latest message
+
+        Args:
+            user_message: User's message
+            session_id: Current session ID
+            context: Optional context assembly (with memory)
+
+        Returns:
+            Formatted prompt string
+        """
+        # Get persona
+        persona_name = self.persona.get("name", "Hugo")
+        persona_role = self.persona.get("identity", {}).get("role", "Assistant")
+        persona_desc = self.persona.get("identity", {}).get("archetype", "Helpful AI assistant")
+
+        # Start with system block
+        prompt_parts = [
+            f"[Persona: {persona_name} — {persona_role}]",
+            f"{persona_desc}",
+            "",
+            "[Core Rules]",
+            "- Provide clear, helpful responses",
+            "- Stay focused on the user's question",
+            "- Be concise and direct",
+            "",
+        ]
+
+        # Add recent conversation if available
+        if context and hasattr(context, 'short_term_memory') and context.short_term_memory:
+            prompt_parts.append("[Recent Conversation]")
+            # Last 5 turns
+            for mem in context.short_term_memory[-5:]:
+                role = mem.get('metadata', {}).get('role', 'unknown')
+                content = mem.get('content', '')
+                if role == 'user':
+                    prompt_parts.append(f"User: {content}")
+                elif role == 'assistant':
+                    prompt_parts.append(f"{persona_name}: {content}")
+            prompt_parts.append("")
+
+        # Add user message
+        prompt_parts.append(f"User: {user_message}")
+        prompt_parts.append(f"{persona_name}:")
+
+        return "\n".join(prompt_parts)
+
+    async def _generate_core_reply_streaming(self, message: str, session_id: str):
+        """
+        Generate reply in core mode (streaming).
+
+        Core mode pipeline:
+        1. Load persona
+        2. Fetch minimal memory
+        3. Build clean prompt
+        4. Call Ollama via stability manager
+        5. Stream chunks back
+
+        Args:
+            message: User message
+            session_id: Session ID
+
+        Yields:
+            Text chunks from LLM, then final ResponsePackage
+        """
+        self.logger.log_event("cognition", "core_mode_active", {
+            "session_id": session_id,
+            "streaming": True,
+            "mode": "core"
+        })
+
+        accumulated_response = []
+
+        try:
+            # Fetch minimal context (recent turns only)
+            context = None
+            if self.memory:
+                recent_turns = await self.memory.retrieve_recent(session_id, limit=5)
+                if recent_turns:
+                    from types import SimpleNamespace
+                    context = SimpleNamespace(short_term_memory=recent_turns)
+
+            # Build core prompt
+            prompt = self._build_core_prompt(message, session_id, context)
+
+            self.logger.log_event("cognition", "core_prompt_built", {
+                "prompt_length": len(prompt),
+                "has_context": context is not None
+            })
+
+            # Stream from Ollama via stability manager
+            for chunk in self.ollama_stability.stream_with_recovery(prompt, temperature=0.7):
+                accumulated_response.append(chunk)
+                yield chunk
+
+            # Save assistant response to memory
+            full_response = "".join(accumulated_response)
+            await self.post_process(full_response, session_id)
+
+            self.logger.log_event("cognition", "core_mode_complete", {
+                "session_id": session_id,
+                "status": "success",
+                "response_length": len(full_response)
+            })
+
+            # Yield final ResponsePackage
+            yield ResponsePackage(
+                content=full_response,
+                tone=MoodSpectrum.CONVERSATIONAL,
+                reasoning_chain=ReasoningChain(
+                    steps=["Core mode response"],
+                    assumptions=[],
+                    alternatives_considered=[],
+                    selected_approach="direct_response",
+                    confidence_score=0.9
+                ),
+                directive_checks=[],
+                metadata={
+                    "mode": "core",
+                    "session_id": session_id,
+                    "streaming": True
+                }
+            )
+
+        except Exception as e:
+            self.logger.log_error(e, {
+                "phase": "core_mode_streaming",
+                "session_id": session_id
+            })
+            # Yield soft fallback
+            fallback_msg = self.ollama_stability.soft_fallback_message("general")
+            yield fallback_msg
+
+            # Save fallback to memory
+            await self.post_process(fallback_msg, session_id)
+
+            # Yield fallback ResponsePackage
+            yield ResponsePackage(
+                content=fallback_msg,
+                tone=MoodSpectrum.CONVERSATIONAL,
+                reasoning_chain=ReasoningChain(
+                    steps=["Fallback triggered"],
+                    assumptions=[],
+                    alternatives_considered=[],
+                    selected_approach="soft_fallback",
+                    confidence_score=0.5
+                ),
+                directive_checks=[],
+                metadata={
+                    "mode": "core",
+                    "session_id": session_id,
+                    "streaming": True,
+                    "fallback": True
+                }
+            )
+
+    async def _generate_core_reply_nonstreaming(self, message: str, session_id: str) -> str:
+        """
+        Generate reply in core mode (non-streaming).
+
+        Same pipeline as streaming, but returns complete response.
+
+        Args:
+            message: User message
+            session_id: Session ID
+
+        Returns:
+            Complete response text
+        """
+        self.logger.log_event("cognition", "core_mode_active", {
+            "session_id": session_id,
+            "streaming": False,
+            "mode": "core"
+        })
+
+        try:
+            # Fetch minimal context
+            context = None
+            if self.memory:
+                recent_turns = await self.memory.retrieve_recent(session_id, limit=5)
+                if recent_turns:
+                    from types import SimpleNamespace
+                    context = SimpleNamespace(short_term_memory=recent_turns)
+
+            # Build core prompt
+            prompt = self._build_core_prompt(message, session_id, context)
+
+            self.logger.log_event("cognition", "core_prompt_built", {
+                "prompt_length": len(prompt),
+                "has_context": context is not None
+            })
+
+            # Non-streaming call via stability manager
+            result = self.ollama_stability.non_stream_fallback(prompt, temperature=0.7)
+
+            if result.success:
+                response = result.content
+            else:
+                response = self.ollama_stability.soft_fallback_message("general")
+
+            self.logger.log_event("cognition", "core_mode_complete", {
+                "session_id": session_id,
+                "status": "success" if result.success else "fallback",
+                "response_length": len(response)
+            })
+
+            return response
+
+        except Exception as e:
+            self.logger.log_error(e, {
+                "phase": "core_mode_nonstreaming",
+                "session_id": session_id
+            })
+            return self.ollama_stability.soft_fallback_message("general")
+
+    # ============================================================================
+    # END CORE MODE
+    # ============================================================================
 
     def _detect_sentiment(self, text: str) -> Dict[str, Any]:
         """
@@ -2162,6 +2492,11 @@ class CognitionEngine:
         """
         # Assemble persona-driven contextual prompt
         user_message = perception.corrected_input if perception.corrected_input else user_input
+
+        # FULL mode only: Apply skill routing if enabled
+        if is_full_mode():
+            user_message = await self._apply_full_mode_skill_routing(user_message)
+
         prompt_data = await self.assemble_prompt(user_message, perception, context, session_id)
         prompt = prompt_data["prompt"]
         prompt_metadata = prompt_data["metadata"]
