@@ -80,6 +80,15 @@ class HugoIntentParser:
                     {"name": "scan", "description": "Scan network for devices"},
                 ],
             },
+            "memory": {
+                "description": "Recall or search Hugo's persistent memory",
+                "actions": [
+                    {"name": "search", "description": "Search memory for relevant information", "params": ["query"]},
+                    {"name": "recall", "description": "Recall facts about a topic", "params": ["topic"]},
+                    {"name": "list_recent", "description": "List recently stored memories"},
+                    {"name": "forget", "description": "Remove a specific memory", "params": ["memory_id"]},
+                ],
+            },
         }
 
     def _build_capabilities_description(self) -> str:
@@ -151,7 +160,7 @@ User message: "{message}"
 Respond with ONLY valid JSON in this exact format:
 {{
     "requires_action": true/false,
-    "domain": "ssh|docker|monitor|null",
+    "domain": "ssh|docker|monitor|memory|null",
     "action": "action_name or null",
     "target": "specific target (container name, host name) or null",
     "parameters": {{}},
@@ -160,9 +169,9 @@ Respond with ONLY valid JSON in this exact format:
 }}
 
 Rules:
-- requires_action=true ONLY if user wants infrastructure work done (check, start, stop, restart, list, run command, etc.)
+- requires_action=true ONLY if user wants infrastructure work done (check, start, stop, restart, list, run command, etc.) OR wants Hugo to recall/search memory
 - General conversation, questions about topics, coding help = requires_action: false
-- Only use domains from the capabilities list above (ssh, docker, monitor)
+- Only use domains from the capabilities list above (ssh, docker, monitor, memory)
 - Set confidence lower if the intent is ambiguous
 - Extract container names, host names into target field
 - For docker containers, put the container name in target

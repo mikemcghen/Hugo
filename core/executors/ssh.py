@@ -19,14 +19,31 @@ from .executor_registry import ExecutorRegistry
 
 
 def _load_hosts_from_yaml() -> Dict:
-    """Load SSH hosts from configs/ssh_hosts.yaml if it exists."""
+    """Load SSH hosts from configs/ssh_hosts.yaml if it exists.
+
+    Supports two YAML formats:
+      List (preferred):  hosts: [{name: foo, ip: 1.2.3.4, user: root, ...}]
+      Dict (legacy):     hosts: {foo: {ip: 1.2.3.4, user: root, ...}}
+    """
     try:
         import yaml
         config_path = Path(__file__).parent.parent.parent / "configs" / "ssh_hosts.yaml"
         if config_path.exists():
             with open(config_path, "r") as f:
                 data = yaml.safe_load(f)
-                return data.get("hosts", {}) if data else {}
+            if not data:
+                return {}
+            hosts_raw = data.get("hosts", {})
+            # Convert list-of-dicts [{name: foo, ip: ...}] → {foo: {ip: ...}}
+            if isinstance(hosts_raw, list):
+                result = {}
+                for entry in hosts_raw:
+                    if isinstance(entry, dict) and "name" in entry:
+                        entry = dict(entry)  # copy so we don't mutate yaml parse
+                        name = entry.pop("name")
+                        result[name] = entry
+                return result
+            return hosts_raw if isinstance(hosts_raw, dict) else {}
     except Exception:
         pass
     return {}

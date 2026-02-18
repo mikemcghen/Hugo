@@ -138,6 +138,8 @@ class CognitionEngine:
         self._action_router = None
         # Pending confirmation: stores a ParsedIntent awaiting user yes/no
         self._pending_confirmation = None
+        # Delegation agent for compound/multi-step infrastructure requests
+        self._delegation_agent = None
 
         # Load Hugo's personality manifest
         self.persona = self._load_persona()
@@ -229,6 +231,110 @@ class CognitionEngine:
             },
             "mood_spectrum": {}
         }
+
+    # ── Infrastructure helpers (FULL mode only) ────────────────────────────
+
+    def _is_compound_request(self, message: str, intent) -> bool:
+        """
+        Heuristic: does this message describe a multi-step infrastructure task?
+
+        Compound requests are routed to DelegationAgent instead of ActionRouter
+        so they can be broken into parallel subtasks.
+        """
+        lowered = message.lower()
+        compound_signals = [
+            " and then ", " after that ", " then ", " also ",
+            " and restart", " and check", " and list", " and stop",
+            " and start", " and run",
+            "check all", "for each", "all containers", "all hosts",
+            "everything that", "any that are", "ones that are",
+        ]
+        return any(sig in lowered for sig in compound_signals)
+
+    async def _handle_memory_intent(self, intent, session_id: str) -> str:
+        """Handle a memory-domain intent directly using Hugo's memory system."""
+        try:
+            action = intent.action or "search"
+            query = (
+                intent.parameters.get("query")
+                or intent.parameters.get("topic")
+                or intent.target
+                or ""
+            )
+
+            if action in ("search", "recall") and query:
+                memories = await self.memory.search_memories(query, k=5)
+                if memories:
+                    items = "\n".join(
+                        f"- {m.get('content', str(m))}" for m in memories
+                    )
+                    return f"Here's what I remember about '{query}':\n{items}"
+                return f"I don't have any memories matching '{query}'."
+
+            elif action == "list_recent":
+                memories = await self.memory.get_all_factual_memories(limit=10)
+                if memories:
+                    items = "\n".join(
+                        f"- {m.get('content', str(m))}" for m in memories[:10]
+                    )
+                    return f"Recent memories:\n{items}"
+                return "No recent memories found."
+
+            elif action == "forget" and query:
+                try:
+                    memory_id = int(query)
+                    deleted = await self.memory.delete_memory(memory_id)
+                    return "Memory removed." if deleted else f"No memory found with ID {memory_id}."
+                except ValueError:
+                    return f"Please provide a numeric memory ID to forget. Got: '{query}'"
+
+            else:
+                return (
+                    f"Memory action '{action}' not supported directly. "
+                    "Try: 'recall <topic>', 'what do you remember about <topic>', or 'list recent memories'."
+                )
+
+        except Exception as e:
+            self.logger.log_event("cognition", "memory_intent_error", {
+                "error": str(e), "session_id": session_id
+            })
+            return f"I had trouble accessing memory: {str(e)}"
+
+    async def _handle_compound_request(self, message: str, session_id: str) -> str:
+        """Route a compound (multi-step) infrastructure request to DelegationAgent."""
+        try:
+            if self._delegation_agent is None:
+                from agents.delegation_agent import DelegationAgent
+                self._delegation_agent = DelegationAgent(
+                    ollama_url=self.ollama_api,
+                    model=self.model_name,
+                )
+
+            from agents.base_agent import AgentTask
+            task = AgentTask(
+                type="delegate",
+                description=message,
+                context={"session_id": session_id, "source": "cognition_compound"},
+            )
+
+            # DelegationAgent.execute() is synchronous — run in thread to avoid blocking
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                None, lambda: self._delegation_agent.execute(task)
+            )
+
+            if result.success and result.output:
+                return str(result.output)
+            elif result.errors:
+                return f"Compound task partially failed: {'; '.join(result.errors)}"
+            else:
+                return "Compound task completed."
+
+        except Exception as e:
+            self.logger.log_event("cognition", "compound_request_error", {
+                "error": str(e), "session_id": session_id
+            })
+            return f"I had trouble coordinating that multi-step request: {str(e)}"
 
     async def generate_reply(self, message: str, session_id: str, streaming: bool = False, mode: str = None):
         """
@@ -431,6 +537,53 @@ class CognitionEngine:
                         "session_id": session_id,
                     })
 
+                    # ── Memory domain: handle directly via Hugo's memory system ──
+                    if intent.domain == "memory":
+                        response_text = await self._handle_memory_intent(intent, session_id)
+                        await self.post_process(response_text, session_id)
+                        response_package = ResponsePackage(
+                            content=response_text,
+                            tone=MoodSpectrum.REFLECTIVE,
+                            reasoning_chain=ReasoningChain(
+                                steps=["Memory intent parsed", f"Action: {intent.action}", "Memory queried"],
+                                assumptions=[intent.reasoning],
+                                alternatives_considered=[],
+                                selected_approach="memory_direct",
+                                confidence_score=intent.confidence
+                            ),
+                            directive_checks=[],
+                            metadata={
+                                "mode": "memory_intent",
+                                "action": intent.action,
+                                "session_id": session_id,
+                            }
+                        )
+                        return stream_single(response_package)
+
+                    # ── Compound request: route to DelegationAgent ──────────────
+                    if self._is_compound_request(message, intent):
+                        self.logger.log_event("cognition", "compound_request_detected", {
+                            "session_id": session_id,
+                            "domain": intent.domain,
+                        })
+                        response_text = await self._handle_compound_request(message, session_id)
+                        await self.post_process(response_text, session_id)
+                        response_package = ResponsePackage(
+                            content=response_text,
+                            tone=MoodSpectrum.OPERATIONAL,
+                            reasoning_chain=ReasoningChain(
+                                steps=["Compound request detected", "Delegated to DelegationAgent"],
+                                assumptions=["Multiple infrastructure actions required"],
+                                alternatives_considered=["Single action routing"],
+                                selected_approach="delegation",
+                                confidence_score=intent.confidence
+                            ),
+                            directive_checks=["permission_checked"],
+                            metadata={"mode": "delegation", "session_id": session_id}
+                        )
+                        return stream_single(response_package)
+
+                    # ── Single action: route through ActionRouter ───────────────
                     action_result = await self._action_router.route(intent)
 
                     if not action_result.success and action_result.error == "confirmation_required":

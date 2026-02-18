@@ -23,11 +23,12 @@ from .claude_bridge import ClaudeBridge
 from .base_agent import BaseAgent, AgentTask, AgentResult, TaskStatus, TaskType, ProjectContext
 from .registry import AgentRegistry
 from .delegation_agent import DelegationAgent  # auto-registers with AgentRegistry on import
+from .infra_agent import InfraAgent            # auto-registers with AgentRegistry on import
 
 __all__ = [
     # Original
     "WorkerAgent", "ClaudeBridge",
     # New
     "BaseAgent", "AgentTask", "AgentResult", "TaskStatus", "TaskType", "ProjectContext",
-    "AgentRegistry", "DelegationAgent",
+    "AgentRegistry", "DelegationAgent", "InfraAgent",
 ]

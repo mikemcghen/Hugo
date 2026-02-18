@@ -1,0 +1,52 @@
+# SSH Hosts Configuration
+# -----------------------
+# Define remote hosts Hugo can connect to via SSH.
+# Used by core/executors/ssh.py (SSHExecutor).
+#
+# The SSHExecutor will load all hosts defined here at startup.
+# You can also add hosts dynamically via the /ssh add_host command.
+#
+# Format:
+#   hosts:
+#     - name:        short alias used in commands (e.g. "homeserver")
+#       ip:          IP address or hostname
+#       user:        SSH user (default: root)
+#       key:         path to private key (default: ~/.ssh/id_rsa)
+#       description: human-readable label shown in /ssh list_hosts
+#       port:        SSH port (default: 22)
+#
+# Safety note:
+#   Never commit real IPs or usernames for production servers to version control.
+#   Copy this file and update with your actual values in your deployment environment.
+
+hosts: []
+
+# ─────────────────────────────────────────────
+# Example configuration (uncomment to enable):
+# ─────────────────────────────────────────────
+#
+# hosts:
+#
+#   # Primary home server running Docker workloads
+#   - name: homeserver
+#     ip: 192.168.1.100
+#     user: ubuntu
+#     key: ~/.ssh/id_rsa
+#     description: Home server (Docker host)
+#     port: 22
+#
+#   # Pi-hole DNS / ad-blocker
+#   - name: pihole
+#     ip: 192.168.1.10
+#     user: pi
+#     key: ~/.ssh/id_rsa
+#     description: Pi-hole DNS server
+#     port: 22
+#
+#   # NAS / storage server
+#   - name: nas
+#     ip: 192.168.1.200
+#     user: admin
+#     key: ~/.ssh/nas_key
+#     description: Synology NAS
+#     port: 22
