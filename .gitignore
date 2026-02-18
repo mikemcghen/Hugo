@@ -59,6 +59,7 @@ data/network_monitor_state.json
 .DS_Store
 Thumbs.db
 desktop.ini
+nul
 
 # Patch files (generated artifacts, not source)
 *.patch
