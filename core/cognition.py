@@ -133,6 +133,12 @@ class CognitionEngine:
         # Worker agent (lazy initialization)
         self._worker_agent = None
 
+        # Intent parser + action router (lazy initialization, FULL mode only)
+        self._intent_parser = None
+        self._action_router = None
+        # Pending confirmation: stores a ParsedIntent awaiting user yes/no
+        self._pending_confirmation = None
+
         # Load Hugo's personality manifest
         self.persona = self._load_persona()
 
@@ -327,6 +333,141 @@ class CognitionEngine:
                     "streaming": False
                 })
                 return stream_single(response_package)
+
+        # ── FULL MODE: pending confirmation resolution ─────────────────────────
+        # If the user is responding to a confirmation prompt (yes/no), resolve it.
+        if self._pending_confirmation is not None:
+            lowered = message.strip().lower()
+            if lowered in ("yes", "y", "confirm", "do it", "go ahead", "ok", "sure"):
+                pending = self._pending_confirmation
+                self._pending_confirmation = None
+                from core.actions.action_router import ActionRouter
+                if self._action_router is None:
+                    self._action_router = ActionRouter(logger=self.logger)
+                # Re-route with permission bypass (user confirmed)
+                from core.actions.permission import PermissionLevel
+                exec_result = await self._action_router.route.__func__(
+                    self._action_router, pending
+                ) if False else None  # placeholder — use direct executor below
+
+                # Execute directly on executor, bypassing gate
+                from core.executors.executor_registry import ExecutorRegistry
+                import core.executors.ssh    # noqa
+                import core.executors.docker  # noqa
+                import core.executors.monitor  # noqa
+                executor = ExecutorRegistry.get_executor(pending.domain)
+                params = dict(pending.parameters or {})
+                if pending.target:
+                    if pending.domain == "docker":
+                        params.setdefault("container", pending.target)
+                    elif pending.domain in ("ssh", "monitor"):
+                        params.setdefault("host", pending.target)
+                exec_res = await executor.execute_async(pending.action, **params)
+
+                from core.actions.action_result import ActionResult
+                ar = ActionResult(
+                    success=exec_res.success,
+                    data=exec_res.data,
+                    error=exec_res.error,
+                    domain=pending.domain,
+                    action=pending.action,
+                )
+                response_text = self._action_router.format_for_cognition(ar)
+                await self.post_process(response_text, session_id)
+                response_package = ResponsePackage(
+                    content=response_text,
+                    tone=MoodSpectrum.OPERATIONAL,
+                    reasoning_chain=ReasoningChain(
+                        steps=["Confirmation received", "Executing confirmed action"],
+                        assumptions=["User confirmed action"],
+                        alternatives_considered=[],
+                        selected_approach="confirmed_execution",
+                        confidence_score=1.0
+                    ),
+                    directive_checks=["user_confirmed"],
+                    metadata={"mode": "confirmed_intent", "session_id": session_id}
+                )
+                return stream_single(response_package)
+
+            elif lowered in ("no", "n", "cancel", "abort", "stop", "nope", "nah"):
+                self._pending_confirmation = None
+                response_package = ResponsePackage(
+                    content="Cancelled.",
+                    tone=MoodSpectrum.CONVERSATIONAL,
+                    reasoning_chain=ReasoningChain(
+                        steps=["User cancelled"], assumptions=[], alternatives_considered=[],
+                        selected_approach="cancel", confidence_score=1.0
+                    ),
+                    directive_checks=[],
+                    metadata={"mode": "cancelled", "session_id": session_id}
+                )
+                return stream_single(response_package)
+            else:
+                # Not a confirmation — clear pending and fall through to normal pipeline
+                self._pending_confirmation = None
+
+        # ── FULL MODE: natural language intent routing ─────────────────────────
+        # Only applies when message is NOT an explicit /skill command.
+        if not message.strip().startswith('/'):
+            try:
+                if self._intent_parser is None:
+                    from core.intent.intent_parser import HugoIntentParser
+                    self._intent_parser = HugoIntentParser(
+                        ollama_url=self.ollama_api,
+                        model_name=self.model_name,
+                        logger=self.logger,
+                    )
+                if self._action_router is None:
+                    from core.actions.action_router import ActionRouter
+                    self._action_router = ActionRouter(logger=self.logger)
+
+                intent = self._intent_parser.parse(message, conversation_context=[])
+
+                if intent.requires_action and intent.domain:
+                    self.logger.log_event("cognition", "intent_action_detected", {
+                        "domain": intent.domain,
+                        "action": intent.action,
+                        "confidence": intent.confidence,
+                        "session_id": session_id,
+                    })
+
+                    action_result = await self._action_router.route(intent)
+
+                    if not action_result.success and action_result.error == "confirmation_required":
+                        # Store pending intent and return the confirmation prompt
+                        self._pending_confirmation = intent
+                        response_text = self._action_router.format_for_cognition(action_result)
+                    else:
+                        response_text = self._action_router.format_for_cognition(action_result)
+                        await self.post_process(response_text, session_id)
+
+                    response_package = ResponsePackage(
+                        content=response_text,
+                        tone=MoodSpectrum.OPERATIONAL,
+                        reasoning_chain=ReasoningChain(
+                            steps=["NLP intent parsed", f"Domain: {intent.domain}",
+                                   f"Action: {intent.action}", "Executor dispatched"],
+                            assumptions=[intent.reasoning],
+                            alternatives_considered=["LLM generation", "/skill trigger"],
+                            selected_approach="nlp_intent_routing",
+                            confidence_score=intent.confidence
+                        ),
+                        directive_checks=["permission_checked"],
+                        metadata={
+                            "mode": "intent_routing",
+                            "domain": intent.domain,
+                            "action": intent.action,
+                            "session_id": session_id,
+                            "permission_level": action_result.permission_level,
+                        }
+                    )
+                    return stream_single(response_package)
+
+            except Exception as e:
+                # Intent parsing failure must never crash the main pipeline
+                self.logger.log_event("cognition", "intent_parse_error", {
+                    "error": str(e), "session_id": session_id
+                })
 
         # Save user message to memory (with skill trigger metadata if present)
         await self._save_user_message(message, session_id)

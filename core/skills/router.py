@@ -5,7 +5,7 @@ Routes skill triggers to appropriate handlers.
 
 Requirements:
 - validate_skill_name: Only lowercase alphabetic a-z
-- is_allowed_skill: Whitelist check (search, note, fetch, scrape)
+- is_allowed_skill: Whitelist check
 - route_skill: Route to handler and return SkillBlock
 - Must NOT call Ollama directly
 - Must NOT do any network or file I/O
@@ -16,12 +16,15 @@ from dataclasses import dataclass
 from typing import Optional
 
 from core.skills.trigger_detector import SkillTrigger
-from core.skills.handlers import handle_search, handle_note, handle_fetch, handle_scrape
+from core.skills.handlers import (
+    handle_search, handle_note, handle_fetch, handle_scrape,
+    handle_ssh, handle_docker, handle_monitor,
+)
 from core.skills.schemas import format_skill_result, format_skill_error
 
 
-# Allowed skills whitelist
-ALLOWED_SKILLS = {'search', 'note', 'fetch', 'scrape'}
+# Allowed skills whitelist — original four + new infrastructure skills
+ALLOWED_SKILLS = {'search', 'note', 'fetch', 'scrape', 'ssh', 'docker', 'monitor'}
 
 
 @dataclass
@@ -116,6 +119,12 @@ async def route_skill(trigger: SkillTrigger) -> SkillBlock:
         handler = handle_fetch
     elif skill_name == 'scrape':
         handler = handle_scrape
+    elif skill_name == 'ssh':
+        handler = handle_ssh
+    elif skill_name == 'docker':
+        handler = handle_docker
+    elif skill_name == 'monitor':
+        handler = handle_monitor
 
     if handler is None:
         error_msg = f"No handler found for skill: {skill_name}"

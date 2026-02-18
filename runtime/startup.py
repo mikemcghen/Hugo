@@ -51,6 +51,21 @@ class HugoService:
             self.logger.log_event("startup", "boot_failed", {})
             return False
 
+        # Initialize action router in FULL mode (validates executor imports at boot)
+        from core.config import is_full_mode
+        if is_full_mode():
+            try:
+                from core.actions.action_router import ActionRouter
+                self._action_router = ActionRouter(logger=self.logger)
+                self.logger.log_event("startup", "action_router_initialized", {
+                    "executors": ["ssh", "docker", "monitor"]
+                })
+            except Exception as e:
+                self.logger.log_event("startup", "action_router_init_warning", {
+                    "error": str(e),
+                    "note": "Action routing unavailable — check executor dependencies"
+                })
+
         self.logger.log_event("startup", "service_started", {})
 
         # Main service loop

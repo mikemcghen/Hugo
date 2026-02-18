@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Testing & coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+*.xml
+junit/
+
+# Databases (SQLite files generated at runtime or during tests)
+*.db
+*.sqlite
+*.sqlite3
+
+# FAISS index & other binary data files
+*.bin
+*.npy
+*.npz
+
+# Logs
+*.log
+*.jsonl
+logs/
+data/logs/
+
+# Runtime state files
+data/network_monitor_state.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Patch files (generated artifacts, not source)
+*.patch
+*.txt.orig
+DIRECTIVE_REMOVAL_PATCH.txt
+
+# Phase/status documentation (project diary, not source)
+PHASE_*.md
+CORE_MODE.md
+docs/
+
+# Ad-hoc dev scripts and one-off verification scripts
+scripts/
+test_boot_sequence.py
+test_ollama_integration.py
+verify_*.py
+
+# Claude Code local settings
+.claude/settings.local.json

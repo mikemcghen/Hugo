@@ -15,6 +15,8 @@ Memory Classification:
 - knowledge: Definitions, explanations, facts about world (persisted)
 - emotional: Emotional context and sentiment (persisted)
 - note: Important notes and journal entries (persisted)
+- goal: Long/short-term objectives (persisted, high priority)
+- relationship: People and connections in the user's life (persisted)
 - conversation: General chitchat (not persisted)
 - ignore: Noise, greetings, acknowledgments (not persisted)
 """
@@ -79,7 +81,9 @@ class MemoryManager:
     MEMORY_PRIORITY = {
         "identity": 10,
         "factual": 9,
+        "goal": 9,          # Goals are first-class persistent data (from Server-Files)
         "preference": 8,
+        "relationship": 7,  # Relationships between people (from Server-Files)
         "emotional": 7,
         "knowledge": 6,
         "task": 5,
@@ -307,6 +311,46 @@ class MemoryManager:
                     entity_type=cred_type,
                     reasoning=f"credential:{cred_type}",
                     metadata={"credential_type": cred_type}
+                )
+
+        # Pattern 1.5: Goals (what I want to achieve — from Server-Files hugo_memory.py)
+        goal_patterns = [
+            r'\b(my goal is to|my goal is)\b',
+            r'\b(i want to achieve|i aim to|i am working towards)\b',
+            r'\b(long.?term goal|short.?term goal|goal for this)\b',
+            r'\b(i plan to accomplish|i intend to accomplish)\b',
+            r'\b(milestone|objective)\b.*\b(is|are)\b',
+        ]
+
+        for pattern in goal_patterns:
+            if re.search(pattern, text_lower) and not is_question:
+                return MemoryClassification(
+                    memory_type="goal",
+                    importance=0.92,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="goal",
+                    reasoning="goal_statement"
+                )
+
+        # Pattern 1.7: Relationships (people in my life — from Server-Files hugo_memory.py)
+        relationship_patterns = [
+            r'\bmy (boss|manager|colleague|coworker|teammate|friend|partner|mentor|report|client)\b',
+            r'\bmy (wife|husband|girlfriend|boyfriend|spouse)\b',
+            r'\b(works? with|works? for|works? at)\b',
+            r'\b(relationship with|connected to|knows?)\b',
+            r'\b(met|introduced to)\b.*\b(who|that|he|she|they)\b',
+        ]
+
+        for pattern in relationship_patterns:
+            if re.search(pattern, text_lower) and not is_question:
+                return MemoryClassification(
+                    memory_type="relationship",
+                    importance=0.80,
+                    should_persist=True,
+                    embedding_allowed=True,
+                    entity_type="person",
+                    reasoning="relationship_detected"
                 )
 
         # Pattern 2: Identity (who I am, aspirations, goals)
